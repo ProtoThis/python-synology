@@ -8,5 +8,8 @@ import requests
 
 # Define Classes
 class SynologyApi(object):
-    def __init__(self, username, password):
-        pass
+    def __init__(self, ip, port, username, password):
+        self.ip = ip
+        self.port = port
+        self.username = username
+        self.password = password

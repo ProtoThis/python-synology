@@ -113,7 +113,59 @@ class SynoUtilization(object):
         #TODO: Check if we are looking at the total network interface (not eth0 or eth1 for example)
         if self._data is not None:
             return SynoFormatHelper.bytesToReadable(int(self._data["network"][0]["rx"]))
-            
+
+
+class SynoStorage(object):
+    def __init__(self, raw_input):
+        self._data = None
+        self.update(raw_input)
+        
+    def update(self, raw_input):
+        if raw_input is not None:
+            self._data = raw_input["data"]
+
+    @property
+    def volumes(self):
+        if self._data is not None:
+            volumes = []
+            for volume in self._data["volumes"]:
+                volumes.append(volume["id"])
+            return volumes
+
+    @property
+    def disks(self):
+        if self._data is not None:
+            disks = []
+            for disk in self._data["disks"]:
+                disks.append(disk["id"])
+            return disks
+
+    def _get_volume(self, volume_id):
+        if self._data is not None:
+            for volume in self._data["volumes"]:
+                if volume["id"] == volume_id:
+                    return volume
+
+    def volume_status(self, volume):
+        volume = self._get_volume(volume)
+        if volume is not None:
+            return volume["status"]
+
+    def volume_device_type(self, volume):
+        volume = self._get_volume(volume)
+        if volume is not None:
+            return volume["device_type"]
+
+    def volume_size_total(self, volume):
+        volume = self._get_volume(volume)
+        if volume is not None:
+            return SynoFormatHelper.bytesToReadable(int(volume["size"]["total"]))
+
+    def volume_size_used(self, volume):
+        volume = self._get_volume(volume)
+        if volume is not None:
+            return SynoFormatHelper.bytesToReadable(int(volume["size"]["used"]))
+
 class SynologyApi(object):
     def __init__(self, ip, port, username, password):
         # Store Variables
@@ -125,7 +177,8 @@ class SynologyApi(object):
         # Class Variables
         self.access_token = None
         self._utilisation = None
-        
+        self._storage = None
+
         # Build Variables
         self.base_url = "http://%s:%s" % (self.ip, self.port)
 
@@ -163,3 +216,11 @@ class SynologyApi(object):
             self._utilisation = SynoUtilization(self._getUrl(url))
             
         return self._utilisation
+
+    @property
+    def Storage(self):
+        if self._storage is None:
+            url = "%s/webapi/entry.cgi?api=SYNO.Storage.CGI.Storage&version=1&method=load_info&_sid=%s" % (self.base_url, self.access_token)
+            self._storage = SynoStorage(self._getUrl(url))
+            
+        return self._storage

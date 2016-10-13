@@ -67,14 +67,40 @@ class SynoUtilization(object):
             return str(self._data["memory"]["real_usage"]) + "%"
 
     @property
+    def memory_size(self):
+        if self._data is not None:
+            # Memory is actually returned in KB's so multiply before converting
+            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["memory_size"]) * 1024)
+
+    @property
+    def memory_available_swap(self):
+        if self._data is not None:
+            # Memory is actually returned in KB's so multiply before converting
+            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["avail_swap"]) * 1024)
+
+    @property
+    def memory_cached(self):
+        if self._data is not None:
+            # Memory is actually returned in KB's so multiply before converting
+            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["cached"]) * 1024)
+
+    @property
     def memory_available_real(self):
         if self._data is not None:
-            return self._data["memory"]["avail_real"]
+            # Memory is actually returned in KB's so multiply before converting
+            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["avail_real"]) * 1024)
 
     @property
     def memory_total_real(self):
         if self._data is not None:
-            return self._data["memory"]["total_real"]
+            # Memory is actually returned in KB's so multiply before converting
+            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["total_real"]) * 1024)
+
+    @property
+    def memory_total_swap(self):
+        if self._data is not None:
+            # Memory is actually returned in KB's so multiply before converting
+            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["total_swap"]) * 1024)
 
     @property
     def network_up(self):

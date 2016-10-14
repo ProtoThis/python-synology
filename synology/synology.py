@@ -242,10 +242,10 @@ class SynologyApi(object):
     def _login(self):
         # Build login url and request
         api = "SYNO.API.Auth"
-        url = "%s/auth.cgi?api=%s&version=2&method=login&account=%s&passwd=%s&session=Core&format=cookie" % (
-                self.base_url, 
-                api, 
-                self.username, 
+        url = "%s/auth.cgi?api=%s&version=2&method=login&account=%s&passwd=%s&session=Core&format=cookie" % ( #pylint: disable=E501 
+                self.base_url,
+                api,
+                self.username,
                 self.password)
         result = self._getUrl(url)
 
@@ -273,8 +273,8 @@ class SynologyApi(object):
         if self._utilisation is None:
             api = "SYNO.Core.System.Utilization"
             url = "%s/entry.cgi?api=%s&version=1&method=get&_sid=%s" % (
-                self.base_url, 
-                api, 
+                self.base_url,
+                api,
                 self.access_token)
             self._utilisation = SynoUtilization(self._getUrl(url))
         return self._utilisation
@@ -284,8 +284,8 @@ class SynologyApi(object):
         if self._storage is None:
             api = "SYNO.Storage.CGI.Storage"
             url = "%s/entry.cgi?api=%s&version=1&method=load_info&_sid=%s" % (
-                self.base_url, 
-                api, 
+                self.base_url,
+                api,
                 self.access_token)
             self._storage = SynoStorage(self._getUrl(url))
             print(url)

@@ -6,7 +6,9 @@
 # - Minor means API bugfix or new functionality
 # - Micro means change of any kind (unless significant enough for a minor/major).
 
-from distutils.core import setup
+import io
+from setuptools import setup
+
 setup(
   name = 'python-synology',
   packages = ['python-synology'], # this must be the same as the name above

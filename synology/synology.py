@@ -132,14 +132,6 @@ class SynoStorage(object):
                 volumes.append(volume["id"])
             return volumes
 
-    @property
-    def disks(self):
-        if self._data is not None:
-            disks = []
-            for disk in self._data["disks"]:
-                disks.append(disk["id"])
-            return disks
-
     def _get_volume(self, volume_id):
         if self._data is not None:
             for volume in self._data["volumes"]:
@@ -165,6 +157,56 @@ class SynoStorage(object):
         volume = self._get_volume(volume)
         if volume is not None:
             return SynoFormatHelper.bytesToReadable(int(volume["size"]["used"]))
+
+    @property
+    def disks(self):
+        if self._data is not None:
+            disks = []
+            for disk in self._data["disks"]:
+                disks.append(disk["id"])
+            return disks
+
+    def _get_disk(self, disk_id):
+        if self._data is not None:
+            for disk in self._data["disks"]:
+                if disk["id"] == disk_id:
+                    return disk
+
+    def disk_name(self, disk):
+        disk = self._get_disk(disk)
+        if disk is not None:
+            return disk["name"]
+
+    def disk_device(self, disk):
+        disk = self._get_disk(disk)
+        if disk is not None:
+            return disk["device"]
+
+    def disk_smart_status(self, disk):
+        disk = self._get_disk(disk)
+        if disk is not None:
+            return disk["status"]
+
+    def disk_status(self, disk):
+        disk = self._get_disk(disk)
+        if disk is not None:
+            return disk["status"]
+
+    def disk_exceed_bad_sector_thr(self, disk):
+        disk = self._get_disk(disk)
+        if disk is not None:
+            return disk["exceed_bad_sector_thr"]
+
+    def disk_below_remain_life_thr(self, disk):
+        disk = self._get_disk(disk)
+        if disk is not None:
+            return disk["below_remain_life_thr"]
+
+    def disk_temp(self, disk):
+        disk = self._get_disk(disk)
+        if disk is not None:
+            return disk["temp"]
+
 
 class SynologyApi(object):
     def __init__(self, ip, port, username, password):
@@ -222,5 +264,5 @@ class SynologyApi(object):
         if self._storage is None:
             url = "%s/webapi/entry.cgi?api=SYNO.Storage.CGI.Storage&version=1&method=load_info&_sid=%s" % (self.base_url, self.access_token)
             self._storage = SynoStorage(self._getUrl(url))
-            
+            print(url)
         return self._storage

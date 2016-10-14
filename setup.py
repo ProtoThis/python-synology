@@ -11,7 +11,7 @@ from setuptools import setup
 
 setup(
   name = 'python-synology',
-  packages = ['python-synology'], # this must be the same as the name above
+  packages = ['synology'], # this must be the same as the name above
   version = '0.0.1',
   description = 'Python API for communication with Synology DSM',
   author = 'FG van Zeelst (StaticCube)',

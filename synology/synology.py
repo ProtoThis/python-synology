@@ -129,7 +129,7 @@ class SynoStorage(object):
     def __init__(self, raw_input):
         self._data = None
         self.update(raw_input)
-        
+
     def update(self, raw_input):
         if raw_input is not None:
             self._data = raw_input["data"]
@@ -161,12 +161,14 @@ class SynoStorage(object):
     def volume_size_total(self, volume):
         volume = self._get_volume(volume)
         if volume is not None:
-            return SynoFormatHelper.bytesToReadable(int(volume["size"]["total"]))
+            return SynoFormatHelper.bytesToReadable(
+                    int(volume["size"]["total"]))
 
     def volume_size_used(self, volume):
         volume = self._get_volume(volume)
         if volume is not None:
-            return SynoFormatHelper.bytesToReadable(int(volume["size"]["used"]))
+            return SynoFormatHelper.bytesToReadable(
+                    int(volume["size"]["used"]))
 
     @property
     def disks(self):
@@ -232,14 +234,19 @@ class SynologyApi(object):
         self._storage = None
 
         # Build Variables
-        self.base_url = "http://%s:%s" % (self.ip, self.port)
+        self.base_url = "http://%s:%s/webapi" % (self.ip, self.port)
 
         # Login to get our access token
         self._login()
 
     def _login(self):
         # Build login url and request
-        url = "%s/webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&account=%s&passwd=%s&session=Core&format=cookie" % (self.base_url, self.username, self.password)
+        api = "SYNO.API.Auth"
+        url = "%s/auth.cgi?api=%s&version=2&method=login&account=%s&passwd=%s&session=Core&format=cookie" % (
+                self.base_url, 
+                api, 
+                self.username, 
+                self.password)
         result = self._getUrl(url)
 
         # Parse Result if valid
@@ -264,15 +271,22 @@ class SynologyApi(object):
     @property
     def Utilisation(self):
         if self._utilisation is None:
-            url = "%s/webapi/entry.cgi?api=SYNO.Core.System.Utilization&version=1&method=get&_sid=%s" % (self.base_url, self.access_token)
+            api = "SYNO.Core.System.Utilization"
+            url = "%s/entry.cgi?api=%s&version=1&method=get&_sid=%s" % (
+                self.base_url, 
+                api, 
+                self.access_token)
             self._utilisation = SynoUtilization(self._getUrl(url))
-            
         return self._utilisation
 
     @property
     def Storage(self):
         if self._storage is None:
-            url = "%s/webapi/entry.cgi?api=SYNO.Storage.CGI.Storage&version=1&method=load_info&_sid=%s" % (self.base_url, self.access_token)
+            api = "SYNO.Storage.CGI.Storage"
+            url = "%s/entry.cgi?api=%s&version=1&method=load_info&_sid=%s" % (
+                self.base_url, 
+                api, 
+                self.access_token)
             self._storage = SynoStorage(self._getUrl(url))
             print(url)
         return self._storage

@@ -2,6 +2,7 @@
 import requests
 from requests.compat import json
 
+
 # Define Static Classes
 class SynoFormatHelper(object):
     @staticmethod
@@ -10,19 +11,20 @@ class SynoFormatHelper(object):
                 return "0 Kb"
         elif num < 1024:
                 return "1 Kb"
-            
-        for unit in ['','Kb','Mb','Gb','Tb','Pb','Eb','Zb']:
+
+        for unit in ['', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb']:
             if abs(num) < 1024.0:
                 return "%3.1f%s" % (num, unit)
             num /= 1024.0
         return "%.1f%s" % (num, 'Yb')
+
 
 # Define Classes
 class SynoUtilization(object):
     def __init__(self, raw_input):
         self._data = None
         self.update(raw_input)
-        
+
     def update(self, raw_input):
         if raw_input is not None:
             self._data = raw_input["data"]
@@ -70,49 +72,57 @@ class SynoUtilization(object):
     def memory_size(self):
         if self._data is not None:
             # Memory is actually returned in KB's so multiply before converting
-            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["memory_size"]) * 1024)
+            return SynoFormatHelper.bytesToReadable(
+                    int(self._data["memory"]["memory_size"]) * 1024)
 
     @property
     def memory_available_swap(self):
         if self._data is not None:
             # Memory is actually returned in KB's so multiply before converting
-            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["avail_swap"]) * 1024)
+            return SynoFormatHelper.bytesToReadable(
+                    int(self._data["memory"]["avail_swap"]) * 1024)
 
     @property
     def memory_cached(self):
         if self._data is not None:
             # Memory is actually returned in KB's so multiply before converting
-            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["cached"]) * 1024)
+            return SynoFormatHelper.bytesToReadable(
+                    int(self._data["memory"]["cached"]) * 1024)
 
     @property
     def memory_available_real(self):
         if self._data is not None:
             # Memory is actually returned in KB's so multiply before converting
-            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["avail_real"]) * 1024)
+            return SynoFormatHelper.bytesToReadable(
+                    int(self._data["memory"]["avail_real"]) * 1024)
 
     @property
     def memory_total_real(self):
         if self._data is not None:
             # Memory is actually returned in KB's so multiply before converting
-            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["total_real"]) * 1024)
+            return SynoFormatHelper.bytesToReadable(
+                    int(self._data["memory"]["total_real"]) * 1024)
 
     @property
     def memory_total_swap(self):
         if self._data is not None:
             # Memory is actually returned in KB's so multiply before converting
-            return SynoFormatHelper.bytesToReadable(int(self._data["memory"]["total_swap"]) * 1024)
+            return SynoFormatHelper.bytesToReadable(
+                    int(self._data["memory"]["total_swap"]) * 1024)
 
     @property
     def network_up(self):
         #TODO: Check if we are looking at the total network interface (not eth0 or eth1 for example)
         if self._data is not None:
-            return SynoFormatHelper.bytesToReadable(int(self._data["network"][0]["tx"]))
+            return SynoFormatHelper.bytesToReadable(
+                    int(self._data["network"][0]["tx"]))
 
     @property
     def network_down(self):
         #TODO: Check if we are looking at the total network interface (not eth0 or eth1 for example)
         if self._data is not None:
-            return SynoFormatHelper.bytesToReadable(int(self._data["network"][0]["rx"]))
+            return SynoFormatHelper.bytesToReadable(
+                    int(self._data["network"][0]["rx"]))
 
 
 class SynoStorage(object):

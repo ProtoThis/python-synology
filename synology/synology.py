@@ -110,19 +110,25 @@ class SynoUtilization(object):
             return SynoFormatHelper.bytesToReadable(
                     int(self._data["memory"]["total_swap"]) * 1024)
 
+    def _get_network(self, network_id):
+        if self._data is not None:
+            for network in self._data["network"]:
+                if network["device"] == network_id:
+                    return network
+
     @property
     def network_up(self):
-        #TODO: Check if we are looking at the total network interface (not eth0 or eth1 for example)
-        if self._data is not None:
+        network = self._get_network("total")
+        if network is not None:
             return SynoFormatHelper.bytesToReadable(
-                    int(self._data["network"][0]["tx"]))
+                    int(network["tx"]))
 
     @property
     def network_down(self):
-        #TODO: Check if we are looking at the total network interface (not eth0 or eth1 for example)
-        if self._data is not None:
+        network = self._get_network("total")
+        if network is not None:
             return SynoFormatHelper.bytesToReadable(
-                    int(self._data["network"][0]["rx"]))
+                    int(network["rx"]))
 
 
 class SynoStorage(object):
@@ -288,5 +294,4 @@ class SynologyApi(object):
                 api,
                 self.access_token)
             self._storage = SynoStorage(self._getUrl(url))
-            print(url)
         return self._storage

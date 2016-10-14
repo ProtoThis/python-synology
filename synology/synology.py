@@ -248,8 +248,7 @@ class SynologyApi(object):
     def _login(self):
         # Build login url and request
         api = "SYNO.API.Auth"
-        # pylint: disable=E501
-        url = "%s/auth.cgi?api=%s&version=2&method=login&account=%s&passwd=%s&session=Core&format=cookie" % ( 
+        url = "%s/auth.cgi?api=%s&version=2&method=login&account=%s&passwd=%s&session=Core&format=cookie" % ( # noqa: ignore=E501
                 self.base_url,
                 api,
                 self.username,

@@ -267,12 +267,29 @@ class SynologyApi(object):
                 if json_data["success"]:
                     return json_data
                 else:
+                    print(json_data)
                     if retryOnError:
                         return self._getUrl(url, False)
                     else:
                         return None
         except:
             return None
+
+    def update(self):
+        if(self._utilisation is not None):
+            api = "SYNO.Core.System.Utilization"
+            url = "%s/entry.cgi?api=%s&version=1&method=get&_sid=%s" % (
+                self.base_url,
+                api,
+                self.access_token)
+            self._utilisation.update(self._getUrl(url))
+        if self._storage is not None:
+            api = "SYNO.Storage.CGI.Storage"
+            url = "%s/entry.cgi?api=%s&version=1&method=load_info&_sid=%s" % (
+                self.base_url,
+                api,
+                self.access_token)
+            self._storage.update(self._getUrl(url))
 
     @property
     def Utilisation(self):

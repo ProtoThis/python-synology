@@ -11,13 +11,13 @@ from setuptools import setup
 
 setup(
   name = 'python-synology',
-  packages = ['synology'], # this must be the same as the name above
-  version = '0.0.2',
+  packages = ['SynologyDSM'], # this must be the same as the name above
+  version = '0.0.4',
   description = 'Python API for communication with Synology DSM',
   author = 'FG van Zeelst (StaticCube)',
   author_email = 'GitHub@StaticCube.com',
   url = 'https://github.com/StaticCube/python-synology/',
-  download_url = 'https://github.com/StaticCube/python-synology/tarball/0.0.2',
+  download_url = 'https://github.com/StaticCube/python-synology/tarball/0.0.3',
   keywords = ['synology-dsm', 'synology'],
   classifiers = [],
   install_requires=['requests>=1.0.0']

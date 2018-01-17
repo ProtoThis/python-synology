@@ -370,7 +370,7 @@ class SynoStorage(object):
 class SynologyDSM():
     #pylint: disable=too-many-arguments,too-many-instance-attributes
     """Class containing the main Synology DSM functions"""
-    def __init__(self, dsm_ip, dsm_port, username, password, debugmode=False):
+    def __init__(self, dsm_ip, dsm_port, username, password, debugmode=False, https=False):
         # Store Variables
         self.username = username
         self.password = password
@@ -386,7 +386,10 @@ class SynologyDSM():
         self._session = None
 
         # Build Variables
-        self.base_url = "http://%s:%s/webapi" % (dsm_ip, dsm_port)
+        if https:
+            self.base_url = "https://%s:%s/webapi" % (dsm_ip, dsm_port)
+        else:
+            self.base_url = "http://%s:%s/webapi" % (dsm_ip, dsm_port)
     #pylint: enable=too-many-arguments,too-many-instance-attributes
 
     def _debuglog(self, message):

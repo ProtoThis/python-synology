@@ -48,3 +48,8 @@ You can import the module as `SynologyDSM`.
         print("S-Status:   " + str(api.storage.disk_smart_status(disk)))
         print("Status:     " + str(api.storage.disk_status(disk)))
         print("Temp:       " + str(api.storage.disk_temp(disk)))
+      
+Credits / Special Thanks
+=====
+https://github.com/florianeinfalt
+https://github.com/tchellomello

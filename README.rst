@@ -51,5 +51,5 @@ You can import the module as `SynologyDSM`.
       
 Credits / Special Thanks
 =====
-https://github.com/florianeinfalt
-https://github.com/tchellomello
+- https://github.com/florianeinfalt
+- https://github.com/tchellomello

@@ -1,6 +1,8 @@
 """Module containing multiple classes to interact with Synology DSM"""
 # -*- coding:utf-8 -*-
 import requests
+import urllib3
+from urllib.parse import urlencode
 from requests.compat import json
 
 
@@ -370,7 +372,8 @@ class SynoStorage(object):
 class SynologyDSM():
     #pylint: disable=too-many-arguments,too-many-instance-attributes
     """Class containing the main Synology DSM functions"""
-    def __init__(self, dsm_ip, dsm_port, username, password, debugmode=False):
+    def __init__(self, dsm_ip, dsm_port, username, password,
+                 use_https=False, debugmode=False):
         # Store Variables
         self.username = username
         self.password = password
@@ -380,13 +383,21 @@ class SynologyDSM():
         self._utilisation = None
         self._storage = None
         self._debugmode = debugmode
+        self._use_https = use_https
 
         # Define Session
         self._session_error = False
         self._session = None
 
         # Build Variables
-        self.base_url = "http://%s:%s/webapi" % (dsm_ip, dsm_port)
+        if self._use_https:
+            # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+            # disable SSL warnings due to the auto-genenerated cert
+            urllib3.disable_warnings()
+
+            self.base_url = "https://%s:%s/webapi" % (dsm_ip, dsm_port)
+        else:
+            self.base_url = "http://%s:%s/webapi" % (dsm_ip, dsm_port)
     #pylint: enable=too-many-arguments,too-many-instance-attributes
 
     def _debuglog(self, message):
@@ -394,15 +405,23 @@ class SynologyDSM():
         if self._debugmode:
             print("DEBUG: " + message)
 
+    def _encode_credentials(self):
+        """Encode user credentials to support special characters."""
+         # encoding special characters
+        auth = {
+            'account': self.username,
+            'passwd': self.password,
+        }
+        return urlencode(auth)
+
     def _login(self):
         """Build and execute login request"""
         api_path = "%s/auth.cgi?api=SYNO.API.Auth&version=2" % (
             self.base_url,
         )
-        login_path = "method=login&account=%s&passwd=%s" % (
-            self.username,
-            self.password
-        )
+
+        login_path = "method=login&%s" % (self._encode_credentials())
+
         url = "%s&%s&session=Core&format=cookie" % (
             api_path,
             login_path)
@@ -433,6 +452,11 @@ class SynologyDSM():
                 self._session = None
             self._debuglog("Creating New Session")
             self._session = requests.Session()
+            
+            # disable SSL certificate verification
+            if self._use_https:
+                self._session.verify = False
+
 
             # We Created a new Session so login
             if self._login() is False:

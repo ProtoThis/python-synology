@@ -281,7 +281,7 @@ class SynoStorage(object):
         """Average temperature of all disks making up the volume"""
         volume = self._get_volume(volume)
         if volume is not None:
-            vol_disks = volume["disks"]
+            vol_disks = self.disks
             if vol_disks is not None:
                 total_temp = 0
                 total_disks = 0
@@ -299,7 +299,7 @@ class SynoStorage(object):
         """Maximum temperature of all disks making up the volume"""
         volume = self._get_volume(volume)
         if volume is not None:
-            vol_disks = volume["disks"]
+            vol_disks = self.disks
             if vol_disks is not None:
                 max_temp = 0
 

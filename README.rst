@@ -15,6 +15,12 @@ Installation
 
 Usage
 =====
+Constructor::
+
+        SynologyDSM(dsm_ip, dsm_port, username, password,
+                    use_https=False, debugmode=False, dsm_version=6)
+
+``dsm_version = 5 will use old DSM API to gather volumes and disks informations (from DSM 5.x versions)``
 
 Module
 ------
@@ -50,6 +56,7 @@ You can import the module as `SynologyDSM`.
         print("Temp:       " + str(api.storage.disk_temp(disk)))
       
 Credits / Special Thanks
-=====
+========================
 - https://github.com/florianeinfalt
 - https://github.com/tchellomello
+- https://github.com/aaska

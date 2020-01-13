@@ -373,7 +373,7 @@ class SynologyDSM():
     #pylint: disable=too-many-arguments,too-many-instance-attributes
     """Class containing the main Synology DSM functions"""
     def __init__(self, dsm_ip, dsm_port, username, password,
-                 use_https=False, debugmode=False, dsmVersion="6.x"):
+                 use_https=False, debugmode=False, dsm_version=6):
         # Store Variables
         self.username = username
         self.password = password
@@ -390,7 +390,7 @@ class SynologyDSM():
         self._session = None
 
         # adding DSM Version
-        self._dsmVersion = dsmVersion
+        self._dsm_version = dsm_version
 
 
         # Build Variables
@@ -403,7 +403,7 @@ class SynologyDSM():
         else:
             self.base_url = "http://%s:%s/webapi" % (dsm_ip, dsm_port)
         
-        if self._dsmVersion == "5.x":
+        if self._dsm_version == 5:
             if self._use_https:
                 self.storage_url = "https://%s:%s/webman/modules/StorageManager/storagehandler.cgi" % (dsm_ip, dsm_port)
             else: 
@@ -530,7 +530,7 @@ class SynologyDSM():
                 self.access_token)
             self._utilisation.update(self._get_url(url))
         if self._storage is not None:
-            if self._dsmVersion != "5.x":
+            if self._dsm_version != 5:
                 api = "SYNO.Storage.CGI.Storage"
                 url = "%s/entry.cgi?api=%s&version=1&method=load_info&_sid=%s" % (
                     self.base_url,
@@ -561,21 +561,19 @@ class SynologyDSM():
     def storage(self):
         """Getter for various Storage variables"""
         if self._storage is None:
-            if self._dsmVersion != "5.x":
+            if self._dsm_version != 5:
                 api = "SYNO.Storage.CGI.Storage"
                 url = "%s/entry.cgi?api=%s&version=1&method=load_info" % (
                     self.base_url,
                     api)
-                # self._storage = SynoStorage(self._get_url(url))
             else:
                 url = "%s?action=load_info" % (self.storage_url)
 
             output = self._get_url(url)
-            if self._dsmVersion != "5.x":
+            if self._dsm_version != 5:
                 self._storage = SynoStorage(output)
             else:
                 output["data"] = output
-                last_output = SynoStorage(output)
-                self._storage = last_output
+                self._storage = SynoStorage(output)
 
         return self._storage

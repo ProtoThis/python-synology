@@ -59,4 +59,5 @@ Credits / Special Thanks
 ========================
 - https://github.com/florianeinfalt
 - https://github.com/tchellomello
+- https://github.com/Quentame
 - https://github.com/aaska

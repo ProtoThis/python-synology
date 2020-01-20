@@ -373,7 +373,7 @@ class SynologyDSM():
     #pylint: disable=too-many-arguments,too-many-instance-attributes
     """Class containing the main Synology DSM functions"""
     def __init__(self, dsm_ip, dsm_port, username, password,
-                 use_https=False, debugmode=False):
+                 use_https=False, debugmode=False, dsm_version=6):
         # Store Variables
         self.username = username
         self.password = password
@@ -389,6 +389,10 @@ class SynologyDSM():
         self._session_error = False
         self._session = None
 
+        # adding DSM Version
+        self._dsm_version = dsm_version
+
+
         # Build Variables
         if self._use_https:
             # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
@@ -398,6 +402,13 @@ class SynologyDSM():
             self.base_url = "https://%s:%s/webapi" % (dsm_ip, dsm_port)
         else:
             self.base_url = "http://%s:%s/webapi" % (dsm_ip, dsm_port)
+        
+        if self._dsm_version == 5:
+            if self._use_https:
+                self.storage_url = "https://%s:%s/webman/modules/StorageManager/storagehandler.cgi" % (dsm_ip, dsm_port)
+            else: 
+                self.storage_url = "http://%s:%s/webman/modules/StorageManager/storagehandler.cgi" % (dsm_ip, dsm_port)
+
     #pylint: enable=too-many-arguments,too-many-instance-attributes
 
     def _debuglog(self, message):
@@ -519,12 +530,21 @@ class SynologyDSM():
                 self.access_token)
             self._utilisation.update(self._get_url(url))
         if self._storage is not None:
-            api = "SYNO.Storage.CGI.Storage"
-            url = "%s/entry.cgi?api=%s&version=1&method=load_info&_sid=%s" % (
-                self.base_url,
-                api,
-                self.access_token)
-            self._storage.update(self._get_url(url))
+            if self._dsm_version != 5:
+                api = "SYNO.Storage.CGI.Storage"
+                url = "%s/entry.cgi?api=%s&version=1&method=load_info&_sid=%s" % (
+                    self.base_url,
+                    api,
+                    self.access_token)
+                self._storage.update(self._get_url(url))
+            else:
+                url = "%s?action=load_info&_sid=%s" % (
+                    self.storage_url,
+                    self.access_token)
+                output = self._get_url(url)
+                output["data"] = output
+                self._storage.update(output)
+
 
     @property
     def utilisation(self):
@@ -541,9 +561,19 @@ class SynologyDSM():
     def storage(self):
         """Getter for various Storage variables"""
         if self._storage is None:
-            api = "SYNO.Storage.CGI.Storage"
-            url = "%s/entry.cgi?api=%s&version=1&method=load_info" % (
-                self.base_url,
-                api)
-            self._storage = SynoStorage(self._get_url(url))
+            if self._dsm_version != 5:
+                api = "SYNO.Storage.CGI.Storage"
+                url = "%s/entry.cgi?api=%s&version=1&method=load_info" % (
+                    self.base_url,
+                    api)
+            else:
+                url = "%s?action=load_info" % (self.storage_url)
+
+            output = self._get_url(url)
+            if self._dsm_version != 5:
+                self._storage = SynoStorage(output)
+            else:
+                output["data"] = output
+                self._storage = SynoStorage(output)
+
         return self._storage

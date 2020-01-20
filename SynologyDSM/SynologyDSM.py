@@ -468,7 +468,7 @@ class SynologyDSM():
         response = self._execute_get_url(url)
         if (self._session_error or response is None) and retry_on_error:
             self._debuglog("Error occured, retrying...")
-            self._get_url(url, False)
+            return self._get_url(url, False)
 
         return response
 

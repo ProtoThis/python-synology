@@ -44,6 +44,60 @@ class SynoFormatHelper(object):
         return round(var_tb, 1)
 
 
+class SynoInformation(object):
+    """Class containing Information data"""
+    def __init__(self, raw_input):
+        self._data = None
+        self.update(raw_input)
+
+    def update(self, raw_input):
+        """Allows updating Information data with raw_input data"""
+        if raw_input is not None:
+            self._data = raw_input["data"]
+
+    @property
+    def model(self) -> str:
+        """Model of the NAS"""
+        if self._data is not None:
+            return self._data["model"]
+
+    @property
+    def ram(self) -> int:
+        """RAM of the NAS (in MB)"""
+        if self._data is not None:
+            return self._data["ram"]
+
+    @property
+    def serial(self) -> str:
+        """Serial of the NAS"""
+        if self._data is not None:
+            return self._data["serial"]
+
+    @property
+    def temperature(self) -> int:
+        """Temperature of the NAS"""
+        if self._data is not None:
+            return self._data["temperature"]
+
+    @property
+    def temperature_warn(self) -> bool:
+        """Temperature warning of the NAS"""
+        if self._data is not None:
+            return self._data["temperature_warn"]
+
+    @property
+    def uptime(self) -> int:
+        """Uptime of the NAS"""
+        if self._data is not None:
+            return self._data["uptime"]
+
+    @property
+    def version_string(self) -> str:
+        """Version of the NAS"""
+        if self._data is not None:
+            return self._data["version_string"]
+
+
 class SynoUtilization(object):
     """Class containing Utilisation data"""
     def __init__(self, raw_input):
@@ -380,8 +434,9 @@ class SynologyDSM():
 
         # Class Variables
         self.access_token = None
-        self._utilisation = None
-        self._storage = None
+        self._information: SynoInformation = None
+        self._utilisation: SynoUtilization = None
+        self._storage: SynoStorage = None
         self._debugmode = debugmode
         self._use_https = use_https
 
@@ -512,13 +567,22 @@ class SynologyDSM():
             else:
                 # We got a 404 or 401
                 return None
-        #pylint: disable=bare-except
-        except:
+        except:  #pylint: disable=bare-except
             return None
-        #pylint: enable=bare-except
 
-    def update(self):
+    def update(self, with_information=False):
         """Updates the various instanced modules"""
+        if self._information is not None and with_information:
+            api = "SYNO.DSM.Info"
+            version = 1
+            if self._dsm_version >= 6:
+                version = 2
+            url = "%s/entry.cgi?api=%s&version=%s&method=getinfo" % (
+                self.base_url,
+                api,
+                version)
+            self._information.update(self._get_url(url))
+
         if self._utilisation is not None:
             api = "SYNO.Core.System.Utilization"
             url = "%s/entry.cgi?api=%s&version=1&method=get&_sid=%s" % (
@@ -526,6 +590,7 @@ class SynologyDSM():
                 api,
                 self.access_token)
             self._utilisation.update(self._get_url(url))
+
         if self._storage is not None:
             if self._dsm_version != 5:
                 api = "SYNO.Storage.CGI.Storage"
@@ -538,9 +603,24 @@ class SynologyDSM():
                 url = "%s?action=load_info&_sid=%s" % (
                     self.storage_url,
                     self.access_token)
-                output = self._get_url(url)
-                output["data"] = output
+                output = self._get_url(url)["data"]
                 self._storage.update(output)
+
+
+    @property
+    def information(self):
+        """Getter for various Information variables"""
+        if self._information is None:
+            api = "SYNO.DSM.Info"
+            version = 1
+            if self._dsm_version >= 6:
+                version = 2
+            url = "%s/entry.cgi?api=%s&version=%s&method=getinfo" % (
+                self.base_url,
+                api,
+                version)
+            self._information = SynoInformation(self._get_url(url))
+        return self._information
 
 
     @property
@@ -564,13 +644,11 @@ class SynologyDSM():
                     self.base_url,
                     api)
             else:
-                url = "%s?action=load_info" % (self.storage_url)
+                url = "%s?action=load_info" % self.storage_url
 
             output = self._get_url(url)
-            if self._dsm_version != 5:
-                self._storage = SynoStorage(output)
-            else:
+            if self._dsm_version == 5:
                 output["data"] = output
-                self._storage = SynoStorage(output)
+            self._storage = SynoStorage(output)
 
         return self._storage

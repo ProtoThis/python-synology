@@ -1,15 +1,22 @@
+os: linux
+dist: xenial
+
 language: python
-sudo: false
 python:
-  - "2.7"
-  - "3.4"
+  - 2.7
+  - 3.4
+  - 3.8
+cache:
+  pip: true
+
 install:
-  - pip install flake8 . --use-mirrors
+  - pip install flake8
 before_script:
-  - "flake8 --show-source --builtins=_ synology"
+  - flake8 --show-source --builtins=_ synology
 script:
   - python setup.py install
   - python setup.py sdist
+
 deploy:
   - provider: pypi
     user: $pypi_test_user
@@ -17,11 +24,11 @@ deploy:
     server: $pypi_test
     on:
       branch: deploy-test
-      python: "3.4"
+      python: 3.8
   - provider: pypi
     user: $pypi_user
     password: $pypi_pass
     server: $pypi
     on:
       branch: deploy
-      python: "3.4"
+      python: 3.8

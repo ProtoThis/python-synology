@@ -5,6 +5,18 @@ Python API for Synology DSM
 .. image:: https://travis-ci.org/StaticCube/python-synology.svg?branch=master
     :target: https://travis-ci.org/StaticCube/python-synology
 
+.. image:: https://img.shields.io/pypi/v/python-synology.svg
+    :alt: Library version
+    :target: https://pypi.org/project/python-synology
+
+.. image:: https://img.shields.io/pypi/pyversions/python-synology.svg
+    :alt: Supported versions
+    :target: https://pypi.org/project/python-synology
+
+.. image:: https://pepy.tech/badge/python-synology
+    :alt: Downloads
+    :target: https://pypi.org/project/python-synology
+
 Installation
 ============
 

@@ -5,6 +5,7 @@ from SynologyDSM.helpers import SynoFormatHelper
 
 class SynoCoreUtilization(object):
     """Class containing Utilisation data."""
+
     def __init__(self, raw_input):
         self._data = None
         self.update(raw_input)
@@ -39,9 +40,7 @@ class SynoCoreUtilization(object):
         user_load = self.cpu_user_load
         other_load = self.cpu_other_load
 
-        if system_load is not None and \
-           user_load is not None and \
-           other_load is not None:
+        if system_load is not None and user_load is not None and other_load is not None:
             return system_load + user_load + other_load
 
     @property
@@ -74,8 +73,7 @@ class SynoCoreUtilization(object):
             # Memory is actually returned in KB's so multiply before converting
             return_data = int(self._data["memory"]["memory_size"]) * 1024
             if human_readable:
-                return SynoFormatHelper.bytes_to_readable(
-                    return_data)
+                return SynoFormatHelper.bytes_to_readable(return_data)
             else:
                 return return_data
 
@@ -85,8 +83,7 @@ class SynoCoreUtilization(object):
             # Memory is actually returned in KB's so multiply before converting
             return_data = int(self._data["memory"]["avail_swap"]) * 1024
             if human_readable:
-                return SynoFormatHelper.bytes_to_readable(
-                    return_data)
+                return SynoFormatHelper.bytes_to_readable(return_data)
             else:
                 return return_data
 
@@ -96,8 +93,7 @@ class SynoCoreUtilization(object):
             # Memory is actually returned in KB's so multiply before converting
             return_data = int(self._data["memory"]["cached"]) * 1024
             if human_readable:
-                return SynoFormatHelper.bytes_to_readable(
-                    return_data)
+                return SynoFormatHelper.bytes_to_readable(return_data)
             else:
                 return return_data
 
@@ -107,8 +103,7 @@ class SynoCoreUtilization(object):
             # Memory is actually returned in KB's so multiply before converting
             return_data = int(self._data["memory"]["avail_real"]) * 1024
             if human_readable:
-                return SynoFormatHelper.bytes_to_readable(
-                    return_data)
+                return SynoFormatHelper.bytes_to_readable(return_data)
             else:
                 return return_data
 
@@ -118,8 +113,7 @@ class SynoCoreUtilization(object):
             # Memory is actually returned in KB's so multiply before converting
             return_data = int(self._data["memory"]["total_real"]) * 1024
             if human_readable:
-                return SynoFormatHelper.bytes_to_readable(
-                    return_data)
+                return SynoFormatHelper.bytes_to_readable(return_data)
             else:
                 return return_data
 
@@ -129,8 +123,7 @@ class SynoCoreUtilization(object):
             # Memory is actually returned in KB's so multiply before converting
             return_data = int(self._data["memory"]["total_swap"]) * 1024
             if human_readable:
-                return SynoFormatHelper.bytes_to_readable(
-                    return_data)
+                return SynoFormatHelper.bytes_to_readable(return_data)
             else:
                 return return_data
 
@@ -147,8 +140,7 @@ class SynoCoreUtilization(object):
         if network is not None:
             return_data = int(network["tx"])
             if human_readable:
-                return SynoFormatHelper.bytes_to_readable(
-                    return_data)
+                return SynoFormatHelper.bytes_to_readable(return_data)
             else:
                 return return_data
 
@@ -158,7 +150,6 @@ class SynoCoreUtilization(object):
         if network is not None:
             return_data = int(network["rx"])
             if human_readable:
-                return SynoFormatHelper.bytes_to_readable(
-                    return_data)
+                return SynoFormatHelper.bytes_to_readable(return_data)
             else:
                 return return_data

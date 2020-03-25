@@ -5,6 +5,7 @@ from SynologyDSM.helpers import SynoFormatHelper
 
 class SynoStorage(object):
     """Class containing Storage data."""
+
     def __init__(self, raw_input):
         self._data = None
         self.update(raw_input)
@@ -48,8 +49,7 @@ class SynoStorage(object):
         if volume is not None:
             return_data = int(volume["size"]["total"])
             if human_readable:
-                return SynoFormatHelper.bytes_to_readable(
-                    return_data)
+                return SynoFormatHelper.bytes_to_readable(return_data)
             else:
                 return return_data
 
@@ -59,8 +59,7 @@ class SynoStorage(object):
         if volume is not None:
             return_data = int(volume["size"]["used"])
             if human_readable:
-                return SynoFormatHelper.bytes_to_readable(
-                    return_data)
+                return SynoFormatHelper.bytes_to_readable(return_data)
             else:
                 return return_data
 
@@ -71,8 +70,7 @@ class SynoStorage(object):
             total = int(volume["size"]["total"])
             used = int(volume["size"]["used"])
 
-            if used is not None and used > 0 and \
-               total is not None and total > 0:
+            if used is not None and used > 0 and total is not None and total > 0:
                 return round((float(used) / float(total)) * 100.0, 1)
 
     def volume_disk_temp_avg(self, volume):

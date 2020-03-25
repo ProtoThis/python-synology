@@ -1,6 +1,7 @@
 """Format Helper."""
 # -*- coding:utf-8 -*-
 
+
 class SynoFormatHelper(object):
     """Class containing various formatting functions."""
 
@@ -12,11 +13,11 @@ class SynoFormatHelper(object):
         elif num < 1024:
             return "1 Kb"
 
-        for unit in ['', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb']:
+        for unit in ["", "Kb", "Mb", "Gb", "Tb", "Pb", "Eb", "Zb"]:
             if abs(num) < 1024.0:
                 return "%3.1f%s" % (num, unit)
             num /= 1024.0
-        return "%.1f%s" % (num, 'Yb')
+        return "%.1f%s" % (num, "Yb")
 
     @staticmethod
     def bytes_to_megabytes(num):

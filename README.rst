@@ -17,6 +17,10 @@ Python API for Synology DSM
     :alt: Downloads
     :target: https://pypi.org/project/python-synology
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :alt: Formated with Black
+    :target: https://github.com/psf/black
+
 Installation
 ============
 

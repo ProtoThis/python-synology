@@ -4,6 +4,7 @@
 
 class SynoDSMInformation(object):
     """Class containing Information data."""
+
     def __init__(self, raw_input):
         self._data = None
         self.update(raw_input)

@@ -425,8 +425,15 @@ class SynologyDSM():
         }
         return urlencode(auth)
 
-    def _login(self):
-        """Build and execute login request"""
+    def login(self):
+        """Create a logged session."""
+        # First reset the session
+        if self._session is not None:
+            self._session = None
+        self._debuglog("Creating new Session")
+        self._session = requests.Session()
+        self._session.verify = False
+
         api_path = "%s/auth.cgi?api=SYNO.API.Auth&version=2" % (
             self.base_url,
         )
@@ -435,16 +442,18 @@ class SynologyDSM():
 
         url = "%s&%s&session=Core&format=cookie" % (
             api_path,
-            login_path)
+            login_path
+        )
         result = self._execute_get_url(url, False)
 
-        # Parse Result if valid
+        # Parse result if valid
         if result is not None:
             self.access_token = result["data"]["sid"]
             self._debuglog("Authentication Succesfull, token: " +
                            str(self.access_token))
             return True
         else:
+            self.access_token = None
             self._debuglog("Authentication Failed")
             return False
 
@@ -454,23 +463,11 @@ class SynologyDSM():
         if self.access_token is None or \
            self._session is None or \
            self._session_error:
-            # Clear Access Token en reset session error
-            self.access_token = None
+            # Reset session error
             self._session_error = False
 
-            # First Reset the session
-            if self._session is not None:
-                self._session = None
-            self._debuglog("Creating New Session")
-            self._session = requests.Session()
-            
-            # disable SSL certificate verification
-            if self._use_https:
-                self._session.verify = False
-
-
-            # We Created a new Session so login
-            if self._login() is False:
+            # Created a new logged session
+            if self.login() is False:
                 self._session_error = True
                 self._debuglog("Login Failed, unable to process request")
                 return

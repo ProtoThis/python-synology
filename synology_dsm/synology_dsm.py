@@ -1,13 +1,18 @@
 """Classe to interact with Synology DSM."""
 # -*- coding:utf-8 -*-
-from urllib.parse import urlencode
-import requests
 import urllib3
+import requests
 from requests.compat import json
+import six
 
 from .api.core.utilization import SynoCoreUtilization
 from .api.dsm.information import SynoDSMInformation
 from .api.storage.storage import SynoStorage
+
+if six.PY2:
+    from future.moves.urllib.parse import urlencode
+else:
+    from urllib.parse import urlencode
 
 
 class SynologyDSM(object):

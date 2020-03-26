@@ -10,7 +10,8 @@ cache:
   pip: true
 
 install:
-  - pip install pylint
+  - pip install -r requirements_all.txt
+  - pip install -e .
 before_script:
   - pylint synology_dsm
   - ./scripts/check_format.sh

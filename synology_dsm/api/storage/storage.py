@@ -1,6 +1,6 @@
 """DSM Storage data."""
 # -*- coding:utf-8 -*-
-from SynologyDSM.helpers import SynoFormatHelper
+from synology_dsm.helpers import SynoFormatHelper
 
 
 class SynoStorage(object):

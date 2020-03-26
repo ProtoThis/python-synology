@@ -1,6 +1,6 @@
 """DSM Utilization data."""
 # -*- coding:utf-8 -*-
-from SynologyDSM.helpers import SynoFormatHelper
+from synology_dsm.helpers import SynoFormatHelper
 
 
 class SynoCoreUtilization(object):
@@ -11,8 +11,8 @@ class SynoCoreUtilization(object):
         self.update(raw_data)
 
     def update(self, raw_data):
-        """Allows updating utilization data with raw_data data."""
-        if raw_data.get("data"):
+        """Updates utilization data."""
+        if raw_data:
             self._data = raw_data["data"]
 
     @property

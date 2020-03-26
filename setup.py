@@ -25,7 +25,7 @@ setup(
     long_description=long_description,
     author="FG van Zeelst (StaticCube)",
     author_email="GitHub@StaticCube.com",
-    packages=["SynologyDSM"],  # this must be the same as the name above
+    packages=["synology_dsm"],  # this must be the same as the name above
     install_requires=["requests>=1.0.0"],
     python_requires=">=2.7.0",
     license="MIT",

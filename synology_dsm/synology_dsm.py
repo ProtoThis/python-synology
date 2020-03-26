@@ -29,9 +29,9 @@ class SynologyDSM(object):
 
         # Class Variables
         self.access_token = None
-        self._information: SynoDSMInformation = None
-        self._utilisation: SynoCoreUtilization = None
-        self._storage: SynoStorage = None
+        self._information = None
+        self._utilisation = None
+        self._storage = None
         self._debugmode = debugmode
         self._use_https = use_https
 

@@ -15,36 +15,36 @@ class SynoDSMInformation(object):
             self._data = raw_data["data"]
 
     @property
-    def model(self) -> str:
+    def model(self):
         """Model of the NAS."""
         return self._data.get("model")
 
     @property
-    def ram(self) -> int:
+    def ram(self):
         """RAM of the NAS (in MB)."""
         return self._data.get("ram")
 
     @property
-    def serial(self) -> str:
+    def serial(self):
         """Serial of the NAS."""
         return self._data.get("serial")
 
     @property
-    def temperature(self) -> int:
+    def temperature(self):
         """Temperature of the NAS."""
         return self._data.get("temperature")
 
     @property
-    def temperature_warn(self) -> bool:
+    def temperature_warn(self):
         """Temperature warning of the NAS."""
         return self._data.get("temperature_warn")
 
     @property
-    def uptime(self) -> int:
+    def uptime(self):
         """Uptime of the NAS."""
         return self._data.get("uptime")
 
     @property
-    def version_string(self) -> str:
+    def version_string(self):
         """Version of the NAS."""
         return self._data.get("version_string")

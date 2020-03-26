@@ -12,7 +12,7 @@ from .api.storage.storage import SynoStorage
 if six.PY2:
     from future.moves.urllib.parse import urlencode
 else:
-    from urllib.parse import urlencode
+    from urllib.parse import urlencode  # pylint: disable=import-error
 
 
 class SynologyDSM(object):

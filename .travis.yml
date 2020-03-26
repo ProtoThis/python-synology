@@ -10,9 +10,9 @@ cache:
   pip: true
 
 install:
-  - pip install flake8
+  - pip install pylint
 before_script:
-  - flake8 --show-source --builtins=_ synology
+  - pylint SynologyDSM
   - ./scripts/check_format.sh
 script:
   - python setup.py install

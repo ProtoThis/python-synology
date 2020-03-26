@@ -5,53 +5,46 @@
 class SynoDSMInformation(object):
     """Class containing Information data."""
 
-    def __init__(self, raw_input):
-        self._data = None
-        self.update(raw_input)
+    def __init__(self, raw_data):
+        self._data = {}
+        self.update(raw_data)
 
-    def update(self, raw_input):
-        """Allows updating Information data with raw_input data."""
-        if raw_input is not None:
-            self._data = raw_input["data"]
+    def update(self, raw_data):
+        """Updates information data."""
+        if raw_data:
+            self._data = raw_data["data"]
 
     @property
     def model(self) -> str:
         """Model of the NAS."""
-        if self._data is not None:
-            return self._data["model"]
+        return self._data.get("model")
 
     @property
     def ram(self) -> int:
         """RAM of the NAS (in MB)."""
-        if self._data is not None:
-            return self._data["ram"]
+        return self._data.get("ram")
 
     @property
     def serial(self) -> str:
         """Serial of the NAS."""
-        if self._data is not None:
-            return self._data["serial"]
+        return self._data.get("serial")
 
     @property
     def temperature(self) -> int:
         """Temperature of the NAS."""
-        if self._data is not None:
-            return self._data["temperature"]
+        return self._data.get("temperature")
 
     @property
     def temperature_warn(self) -> bool:
         """Temperature warning of the NAS."""
-        if self._data is not None:
-            return self._data["temperature_warn"]
+        return self._data.get("temperature_warn")
 
     @property
     def uptime(self) -> int:
         """Uptime of the NAS."""
-        if self._data is not None:
-            return self._data["uptime"]
+        return self._data.get("uptime")
 
     @property
     def version_string(self) -> str:
         """Version of the NAS."""
-        if self._data is not None:
-            return self._data["version_string"]
+        return self._data.get("version_string")

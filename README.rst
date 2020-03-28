@@ -2,8 +2,8 @@
 Python API for Synology DSM
 ===========================
 
-.. image:: https://travis-ci.org/StaticCube/python-synology.svg?branch=master
-    :target: https://travis-ci.org/StaticCube/python-synology
+.. image:: https://travis-ci.org/ProtoThis/python-synology.svg?branch=master
+    :target: https://travis-ci.org/ProtoThis/python-synology
 
 .. image:: https://img.shields.io/pypi/v/python-synology.svg
     :alt: Library version

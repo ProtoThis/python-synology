@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 """DSM Information data."""
-# -*- coding:utf-8 -*-
 
 
 class SynoDSMInformation(object):

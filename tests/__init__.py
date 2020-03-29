@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 """Library tests."""
-# -*- coding:utf-8 -*-
 from synology_dsm import SynologyDSM
 
 from synology_dsm.api.core.utilization import SynoCoreUtilization

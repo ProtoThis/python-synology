@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 """Helpers."""
-# -*- coding:utf-8 -*-
 
 
 class SynoFormatHelper(object):

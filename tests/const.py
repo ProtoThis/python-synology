@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 """Test constants."""
-# -*- coding:utf-8 -*-
 
 # Name constants like this :
 # "DSM_[dsm_version]_[API_KEY]"

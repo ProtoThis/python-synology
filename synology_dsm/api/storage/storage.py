@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 """DSM Storage data."""
-# -*- coding:utf-8 -*-
 from synology_dsm.helpers import SynoFormatHelper
 
 

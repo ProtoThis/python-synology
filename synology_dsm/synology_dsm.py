@@ -1,5 +1,5 @@
-"""Classe to interact with Synology DSM."""
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
+"""Class to interact with Synology DSM."""
 import urllib3
 import requests
 from requests.compat import json

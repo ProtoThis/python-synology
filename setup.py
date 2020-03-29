@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # NOTE(ProtoThis) Guidelines for Major.Minor.Micro
 # - Major means an API contract change

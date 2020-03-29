@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """DSM Storage data."""
+from __future__ import division
+
 from synology_dsm.helpers import SynoFormatHelper
 
 

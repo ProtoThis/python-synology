@@ -41,11 +41,11 @@ Constructor::
 Module
 ------
 
-You can import the module as `SynologyDSM`.
+You can import the module as `synology_dsm`.
 
 .. code-block:: python
 
-    from SynologyDSM import SynologyDSM
+    from synology_dsm import SynologyDSM
 
     print("Creating Valid API")
     api = SynologyDSM("<SynologyIp>", "<SynologyPort>", "<Username>", "<Password>")

@@ -1,18 +1,21 @@
 """Classe to interact with Synology DSM."""
 # -*- coding:utf-8 -*-
-import requests
 import urllib3
-from urllib.parse import urlencode
+import requests
 from requests.compat import json
+import six
 
-from .api.Core.Utilization import SynoCoreUtilization
-from .api.DSM.Information import SynoDSMInformation
-from .api.Storage.Storage import SynoStorage
-from .helpers import SynoFormatHelper
+from .api.core.utilization import SynoCoreUtilization
+from .api.dsm.information import SynoDSMInformation
+from .api.storage.storage import SynoStorage
+
+if six.PY2:
+    from future.moves.urllib.parse import urlencode
+else:
+    from urllib.parse import urlencode  # pylint: disable=import-error,no-name-in-module
 
 
 class SynologyDSM(object):
-    # pylint: disable=too-many-arguments,too-many-instance-attributes
     """Class containing the main Synology DSM functions."""
 
     def __init__(
@@ -31,9 +34,9 @@ class SynologyDSM(object):
 
         # Class Variables
         self.access_token = None
-        self._information: SynoDSMInformation = None
-        self._utilisation: SynoCoreUtilization = None
-        self._storage: SynoStorage = None
+        self._information = None
+        self._utilisation = None
+        self._storage = None
         self._debugmode = debugmode
         self._use_https = use_https
 
@@ -66,8 +69,6 @@ class SynologyDSM(object):
                     % (dsm_ip, dsm_port)
                 )
 
-    # pylint: enable=too-many-arguments,too-many-instance-attributes
-
     def _debuglog(self, message):
         """Outputs message if debug mode is enabled."""
         if self._debugmode:
@@ -85,7 +86,7 @@ class SynologyDSM(object):
     def login(self):
         """Create a logged session.."""
         # First reset the session
-        if self._session is not None:
+        if self._session:
             self._session = None
         self._debuglog("Creating new Session")
         self._session = requests.Session()
@@ -99,16 +100,16 @@ class SynologyDSM(object):
         result = self._execute_get_url(url, False)
 
         # Parse result if valid
-        if result is not None:
+        if result:
             self.access_token = result["data"]["sid"]
             self._debuglog(
                 "Authentication Succesfull, token: " + str(self.access_token)
             )
             return True
-        else:
-            self.access_token = None
-            self._debuglog("Authentication Failed")
-            return False
+
+        self.access_token = None
+        self._debuglog("Authentication Failed")
+        return False
 
     def _get_url(self, url, retry_on_error=True):
         """Function to handle sessions for a GET request."""
@@ -121,7 +122,7 @@ class SynologyDSM(object):
             if self.login() is False:
                 self._session_error = True
                 self._debuglog("Login Failed, unable to process request")
-                return
+                return None
 
         # Now request the data
         response = self._execute_get_url(url)
@@ -153,23 +154,20 @@ class SynologyDSM(object):
                     self._debuglog("Succesfull returning data")
                     self._debuglog(str(json_data))
                     return json_data
+
+                if json_data["error"]["code"] in {105, 106, 107, 119}:
+                    self._debuglog("Session error: " + str(json_data["error"]["code"]))
+                    self._session_error = True
                 else:
-                    if json_data["error"]["code"] in {105, 106, 107, 119}:
-                        self._debuglog(
-                            "Session error: " + str(json_data["error"]["code"])
-                        )
-                        self._session_error = True
-                    else:
-                        self._debuglog("Failed: " + resp.text)
-            else:
-                # We got a 404 or 401
-                return None
+                    self._debuglog("Failed: " + resp.text)
+            # We got a 404 or 401
+            return None
         except:  # pylint: disable=bare-except
             return None
 
     def update(self, with_information=False):
         """Updates the various instanced modules."""
-        if self._information is not None and with_information:
+        if self._information and with_information:
             api = "SYNO.DSM.Info"
             version = 1
             if self._dsm_version >= 6:
@@ -181,7 +179,7 @@ class SynologyDSM(object):
             )
             self._information.update(self._get_url(url))
 
-        if self._utilisation is not None:
+        if self._utilisation:
             api = "SYNO.Core.System.Utilization"
             url = "%s/entry.cgi?api=%s&version=1&method=get&_sid=%s" % (
                 self.base_url,
@@ -190,7 +188,7 @@ class SynologyDSM(object):
             )
             self._utilisation.update(self._get_url(url))
 
-        if self._storage is not None:
+        if self._storage:
             if self._dsm_version != 5:
                 api = "SYNO.Storage.CGI.Storage"
                 url = "%s/entry.cgi?api=%s&version=1&method=load_info&_sid=%s" % (

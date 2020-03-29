@@ -31,10 +31,19 @@ Installation
 
 Usage
 =====
-Constructor::
+Constructor:
 
-        SynologyDSM(dsm_ip, dsm_port, username, password,
-                    use_https=False, debugmode=False, dsm_version=6)
+.. code-block:: python
+
+    SynologyDSM(
+        dsm_ip,
+        dsm_port,
+        username,
+        password,
+        use_https=False,
+        debugmode=False,
+        dsm_version=6,
+    )
 
 ``dsm_version = 5 will use old DSM API to gather volumes and disks informations (from DSM 5.x versions)``
 
@@ -50,26 +59,33 @@ You can import the module as `synology_dsm`.
     print("Creating Valid API")
     api = SynologyDSM("<SynologyIp>", "<SynologyPort>", "<Username>", "<Password>")
 
+    print("=== Information ===")
+    print("Model:           " + str(api.information.model))
+    print("RAM:             " + str(api.information.ram) + " MB")
+    print("Serial number:   " + str(api.information.serial))
+    print("Temperature:     " + str(api.information.temperature) + " °C")
+    print("Temp. warning:   " + str(api.information.temperature_warn))
+    print("Uptime:          " + str(api.information.uptime))
+    print("Full DSM version:" + str(api.information.version_string))
+
     print("=== Utilisation ===")
-    print("CPU Load:   " + str(api.utilisation.cpu_total_load) + " %")
-    print("Memory Use: " + str(api.utilisation.memory_real_usage) + " %")
-    print("Net Up:     " + str(api.utilisation.network_up()))
-    print("Net Down:   " + str(api.utilisation.network_down()))
+    print("CPU Load:        " + str(api.utilisation.cpu_total_load) + " %")
+    print("Memory Use:      " + str(api.utilisation.memory_real_usage) + " %")
+    print("Net Up:          " + str(api.utilisation.network_up()))
+    print("Net Down:        " + str(api.utilisation.network_down()))
     
     print("=== Storage ===")
-    volumes = api.storage.volumes
-    for volume in volumes:
-        print("ID:         " + str(volume))
-        print("Status:     " + str(api.storage.volume_status(volume)))
-        print("% Used:     " + str(api.storage.volume_percentage_used(volume)) + " %")
+    for volume_id in api.storage.volumes_ids:
+        print("ID:          " + str(volume_id))
+        print("Status:      " + str(api.storage.volume_status(volume_id)))
+        print("% Used:      " + str(api.storage.volume_percentage_used(volume_id)) + " %")
 
-    disks = api.storage.disks
-    for disk in disks:
-        print("ID:         " + str(disk))
-        print("Name:       " + str(api.storage.disk_name(disk)))
-        print("S-Status:   " + str(api.storage.disk_smart_status(disk)))
-        print("Status:     " + str(api.storage.disk_status(disk)))
-        print("Temp:       " + str(api.storage.disk_temp(disk)))
+    for disk_id in api.storage.disks_ids:
+        print("ID:          " + str(disk_id))
+        print("Name:        " + str(api.storage.disk_name(disk_id)))
+        print("S-Status:    " + str(api.storage.disk_smart_status(disk_id)))
+        print("Status:      " + str(api.storage.disk_status(disk_id)))
+        print("Temp:        " + str(api.storage.disk_temp(disk_id)))
       
 Credits / Special Thanks
 ========================

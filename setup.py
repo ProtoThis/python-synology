@@ -1,34 +1,29 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-# NOTE(StaticCube) Guidelines for Major.Minor.Micro
+# NOTE(ProtoThis) Guidelines for Major.Minor.Micro
 # - Major means an API contract change
 # - Minor means API bugfix or new functionality
 # - Micro means change of any kind (unless significant enough for a minor/major).
 
 from setuptools import setup
 from codecs import open
-from os import path
-
-here = path.abspath(path.dirname(__file__))
 
 with open("requirements.txt") as f:
     required = f.read().splitlines()
 
-# Get the long description from the README file
-with open(path.join(here, "README.rst"), encoding="utf-8") as f:
+with open("README.rst", encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
     name="python-synology",
     version="0.4.0",
-    url="https://github.com/StaticCube/python-synology/",
-    download_url="https://github.com/StaticCube/python-synology/tarball/0.4.0",
+    url="https://github.com/ProtoThis/python-synology",
+    download_url="https://github.com/ProtoThis/python-synology/tarball/0.4.0",
     description="Python API for communication with Synology DSM",
     long_description=long_description,
-    author="FG van Zeelst (StaticCube)",
-    author_email="GitHub@StaticCube.com",
-    packages=["synology_dsm"],  # this must be the same as the name above
+    author="FG van Zeelst (ProtoThis)",
+    packages=["synology_dsm"],
     install_requires=required,
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     license="MIT",

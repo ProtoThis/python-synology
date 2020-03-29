@@ -77,3 +77,5 @@ Credits / Special Thanks
 - https://github.com/tchellomello
 - https://github.com/Quentame
 - https://github.com/aaska
+
+Found Synology API "documentation" on this repo : https://github.com/kwent/syno/tree/master/definitions

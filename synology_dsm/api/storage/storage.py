@@ -17,28 +17,31 @@ class SynoStorage(object):
 
     @property
     def volumes(self):
-        """Returns all available volumes."""
+        """Gets all volumes."""
+        return self._data.get("volumes", [])
+
+    @property
+    def volumes_ids(self):
+        """Returns volumes ids."""
         volumes = []
-        for volume in self._data.get("volumes"):
+        for volume in self.volumes:
             volumes.append(volume["id"])
         return volumes
 
     def _get_volume(self, volume_id):
         """Returns a specific volume."""
-        for volume in self._data.get("volumes"):
+        for volume in self.volumes:
             if volume["id"] == volume_id:
                 return volume
         return {}
 
     def volume_status(self, volume_id):
         """Status of the volume (normal, degraded, etc)."""
-        volume = self._get_volume(volume_id)
-        return volume.get("status")
+        return self._get_volume(volume_id).get("status")
 
     def volume_device_type(self, volume_id):
         """Returns the volume type (RAID1, RAID2, etc)."""
-        volume = self._get_volume(volume_id)
-        return volume.get("device_type")
+        return self._get_volume(volume_id).get("device_type")
 
     def volume_size_total(self, volume_id, human_readable=True):
         """Total size of volume."""
@@ -107,50 +110,48 @@ class SynoStorage(object):
 
     @property
     def disks(self):
-        """Returns all available (internal) disks."""
+        """Gets all (internal) disks."""
+        return self._data.get("disks", [])
+
+    @property
+    def disks_ids(self):
+        """Returns (internal) disks ids."""
         disks = []
-        for disk in self._data.get("disks"):
+        for disk in self.disks:
             disks.append(disk["id"])
         return disks
 
     def _get_disk(self, disk_id):
         """Returns a specific disk."""
-        for disk in self._data.get("disks"):
+        for disk in self.disks:
             if disk["id"] == disk_id:
                 return disk
         return {}
 
     def disk_name(self, disk_id):
         """The name of this disk."""
-        disk = self._get_disk(disk_id)
-        return disk.get("name")
+        return self._get_disk(disk_id).get("name")
 
     def disk_device(self, disk_id):
         """The mount point of this disk."""
-        disk = self._get_disk(disk_id)
-        return disk.get("device")
+        return self._get_disk(disk_id).get("device")
 
     def disk_smart_status(self, disk_id):
         """Status of disk according to S.M.A.R.T)."""
-        disk = self._get_disk(disk_id)
-        return disk.get("smart_status")
+        return self._get_disk(disk_id).get("smart_status")
 
     def disk_status(self, disk_id):
         """Status of disk."""
-        disk = self._get_disk(disk_id)
-        return disk.get("status")
+        return self._get_disk(disk_id).get("status")
 
     def disk_exceed_bad_sector_thr(self, disk_id):
         """Checks if disk has exceeded maximum bad sector threshold."""
-        disk = self._get_disk(disk_id)
-        return disk.get("exceed_bad_sector_thr")
+        return self._get_disk(disk_id).get("exceed_bad_sector_thr")
 
     def disk_below_remain_life_thr(self, disk_id):
         """Checks if disk has fallen below minimum life threshold."""
-        disk = self._get_disk(disk_id)
-        return disk.get("below_remain_life_thr")
+        return self._get_disk(disk_id).get("below_remain_life_thr")
 
     def disk_temp(self, disk_id):
         """Returns the temperature of the disk."""
-        disk = self._get_disk(disk_id)
-        return disk.get("temp")
+        return self._get_disk(disk_id).get("temp")

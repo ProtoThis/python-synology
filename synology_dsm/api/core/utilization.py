@@ -136,7 +136,7 @@ class SynoCoreUtilization(object):
     @property
     def network(self):
         """Gets network utilization."""
-        return self._data.get("network")
+        return self._data.get("network", [])
 
     def _get_network(self, network_id):
         """Function to get specific network (eth0, total, etc)."""

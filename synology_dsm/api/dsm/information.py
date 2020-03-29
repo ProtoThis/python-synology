@@ -5,6 +5,8 @@
 class SynoDSMInformation(object):
     """Class containing Information data."""
 
+    API_KEY = "SYNO.DSM.Info"
+
     def __init__(self, raw_data):
         self._data = {}
         self.update(raw_data)

@@ -6,6 +6,8 @@ from synology_dsm.helpers import SynoFormatHelper
 class SynoCoreUtilization(object):
     """Class containing Utilization data."""
 
+    API_KEY = "SYNO.Core.System.Utilization"
+
     def __init__(self, raw_data):
         self._data = {}
         self.update(raw_data)
@@ -42,7 +44,7 @@ class SynoCoreUtilization(object):
         user_load = self.cpu_user_load
         other_load = self.cpu_other_load
 
-        if system_load and user_load and other_load:
+        if system_load is not None and user_load is not None and other_load is not None:
             return system_load + user_load + other_load
         return None
 

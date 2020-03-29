@@ -6,6 +6,8 @@ from synology_dsm.helpers import SynoFormatHelper
 class SynoStorage(object):
     """Class containing Storage data."""
 
+    API_KEY = "SYNO.Storage.CGI.Storage"
+
     def __init__(self, raw_data):
         self._data = {}
         self.update(raw_data)
@@ -15,11 +17,28 @@ class SynoStorage(object):
         if raw_data:
             self._data = raw_data["data"]
 
+    # Root
+    @property
+    def disks(self):
+        """Gets all (internal) disks."""
+        return self._data.get("disks", [])
+
+    @property
+    def env(self):
+        """Gets storage env."""
+        return self._data.get("env")
+
+    @property
+    def storage_pools(self):
+        """Gets all storage pools."""
+        return self._data.get("storagePools", [])
+
     @property
     def volumes(self):
         """Gets all volumes."""
         return self._data.get("volumes", [])
 
+    # Volume
     @property
     def volumes_ids(self):
         """Returns volumes ids."""
@@ -76,43 +95,35 @@ class SynoStorage(object):
 
     def volume_disk_temp_avg(self, volume_id):
         """Average temperature of all disks making up the volume."""
-        volume = self._get_volume(volume_id)
-        if volume:
-            vol_disks = self.disks
-            if vol_disks:
-                total_temp = 0
-                total_disks = 0
+        vol_disks = self._get_disks_for_volume(volume_id)
+        if vol_disks:
+            total_temp = 0
+            total_disks = 0
 
-                for vol_disk in vol_disks:
-                    disk_temp = self.disk_temp(vol_disk)
-                    if disk_temp:
-                        total_disks += 1
-                        total_temp += disk_temp
+            for vol_disk in vol_disks:
+                disk_temp = self.disk_temp(vol_disk["id"])
+                if disk_temp:
+                    total_disks += 1
+                    total_temp += disk_temp
 
-                if total_temp > 0 and total_disks > 0:
-                    return round(total_temp / total_disks, 0)
+            if total_temp > 0 and total_disks > 0:
+                return round(total_temp / total_disks, 0)
         return None
 
     def volume_disk_temp_max(self, volume_id):
         """Maximum temperature of all disks making up the volume."""
-        volume = self._get_volume(volume_id)
-        if volume:
-            vol_disks = self.disks
-            if vol_disks:
-                max_temp = 0
+        vol_disks = self._get_disks_for_volume(volume_id)
+        if vol_disks:
+            max_temp = 0
 
-                for vol_disk in vol_disks:
-                    disk_temp = self.disk_temp(vol_disk)
-                    if disk_temp and disk_temp > max_temp:
-                        max_temp = disk_temp
-                return max_temp
+            for vol_disk in vol_disks:
+                disk_temp = self.disk_temp(vol_disk["id"])
+                if disk_temp and disk_temp > max_temp:
+                    max_temp = disk_temp
+            return max_temp
         return None
 
-    @property
-    def disks(self):
-        """Gets all (internal) disks."""
-        return self._data.get("disks", [])
-
+    # Disk
     @property
     def disks_ids(self):
         """Returns (internal) disks ids."""
@@ -127,6 +138,16 @@ class SynoStorage(object):
             if disk["id"] == disk_id:
                 return disk
         return {}
+
+    def _get_disks_for_volume(self, volume_id):
+        """Returns a list of disk for a specific volume."""
+        disks = []
+        pools = self._data.get("storagePools", [])
+        for pool in pools:
+            if pool["deploy_path"] == volume_id:
+                for disk_id in pool["disks"]:
+                    disks.append(self._get_disk(disk_id))
+        return disks
 
     def disk_name(self, disk_id):
         """The name of this disk."""

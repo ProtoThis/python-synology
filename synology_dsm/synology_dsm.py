@@ -30,7 +30,7 @@ class SynologyDSM(object):
     ):
         # Store Variables
         self.username = username
-        self.password = password
+        self._password = password
 
         # Class Variables
         self.access_token = None
@@ -59,12 +59,12 @@ class SynologyDSM(object):
 
         if self._dsm_version == 5:
             if self._use_https:
-                self.storage_url = (
+                self._storage_url = (
                     "https://%s:%s/webman/modules/StorageManager/storagehandler.cgi"
                     % (dsm_ip, dsm_port)
                 )
             else:
-                self.storage_url = (
+                self._storage_url = (
                     "http://%s:%s/webman/modules/StorageManager/storagehandler.cgi"
                     % (dsm_ip, dsm_port)
                 )
@@ -79,7 +79,7 @@ class SynologyDSM(object):
         # encoding special characters
         auth = {
             "account": self.username,
-            "passwd": self.password,
+            "passwd": self._password,
         }
         return urlencode(auth)
 
@@ -92,9 +92,9 @@ class SynologyDSM(object):
         self._session = requests.Session()
         self._session.verify = False
 
-        api_path = "%s/auth.cgi?api=SYNO.API.Auth&version=2" % (self.base_url,)
+        api_path = "%s/auth.cgi?api=SYNO.API.Auth&version=2" % self.base_url
 
-        login_path = "method=login&%s" % (self._encode_credentials())
+        login_path = "method=login&%s" % self._encode_credentials()
 
         url = "%s&%s&session=Core&format=cookie" % (api_path, login_path)
         result = self._execute_get_url(url, False)
@@ -168,38 +168,35 @@ class SynologyDSM(object):
     def update(self, with_information=False):
         """Updates the various instanced modules."""
         if self._information and with_information:
-            api = "SYNO.DSM.Info"
             version = 1
             if self._dsm_version >= 6:
                 version = 2
             url = "%s/entry.cgi?api=%s&version=%s&method=getinfo" % (
                 self.base_url,
-                api,
+                SynoDSMInformation.API_KEY,
                 version,
             )
             self._information.update(self._get_url(url))
 
         if self._utilisation:
-            api = "SYNO.Core.System.Utilization"
             url = "%s/entry.cgi?api=%s&version=1&method=get&_sid=%s" % (
                 self.base_url,
-                api,
+                SynoCoreUtilization.API_KEY,
                 self.access_token,
             )
             self._utilisation.update(self._get_url(url))
 
         if self._storage:
             if self._dsm_version != 5:
-                api = "SYNO.Storage.CGI.Storage"
                 url = "%s/entry.cgi?api=%s&version=1&method=load_info&_sid=%s" % (
                     self.base_url,
-                    api,
+                    SynoStorage.API_KEY,
                     self.access_token,
                 )
                 self._storage.update(self._get_url(url))
             else:
                 url = "%s?action=load_info&_sid=%s" % (
-                    self.storage_url,
+                    self._storage_url,
                     self.access_token,
                 )
                 output = self._get_url(url)["data"]
@@ -209,13 +206,12 @@ class SynologyDSM(object):
     def information(self):
         """Getter for various Information variables."""
         if self._information is None:
-            api = "SYNO.DSM.Info"
             version = 1
             if self._dsm_version >= 6:
                 version = 2
             url = "%s/entry.cgi?api=%s&version=%s&method=getinfo" % (
                 self.base_url,
-                api,
+                SynoDSMInformation.API_KEY,
                 version,
             )
             self._information = SynoDSMInformation(self._get_url(url))
@@ -225,8 +221,10 @@ class SynologyDSM(object):
     def utilisation(self):
         """Getter for various Utilisation variables."""
         if self._utilisation is None:
-            api = "SYNO.Core.System.Utilization"
-            url = "%s/entry.cgi?api=%s&version=1&method=get" % (self.base_url, api)
+            url = "%s/entry.cgi?api=%s&version=1&method=get" % (
+                self.base_url,
+                SynoCoreUtilization.API_KEY,
+            )
             self._utilisation = SynoCoreUtilization(self._get_url(url))
         return self._utilisation
 
@@ -235,13 +233,12 @@ class SynologyDSM(object):
         """Getter for various Storage variables."""
         if self._storage is None:
             if self._dsm_version != 5:
-                api = "SYNO.Storage.CGI.Storage"
                 url = "%s/entry.cgi?api=%s&version=1&method=load_info" % (
                     self.base_url,
-                    api,
+                    SynoStorage.API_KEY,
                 )
             else:
-                url = "%s?action=load_info" % self.storage_url
+                url = "%s?action=load_info" % self._storage_url
 
             output = self._get_url(url)
             if self._dsm_version == 5:

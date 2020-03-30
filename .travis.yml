@@ -9,15 +9,17 @@ python:
 cache:
   pip: true
 
-install:
+before_install:
   - pip install -r requirements_all.txt
   - pip install -e .
-before_script:
-  - pylint synology_dsm
-  - ./scripts/check_format.sh
-script:
+install:
   - python setup.py install
   - python setup.py sdist
+before_script:
+  - pylint synology_dsm tests
+  - ./scripts/check_format.sh
+script:
+  - py.test
 
 deploy:
   - provider: pypi

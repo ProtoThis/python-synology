@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 """DSM Information data."""
-# -*- coding:utf-8 -*-
 
 
 class SynoDSMInformation(object):
     """Class containing Information data."""
+
+    API_KEY = "SYNO.DSM.Info"
 
     def __init__(self, raw_data):
         self._data = {}

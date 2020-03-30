@@ -107,7 +107,7 @@ class TestSynologyDSM(TestCase):
         # Basics
         assert self.api.storage.volumes_ids
         for volume_id in self.api.storage.volumes_ids:
-            if volume_id == "volume_test":
+            if volume_id == "test_volume":
                 continue
             assert self.api.storage.volume_status(volume_id)
             assert self.api.storage.volume_device_type(volume_id)
@@ -141,22 +141,24 @@ class TestSynologyDSM(TestCase):
         assert not self.api.storage.volume_disk_temp_avg("not_a_volume")
         assert not self.api.storage.volume_disk_temp_max("not_a_volume")
 
-        # Volume test
-        assert not self.api.storage.volume_status("volume_test")
-        assert not self.api.storage.volume_device_type("volume_test")
-        assert not self.api.storage.volume_size_total("volume_test")
-        assert not self.api.storage.volume_size_total("volume_test", False)
-        assert not self.api.storage.volume_size_used("volume_test")
-        assert not self.api.storage.volume_size_used("volume_test", False)
-        assert not self.api.storage.volume_percentage_used("volume_test")
-        assert not self.api.storage.volume_disk_temp_avg("volume_test")
-        assert not self.api.storage.volume_disk_temp_max("volume_test")
+        # Test volume
+        assert self.api.storage.volume_status("test_volume") is None
+        assert self.api.storage.volume_device_type("test_volume") is None
+        assert self.api.storage.volume_size_total("test_volume") is None
+        assert self.api.storage.volume_size_total("test_volume", False) is None
+        assert self.api.storage.volume_size_used("test_volume") is None
+        assert self.api.storage.volume_size_used("test_volume", False) is None
+        assert self.api.storage.volume_percentage_used("test_volume") is None
+        assert self.api.storage.volume_disk_temp_avg("test_volume") is None
+        assert self.api.storage.volume_disk_temp_max("test_volume") is None
 
     def test_storage_disks(self):
         """Test storage disks."""
         # Basics
         assert self.api.storage.disks_ids
         for disk_id in self.api.storage.disks_ids:
+            if disk_id == "test_disk":
+                continue
             assert "Drive" in self.api.storage.disk_name(disk_id)
             assert "/dev/" in self.api.storage.disk_device(disk_id)
             assert self.api.storage.disk_smart_status(disk_id) == "normal"
@@ -173,3 +175,12 @@ class TestSynologyDSM(TestCase):
         assert not self.api.storage.disk_exceed_bad_sector_thr("not_a_disk")
         assert not self.api.storage.disk_below_remain_life_thr("not_a_disk")
         assert not self.api.storage.disk_temp("not_a_disk")
+
+        # Test disk
+        assert self.api.storage.disk_name("test_disk") is None
+        assert self.api.storage.disk_device("test_disk") is None
+        assert self.api.storage.disk_smart_status("test_disk") is None
+        assert self.api.storage.disk_status("test_disk") is None
+        assert self.api.storage.disk_exceed_bad_sector_thr("test_disk") is None
+        assert self.api.storage.disk_below_remain_life_thr("test_disk") is None
+        assert self.api.storage.disk_temp("test_disk") is None

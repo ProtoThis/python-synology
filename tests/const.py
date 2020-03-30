@@ -130,6 +130,7 @@ DSM_6_UTILIZATION = {
 DSM_6_STORAGE = {
     "data": {
         "disks": [
+            {"id": "test_disk"},
             {
                 "adv_progress": "",
                 "adv_status": "normal",
@@ -394,7 +395,7 @@ DSM_6_STORAGE = {
             }
         ],
         "volumes": [
-            {"id": "volume_test"},
+            {"id": "test_volume"},
             {
                 "atime_checked": False,
                 "atime_opt": "relatime",

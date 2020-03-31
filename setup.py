@@ -17,7 +17,7 @@ with open("README.rst", encoding="utf-8") as f:
 
 setup(
     name="python-synology",
-    version="0.4.0",
+    version="0.5.0",
     url="https://github.com/ProtoThis/python-synology",
     download_url="https://github.com/ProtoThis/python-synology/tarball/0.4.0",
     description="Python API for communication with Synology DSM",

@@ -6,7 +6,7 @@
 # - Minor means API bugfix or new functionality
 # - Micro means change of any kind (unless significant enough for a minor/major).
 
-from setuptools import setup
+from setuptools import setup, find_packages
 from codecs import open
 
 with open("requirements.txt") as f:
@@ -23,7 +23,7 @@ setup(
     description="Python API for communication with Synology DSM",
     long_description=long_description,
     author="FG van Zeelst (ProtoThis)",
-    packages=["synology_dsm"],
+    packages=find_packages(include=["synology_dsm*"]),
     install_requires=required,
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     license="MIT",

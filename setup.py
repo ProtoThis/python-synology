@@ -9,6 +9,9 @@
 from setuptools import setup, find_packages
 from codecs import open
 
+REPO_URL = "https://github.com/ProtoThis/python-synology"
+VERSION = "0.5.0"
+
 with open("requirements.txt") as f:
     required = f.read().splitlines()
 
@@ -17,9 +20,9 @@ with open("README.rst", encoding="utf-8") as f:
 
 setup(
     name="python-synology",
-    version="0.5.0",
-    url="https://github.com/ProtoThis/python-synology",
-    download_url="https://github.com/ProtoThis/python-synology/tarball/0.4.0",
+    version=VERSION,
+    url=REPO_URL,
+    download_url=REPO_URL + "/tarball/" + VERSION,
     description="Python API for communication with Synology DSM",
     long_description=long_description,
     author="FG van Zeelst (ProtoThis)",

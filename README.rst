@@ -95,3 +95,14 @@ Credits / Special Thanks
 - https://github.com/aaska
 
 Found Synology API "documentation" on this repo : https://github.com/kwent/syno/tree/master/definitions
+
+Official references
+===================
+
+- `Calendar API documentation <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/Calendar/2.4/enu/Synology_Calendar_API_Guide_enu.pdf>`_
+
+- `Download Station API documentation <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/DownloadStation/All/enu/Synology_Download_Station_Web_API.pdf>`_
+
+- `File Station API documentation <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/FileStation/All/enu/Synology_File_Station_API_Guide.pdf>`_
+
+- `Surveillance Station API documentation <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/SurveillanceStation/All/enu/Surveillance_Station_Web_API.pdf>`_

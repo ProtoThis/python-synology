@@ -6,7 +6,12 @@ from synology_dsm.api.core.utilization import SynoCoreUtilization
 from synology_dsm.api.dsm.information import SynoDSMInformation
 from synology_dsm.api.storage.storage import SynoStorage
 
-from .const_dsm_6 import DSM_6_LOGIN, DSM_6_INFORMATION, DSM_6_UTILIZATION, DSM_6_STORAGE
+from .const_dsm_6 import (
+    DSM_6_LOGIN,
+    DSM_6_INFORMATION,
+    DSM_6_UTILIZATION,
+    DSM_6_STORAGE,
+)
 
 VALID_DSM_HOST = "nas.mywebsite.me"
 VALID_DSM_PORT = "443"

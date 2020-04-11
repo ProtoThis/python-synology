@@ -109,7 +109,7 @@ class SynologyDSM(object):
 
         url = "%s/auth.cgi?%s" % (self.base_url, urlencode(auth))
 
-        result = self._execute_get_url(url, False)
+        result = self._execute_get_url(url)
 
         if not result:
             self._session_id = None
@@ -160,15 +160,20 @@ class SynologyDSM(object):
 
         return response
 
-    def _execute_get_url(self, request_url, append_sid=True):
+    def _execute_get_url(self, request_url):
         """Function to execute and handle a GET request."""
         # Prepare Request
         self._debuglog("Requesting URL: '" + request_url + "'")
-        if append_sid:
+        if self._session_id:
             self._debuglog(
-                "Appending access_token (SID: " + self._session_id + ") to url"
+                "Appending access_token (SESSION_ID: " + self._session_id + ") to url"
             )
             request_url = "%s&_sid=%s" % (request_url, self._session_id)
+        if self._syno_token:
+            self._debuglog(
+                "Appending access_token (SYNO_TOKEN: " + self._syno_token + ") to url"
+            )
+            request_url = "%s&SynoToken=%s" % (request_url, self._syno_token)
 
         # Execute Request
         try:

@@ -7,6 +7,7 @@ from requests.compat import json
 import six
 
 from .exceptions import (
+    SynologyDSMLoginFailedException,
     SynologyDSMLoginInvalidException,
     SynologyDSMLoginDisabledAccountException,
     SynologyDSMLoginPermissionDeniedException,
@@ -125,7 +126,7 @@ class SynologyDSM(object):
                 403: SynologyDSMLogin2SARequiredException(self.username),
                 404: SynologyDSMLogin2SAFailedException,
             }
-            raise switcher.get(result["error"]["code"])
+            raise switcher.get(result["error"]["code"], SynologyDSMLoginFailedException)
 
         # Parse result if valid
         self._session_id = result["data"]["sid"]

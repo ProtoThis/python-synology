@@ -17,32 +17,32 @@ class SynologyDSMLoginInvalidException(SynologyDSMLoginFailedException):
     """Invalid password & not admin account exception."""
     def __init__(self, username):
         message = "Invalid password or not admin account: %s" % username
-        super().__init__(message)
+        super(SynologyDSMLoginInvalidException, self).__init__(message)
 
 
 class SynologyDSMLoginDisabledAccountException(SynologyDSMLoginFailedException):
     """Guest & disabled account exception."""
     def __init__(self, username):
         message = "Guest or disabled account: %s" % username
-        super().__init__(message)
+        super(SynologyDSMLoginDisabledAccountException, self).__init__(message)
 
 
 class SynologyDSMLoginPermissionDeniedException(SynologyDSMLoginFailedException):
     """No access to login exception."""
     def __init__(self, username):
         message = "Permission denied for account: %s" % username
-        super().__init__(message)
+        super(SynologyDSMLoginPermissionDeniedException, self).__init__(message)
 
 
 class SynologyDSMLogin2SARequiredException(SynologyDSMLoginFailedException):
     """2SA required to login exception."""
     def __init__(self, username):
         message = "Two-step authentication required for account: %s" % username
-        super().__init__(message)
+        super(SynologyDSMLogin2SARequiredException, self).__init__(message)
 
 
 class SynologyDSMLogin2SAFailedException(SynologyDSMLoginFailedException):
     """2SA code failed exception."""
     def __init__(self):
         message = "Two-step authentication failed, retry with a new pass code"
-        super().__init__(message)
+        super(SynologyDSMLogin2SAFailedException, self).__init__(message)

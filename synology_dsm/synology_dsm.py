@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 """Class to interact with Synology DSM."""
+import socket
 import urllib3
-import requests
+from requests import Session
 from requests.compat import json
 import six
 
+from .exceptions import (
+    SynologyDSMLoginInvalidException,
+    SynologyDSMLoginDisabledAccountException,
+    SynologyDSMLoginPermissionDeniedException,
+    SynologyDSMLogin2SARequiredException,
+    SynologyDSMLogin2SAFailedException,
+)
 from .api.core.utilization import SynoCoreUtilization
 from .api.dsm.information import SynoDSMInformation
 from .api.storage.storage import SynoStorage
@@ -28,27 +36,27 @@ class SynologyDSM(object):
         debugmode=False,
         dsm_version=6,
     ):
-        # Store Variables
         self.username = username
         self._password = password
-
-        # Class Variables
-        self.access_token = None
-        self._information = None
-        self._utilisation = None
-        self._storage = None
         self._debugmode = debugmode
-        self._use_https = use_https
+        self._dsm_version = dsm_version
 
-        # Define Session
+        # Session
         self._session_error = False
         self._session = None
 
-        # adding DSM Version
-        self._dsm_version = dsm_version
+        # Login
+        self._session_id = None
+        self._syno_token = None
+        self._device_id = None
 
-        # Build Variables
-        if self._use_https:
+        # Services
+        self._information = None
+        self._utilisation = None
+        self._storage = None
+
+        # Build variables
+        if use_https:
             # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
             # disable SSL warnings due to the auto-genenerated cert
             urllib3.disable_warnings()
@@ -58,7 +66,7 @@ class SynologyDSM(object):
             self.base_url = "http://%s:%s/webapi" % (dsm_ip, dsm_port)
 
         if self._dsm_version == 5:
-            if self._use_https:
+            if use_https:
                 self._storage_url = (
                     "https://%s:%s/webman/modules/StorageManager/storagehandler.cgi"
                     % (dsm_ip, dsm_port)
@@ -74,47 +82,66 @@ class SynologyDSM(object):
         if self._debugmode:
             print("DEBUG: " + message)
 
-    def _encode_credentials(self):
-        """Encode user credentials to support special characters.."""
-        # encoding special characters
-        auth = {
-            "account": self.username,
-            "passwd": self._password,
-        }
-        return urlencode(auth)
-
-    def login(self):
-        """Create a logged session.."""
+    def login(self, otp_code=None):
+        """Create a logged session."""
         # First reset the session
         if self._session:
             self._session = None
         self._debuglog("Creating new Session")
-        self._session = requests.Session()
+        self._session = Session()
         self._session.verify = False
 
-        api_path = "%s/auth.cgi?api=SYNO.API.Auth&version=2" % self.base_url
+        auth = {
+            "api": "SYNO.API.Auth",
+            "version": 6,
+            "method": "login",
+            "account": self.username,
+            "passwd": self._password,
+            "enable_syno_token": "yes",
+            "enable_device_token": "yes",
+            "device_name": socket.gethostname(),
+            "format": "sid",
+        }
 
-        login_path = "method=login&%s" % self._encode_credentials()
+        if otp_code:
+            auth["otp_code"] = otp_code
 
-        url = "%s&%s&session=Core&format=cookie" % (api_path, login_path)
+        url = "%s/auth.cgi?%s" % (self.base_url, urlencode(auth))
+
         result = self._execute_get_url(url, False)
 
-        # Parse result if valid
-        if result:
-            self.access_token = result["data"]["sid"]
-            self._debuglog(
-                "Authentication Succesfull, token: " + str(self.access_token)
-            )
-            return True
+        if not result:
+            self._session_id = None
+            self._syno_token = None
+            self._device_id = None
+            self._debuglog("Authentication Failed")
+            return False
 
-        self.access_token = None
-        self._debuglog("Authentication Failed")
-        return False
+        if result.get("error"):
+            switcher = {
+                400: SynologyDSMLoginInvalidException(self.username),
+                401: SynologyDSMLoginDisabledAccountException(self.username),
+                402: SynologyDSMLoginPermissionDeniedException(self.username),
+                403: SynologyDSMLogin2SARequiredException(self.username),
+                404: SynologyDSMLogin2SAFailedException,
+            }
+            raise switcher.get(result["error"]["code"])
+
+        # Parse result if valid
+        self._session_id = result["data"]["sid"]
+        if result["data"].get("synotoken"):  # Not available on API version < 3
+            self._syno_token = result["data"]["synotoken"]
+        if result["data"].get(
+            "did"
+        ):  # Not available on API version < 6 && did is given once per device_name
+            self._device_id = result["data"]["did"]
+        self._debuglog("Authentication Succesfull, token: " + str(self._session_id))
+        return True
 
     def _get_url(self, url, retry_on_error=True):
         """Function to handle sessions for a GET request."""
         # Check if we failed to request the url or need to login
-        if self.access_token is None or self._session is None or self._session_error:
+        if self._session_id is None or self._session is None or self._session_error:
             # Reset session error
             self._session_error = False
 
@@ -138,9 +165,9 @@ class SynologyDSM(object):
         self._debuglog("Requesting URL: '" + request_url + "'")
         if append_sid:
             self._debuglog(
-                "Appending access_token (SID: " + self.access_token + ") to url"
+                "Appending access_token (SID: " + self._session_id + ") to url"
             )
-            request_url = "%s&_sid=%s" % (request_url, self.access_token)
+            request_url = "%s&_sid=%s" % (request_url, self._session_id)
 
         # Execute Request
         try:
@@ -179,26 +206,21 @@ class SynologyDSM(object):
             self._information.update(self._get_url(url))
 
         if self._utilisation:
-            url = "%s/entry.cgi?api=%s&version=1&method=get&_sid=%s" % (
+            url = "%s/entry.cgi?api=%s&version=1&method=get" % (
                 self.base_url,
                 SynoCoreUtilization.API_KEY,
-                self.access_token,
             )
             self._utilisation.update(self._get_url(url))
 
         if self._storage:
             if self._dsm_version != 5:
-                url = "%s/entry.cgi?api=%s&version=1&method=load_info&_sid=%s" % (
+                url = "%s/entry.cgi?api=%s&version=1&method=load_info" % (
                     self.base_url,
                     SynoStorage.API_KEY,
-                    self.access_token,
                 )
                 self._storage.update(self._get_url(url))
             else:
-                url = "%s?action=load_info&_sid=%s" % (
-                    self._storage_url,
-                    self.access_token,
-                )
+                url = "%s?action=load_info" % self._storage_url
                 output = self._get_url(url)["data"]
                 self._storage.update(output)
 

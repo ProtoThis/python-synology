@@ -25,31 +25,31 @@ class TestSynologyDSM(TestCase):
     def test_init(self):
         """Test init."""
         assert self.api.username
-        assert not self.api.access_token
+        assert not self.api._session_id  # pylint: disable=protected-access
         assert self.api.base_url
 
     def test_login(self):
         """Test login."""
         assert self.api.login()
-        assert self.api.access_token == SID
+        assert self.api._session_id == SID  # pylint: disable=protected-access
 
     def test_login_failed(self):  # pylint: disable=no-self-use
         """Test failed login."""
         api = SynologyDSMMock("host", VALID_DSM_PORT, VALID_USER, VALID_PASSWORD)
         assert not api.login()
-        assert not api.access_token
+        assert not api._session_id  # pylint: disable=protected-access
 
         api = SynologyDSMMock(VALID_DSM_HOST, 0, VALID_USER, VALID_PASSWORD)
         assert not api.login()
-        assert not api.access_token
+        assert not api._session_id  # pylint: disable=protected-access
 
         api = SynologyDSMMock(VALID_DSM_HOST, VALID_DSM_PORT, "user", VALID_PASSWORD)
         assert not api.login()
-        assert not api.access_token
+        assert not api._session_id  # pylint: disable=protected-access
 
         api = SynologyDSMMock(VALID_DSM_HOST, VALID_DSM_PORT, VALID_USER, "pass")
         assert not api.login()
-        assert not api.access_token
+        assert not api._session_id  # pylint: disable=protected-access
 
     def test_information(self):
         """Test information."""

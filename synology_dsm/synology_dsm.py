@@ -144,7 +144,7 @@ class SynologyDSM(object):
 
     @property
     def device_token(self):
-        """Gets the device token to remember the 2SA access was already granted to this device."""
+        """Gets the device token to remember the 2SA access was granted on this device."""
         return self._device_token
 
     def _get_url(self, url, retry_on_error=True):

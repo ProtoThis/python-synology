@@ -16,7 +16,7 @@ from . import (
     VALID_USER,
     VALID_USER_2SA,
 )
-from .const import SESSION_ID, SERIAL, DEVICE_ID, SYNO_TOKEN
+from .const import SESSION_ID, SERIAL, DEVICE_TOKEN, SYNO_TOKEN
 
 
 class TestSynologyDSM(TestCase):
@@ -70,8 +70,8 @@ class TestSynologyDSM(TestCase):
 
         assert api._session_id == SESSION_ID  # pylint: disable=protected-access
         assert api._syno_token == SYNO_TOKEN  # pylint: disable=protected-access
-        assert api._device_token == DEVICE_ID  # pylint: disable=protected-access
-        assert api.device_token == DEVICE_ID
+        assert api._device_token == DEVICE_TOKEN  # pylint: disable=protected-access
+        assert api.device_token == DEVICE_TOKEN
 
     def test_login_2sa_failed(self):
         """Test failed login with 2SA."""

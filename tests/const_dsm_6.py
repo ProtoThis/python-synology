@@ -4,7 +4,7 @@ from .const import (
     SERIAL,
     SESSION_ID,
     UNIQUE_KEY,
-    DEVICE_ID,
+    DEVICE_TOKEN,
     SYNO_TOKEN,
     DSM_AUTH_OTP_NOT_SPECIFIED,
 )
@@ -17,7 +17,7 @@ DSM_6_LOGIN = {
 DSM_6_LOGIN_2SA = DSM_AUTH_OTP_NOT_SPECIFIED
 DSM_6_LOGIN_2SA_OTP = {
     "data": {
-        "did": DEVICE_ID,
+        "did": DEVICE_TOKEN,
         "is_portal_port": False,
         "sid": SESSION_ID,
         "synotoken": SYNO_TOKEN,

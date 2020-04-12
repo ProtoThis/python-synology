@@ -37,7 +37,7 @@ class SynologyDSMMock(SynologyDSM):
         username,
         password,
         use_https=False,
-        access_tokens=None,
+        device_token=None,
         debugmode=False,
         dsm_version=6,
     ):
@@ -48,7 +48,7 @@ class SynologyDSMMock(SynologyDSM):
             username,
             password,
             use_https,
-            access_tokens,
+            device_token,
             debugmode,
             dsm_version,
         )

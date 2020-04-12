@@ -197,7 +197,7 @@ class SynologyDSM(object):
                         self._session_error = True
                         return None
 
-                self._debuglog("Succesfull returning data")
+                self._debuglog("Successful returning data")
                 self._debuglog(str(json_data))
                 return json_data
             # We got a 404 or 401

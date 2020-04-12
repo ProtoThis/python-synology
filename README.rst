@@ -31,7 +31,11 @@ Installation
 
 Usage
 =====
-Constructor:
+
+You can import the module as `synology_dsm`.
+
+Constructor
+-----------
 
 .. code-block:: python
 
@@ -41,16 +45,29 @@ Constructor:
         username,
         password,
         use_https=False,
+        device_token=None,
         debugmode=False,
         dsm_version=6,
     )
 
-``dsm_version = 5 will use old DSM API to gather volumes and disks informations (from DSM 5.x versions)``
+``device_token`` should be added when using a two-step authentication account, otherwise DSM will ask to login with a One Time Password (OTP) and requests will fail (see the login section for more details).
 
-Module
+``dsm_version`` (support 5 or 6): 5 will use old DSM API to gather volumes and disks informations (from DSM 5.x versions).
+
+Login
 ------
 
-You can import the module as `synology_dsm`.
+The library automatically login at first request, but you better use the ``login()`` function separately to authenticate.
+
+It will return a boolean if it successed or faild to authenticate to DSM.
+
+If your account need a two-step authentication (2SA), ``login()`` will raise ``SynologyDSMLogin2SARequiredException``.
+Call the function again with a One Time Password (OTP) as parameter, like ``login("123456")`` (better to be a string to handle first zero).
+Store the ``device_token`` property so that you do not need to reconnect with password the next time you open a new ``SynologyDSM`` session.
+
+
+Code exemple
+------
 
 .. code-block:: python
 
@@ -86,23 +103,24 @@ You can import the module as `synology_dsm`.
         print("S-Status:    " + str(api.storage.disk_smart_status(disk_id)))
         print("Status:      " + str(api.storage.disk_status(disk_id)))
         print("Temp:        " + str(api.storage.disk_temp(disk_id)))
-      
+
 Credits / Special Thanks
 ========================
 - https://github.com/florianeinfalt
 - https://github.com/tchellomello
 - https://github.com/Quentame
 - https://github.com/aaska
+- https://github.com/chemelli74
 
 Found Synology API "documentation" on this repo : https://github.com/kwent/syno/tree/master/definitions
 
 Official references
 ===================
 
-- `Calendar API documentation <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/Calendar/2.4/enu/Synology_Calendar_API_Guide_enu.pdf>`_
+- `Calendar API documentation (2015-2019) <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/Calendar/2.4/enu/Synology_Calendar_API_Guide_enu.pdf>`_
 
-- `Download Station API documentation <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/DownloadStation/All/enu/Synology_Download_Station_Web_API.pdf>`_
+- `Download Station API documentation (2012-2014) <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/DownloadStation/All/enu/Synology_Download_Station_Web_API.pdf>`_
 
-- `File Station API documentation <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/FileStation/All/enu/Synology_File_Station_API_Guide.pdf>`_
+- `File Station API documentation (2013-2019) <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/FileStation/All/enu/Synology_File_Station_API_Guide.pdf>`_
 
-- `Surveillance Station API documentation <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/SurveillanceStation/All/enu/Surveillance_Station_Web_API.pdf>`_
+- `Surveillance Station API documentation (2012-2020) <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/SurveillanceStation/All/enu/Surveillance_Station_Web_API.pdf>`_

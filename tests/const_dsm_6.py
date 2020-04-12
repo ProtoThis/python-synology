@@ -1,9 +1,29 @@
 # -*- coding: utf-8 -*-
 """Test constants for DSM 6 NAS."""
-from .const import SERIAL, SID, UNIQUE_KEY
+from .const import (
+    SERIAL,
+    SESSION_ID,
+    UNIQUE_KEY,
+    DEVICE_TOKEN,
+    SYNO_TOKEN,
+    DSM_AUTH_OTP_NOT_SPECIFIED,
+)
 
 # DSM 6 RAW DATA
-DSM_6_LOGIN = {"data": {"sid": SID}, "success": True}
+DSM_6_LOGIN = {
+    "data": {"is_portal_port": False, "sid": SESSION_ID, "synotoken": SYNO_TOKEN},
+    "success": True,
+}
+DSM_6_LOGIN_2SA = DSM_AUTH_OTP_NOT_SPECIFIED
+DSM_6_LOGIN_2SA_OTP = {
+    "data": {
+        "did": DEVICE_TOKEN,
+        "is_portal_port": False,
+        "sid": SESSION_ID,
+        "synotoken": SYNO_TOKEN,
+    },
+    "success": True,
+}
 
 DSM_6_INFORMATION = {
     "data": {

@@ -73,6 +73,22 @@ class TestSynologyDSM(TestCase):
         assert api._device_token == DEVICE_TOKEN  # pylint: disable=protected-access
         assert api.device_token == DEVICE_TOKEN
 
+    def test_login_2sa_new_session(self):  # pylint: disable=no-self-use
+        """Test login with 2SA and a new session with granted device."""
+        api = SynologyDSMMock(
+            VALID_DSM_HOST,
+            VALID_DSM_PORT,
+            VALID_USER_2SA,
+            VALID_PASSWORD,
+            device_token=DEVICE_TOKEN,
+        )
+        assert api.login()
+
+        assert api._session_id == SESSION_ID  # pylint: disable=protected-access
+        assert api._syno_token == SYNO_TOKEN  # pylint: disable=protected-access
+        assert api._device_token == DEVICE_TOKEN  # pylint: disable=protected-access
+        assert api.device_token == DEVICE_TOKEN
+
     def test_login_2sa_failed(self):
         """Test failed login with 2SA."""
         api = SynologyDSMMock(

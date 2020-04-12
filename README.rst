@@ -50,7 +50,7 @@ Constructor
         dsm_version=6,
     )
 
-``device_token`` should be added when using a two-step authentication account, otherwise DSM will ask to login with a One Time Password (OTP) and requests will fail.
+``device_token`` should be added when using a two-step authentication account, otherwise DSM will ask to login with a One Time Password (OTP) and requests will fail (see the login section for more details).
 
 ``dsm_version`` (support 5 or 6): 5 will use old DSM API to gather volumes and disks informations (from DSM 5.x versions).
 

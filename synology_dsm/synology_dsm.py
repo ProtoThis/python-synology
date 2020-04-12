@@ -34,6 +34,7 @@ class SynologyDSM(object):
         username,
         password,
         use_https=False,
+        device_token=None,
         debugmode=False,
         dsm_version=6,
     ):
@@ -49,7 +50,7 @@ class SynologyDSM(object):
         # Login
         self._session_id = None
         self._syno_token = None
-        self._device_id = None
+        self._device_token = device_token
 
         # Services
         self._information = None
@@ -106,6 +107,8 @@ class SynologyDSM(object):
 
         if otp_code:
             auth["otp_code"] = otp_code
+        if self._device_token:
+            auth["device_id"] = self._device_token
 
         url = "%s/auth.cgi?%s" % (self.base_url, urlencode(auth))
 
@@ -114,7 +117,7 @@ class SynologyDSM(object):
         if not result:
             self._session_id = None
             self._syno_token = None
-            self._device_id = None
+            self._device_token = None
             self._debuglog("Authentication Failed")
             return False
 
@@ -130,14 +133,19 @@ class SynologyDSM(object):
 
         # Parse result if valid
         self._session_id = result["data"]["sid"]
-        if result["data"].get("synotoken"):  # Not available on API version < 3
+        if result["data"].get("synotoken"):
+            # Not available on API version < 3
             self._syno_token = result["data"]["synotoken"]
-        if result["data"].get(
-            "did"
-        ):  # Not available on API version < 6 && did is given once per device_name
-            self._device_id = result["data"]["did"]
+        if result["data"].get("did"):
+            # Not available on API version < 6 && device token is given once per device_name
+            self._device_token = result["data"]["did"]
         self._debuglog("Authentication Succesfull, token: " + str(self._session_id))
         return True
+
+    @property
+    def device_token(self):
+        """Gets the device token to remember the 2SA access was already granted to this device."""
+        return self._device_token
 
     def _get_url(self, url, retry_on_error=True):
         """Function to handle sessions for a GET request."""
@@ -183,16 +191,15 @@ class SynologyDSM(object):
                 # We got a response
                 json_data = json.loads(resp.text)
 
-                if json_data["success"]:
-                    self._debuglog("Succesfull returning data")
-                    self._debuglog(str(json_data))
-                    return json_data
-
-                if json_data["error"]["code"] in {105, 106, 107, 119}:
+                if json_data.get("error"):
                     self._debuglog("Session error: " + str(json_data["error"]["code"]))
-                    self._session_error = True
-                else:
-                    self._debuglog("Failed: " + resp.text)
+                    if json_data["error"]["code"] in {106, 107, 119}:
+                        self._session_error = True
+                        return None
+
+                self._debuglog("Succesfull returning data")
+                self._debuglog(str(json_data))
+                return json_data
             # We got a 404 or 401
             return None
         except:  # pylint: disable=bare-except

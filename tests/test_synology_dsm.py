@@ -70,7 +70,8 @@ class TestSynologyDSM(TestCase):
 
         assert api._session_id == SESSION_ID  # pylint: disable=protected-access
         assert api._syno_token == SYNO_TOKEN  # pylint: disable=protected-access
-        assert api._device_id == DEVICE_ID  # pylint: disable=protected-access
+        assert api._device_token == DEVICE_ID  # pylint: disable=protected-access
+        assert api.device_token == DEVICE_ID
 
     def test_login_2sa_failed(self):
         """Test failed login with 2SA."""
@@ -84,7 +85,7 @@ class TestSynologyDSM(TestCase):
 
         assert api._session_id is None  # pylint: disable=protected-access
         assert api._syno_token is None  # pylint: disable=protected-access
-        assert api._device_id is None  # pylint: disable=protected-access
+        assert api._device_token is None  # pylint: disable=protected-access
 
     def test_information(self):
         """Test information."""

@@ -31,7 +31,11 @@ Installation
 
 Usage
 =====
-Constructor:
+
+You can import the module as `synology_dsm`.
+
+Constructor
+-----------
 
 .. code-block:: python
 
@@ -41,16 +45,29 @@ Constructor:
         username,
         password,
         use_https=False,
+        device_token=None,
         debugmode=False,
         dsm_version=6,
     )
 
-``dsm_version = 5 will use old DSM API to gather volumes and disks informations (from DSM 5.x versions)``
+``device_token`` should be added when using a two-step authentication, otherwise DSM will ask to login with a One Time Password (OTP) and requests will fail.
 
-Module
+``dsm_version`` (support 5 or 6): 5 will use old DSM API to gather volumes and disks informations (from DSM 5.x versions).
+
+Login
 ------
 
-You can import the module as `synology_dsm`.
+The library automatically login at first request, but you better use the ``login()`` function to authenticate.
+
+It will return a boolean if it successed or faild to authenticate to DSM.
+
+If your account need a two-step authentication, ``login()`` will raise ``SynologyDSMLogin2SARequiredException``.
+Call the function again with your One Time Password (OTP) code as parameter, like ``login("123456")`` (better to be a string to handle first zero).
+Store the ``device_token`` property so that you do not need to reconnect with password the next time you open a new ``SynologyDSM`` session.
+
+
+Code exemple
+------
 
 .. code-block:: python
 
@@ -86,7 +103,7 @@ You can import the module as `synology_dsm`.
         print("S-Status:    " + str(api.storage.disk_smart_status(disk_id)))
         print("Status:      " + str(api.storage.disk_status(disk_id)))
         print("Temp:        " + str(api.storage.disk_temp(disk_id)))
-      
+
 Credits / Special Thanks
 ========================
 - https://github.com/florianeinfalt

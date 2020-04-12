@@ -61,7 +61,7 @@ The library automatically login at first request, but you better use the ``login
 
 It will return a boolean if it successed or faild to authenticate to DSM.
 
-If your account need a two-step authentication, ``login()`` will raise ``SynologyDSMLogin2SARequiredException``.
+If your account need a two-step authentication (2SA), ``login()`` will raise ``SynologyDSMLogin2SARequiredException``.
 Call the function again with a One Time Password (OTP) as parameter, like ``login("123456")`` (better to be a string to handle first zero).
 Store the ``device_token`` property so that you do not need to reconnect with password the next time you open a new ``SynologyDSM`` session.
 

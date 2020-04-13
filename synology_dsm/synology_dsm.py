@@ -208,11 +208,14 @@ class SynologyDSM(object):
     def update(self, with_information=False):
         """Updates the various instanced modules."""
         if self._information and with_information:
+            endpoint = "dsm/info.cgi"
             version = 1
             if self._dsm_version >= 6:
+                endpoint = "entry.cgi"
                 version = 2
-            url = "%s/entry.cgi?api=%s&version=%s&method=getinfo" % (
+            url = "%s/%s?api=%s&version=%s&method=getinfo" % (
                 self.base_url,
+                endpoint,
                 SynoDSMInformation.API_KEY,
                 version,
             )
@@ -226,7 +229,7 @@ class SynologyDSM(object):
             self._utilisation.update(self._get_url(url))
 
         if self._storage:
-            if self._dsm_version != 5:
+            if self._dsm_version >= 6:
                 url = "%s/entry.cgi?api=%s&version=1&method=load_info" % (
                     self.base_url,
                     SynoStorage.API_KEY,
@@ -241,11 +244,14 @@ class SynologyDSM(object):
     def information(self):
         """Getter for various Information variables."""
         if self._information is None:
+            endpoint = "dsm/info.cgi"
             version = 1
             if self._dsm_version >= 6:
+                endpoint = "entry.cgi"
                 version = 2
-            url = "%s/entry.cgi?api=%s&version=%s&method=getinfo" % (
+            url = "%s/%s?api=%s&version=%s&method=getinfo" % (
                 self.base_url,
+                endpoint,
                 SynoDSMInformation.API_KEY,
                 version,
             )
@@ -267,7 +273,7 @@ class SynologyDSM(object):
     def storage(self):
         """Getter for various Storage variables."""
         if self._storage is None:
-            if self._dsm_version != 5:
+            if self._dsm_version >= 6:
                 url = "%s/entry.cgi?api=%s&version=1&method=load_info" % (
                     self.base_url,
                     SynoStorage.API_KEY,

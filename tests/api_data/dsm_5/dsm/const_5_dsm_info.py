@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """DSM 5 SYNO.DSM.Info data."""
 from tests.const import SERIAL  # pylint: disable=unused-import
 

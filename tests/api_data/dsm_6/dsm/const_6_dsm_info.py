@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """DSM 6 SYNO.DSM.Info data."""
 from tests.const import SERIAL
 

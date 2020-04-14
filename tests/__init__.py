@@ -11,13 +11,13 @@ from .const import (
     DSM_AUTH_OTP_AUTHENTICATE_FAILED,
     DEVICE_TOKEN,
 )
-from .const_dsm_6 import (
-    DSM_6_LOGIN,
-    DSM_6_LOGIN_2SA,
-    DSM_6_LOGIN_2SA_OTP,
-    DSM_6_INFORMATION,
-    DSM_6_UTILIZATION,
-    DSM_6_STORAGE,
+from .api_data.dsm_6 import (
+    DSM_6_AUTH_LOGIN,
+    DSM_6_AUTH_LOGIN_2SA,
+    DSM_6_AUTH_LOGIN_2SA_OTP,
+    DSM_6_DSM_INFORMATION,
+    DSM_6_CORE_UTILIZATION,
+    DSM_6_STORAGE_STORAGE,
 )
 
 VALID_DSM_HOST = "nas.mywebsite.me"
@@ -64,30 +64,30 @@ class SynologyDSMMock(SynologyDSM):
         if self.LOGIN_URI in request_url:
             if VALID_USER_2SA in request_url and VALID_PASSWORD in request_url:
                 if "otp_code" not in request_url and "device_id" not in request_url:
-                    return DSM_6_LOGIN_2SA
+                    return DSM_6_AUTH_LOGIN_2SA
 
                 if "device_id" in request_url and DEVICE_TOKEN in request_url:
-                    return DSM_6_LOGIN
+                    return DSM_6_AUTH_LOGIN
 
                 if "otp_code" in request_url:
                     if VALID_OTP in request_url:
-                        return DSM_6_LOGIN_2SA_OTP
+                        return DSM_6_AUTH_LOGIN_2SA_OTP
                     return DSM_AUTH_OTP_AUTHENTICATE_FAILED
 
             if VALID_USER in request_url and VALID_PASSWORD in request_url:
-                return DSM_6_LOGIN
+                return DSM_6_AUTH_LOGIN
 
         if self.API_URI in request_url:
             if not self._session_id or not self._syno_token:
                 return DSM_INSUFFICIENT_USER_PRIVILEGE
 
             if SynoDSMInformation.API_KEY in request_url:
-                return DSM_6_INFORMATION
+                return DSM_6_DSM_INFORMATION
 
             if SynoCoreUtilization.API_KEY in request_url:
-                return DSM_6_UTILIZATION
+                return DSM_6_CORE_UTILIZATION
 
             if SynoStorage.API_KEY in request_url:
-                return DSM_6_STORAGE
+                return DSM_6_STORAGE_STORAGE
 
         return None

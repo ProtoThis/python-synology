@@ -5,7 +5,7 @@ from .const import SERIAL, SID, UNIQUE_KEY  # pylint: disable=unused-import
 # DSM 5 RAW DATA
 DSM_5_LOGIN = {
     {'data': {'sid': SID}, 'success': True}
-}
+DSM_5_LOGIN = {'data': {'sid': SID}, 'success': True}
 
 DSM_5_INFORMATION = {
     # Request failed

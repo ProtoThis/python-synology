@@ -67,7 +67,7 @@ Store the ``device_token`` property so that you do not need to reconnect with pa
 
 
 Code exemple
-------
+------------
 
 .. code-block:: python
 

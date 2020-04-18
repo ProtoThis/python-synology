@@ -12,6 +12,7 @@ from .const import (
     DEVICE_TOKEN,
 )
 from .api_data.dsm_6 import (
+    DSM_6_API_INFO,
     DSM_6_AUTH_LOGIN,
     DSM_6_AUTH_LOGIN_2SA,
     DSM_6_AUTH_LOGIN_2SA_OTP,
@@ -31,7 +32,6 @@ VALID_OTP = "123456"
 class SynologyDSMMock(SynologyDSM):
     """Mocked SynologyDSM."""
 
-    LOGIN_URI = "auth.cgi"
     API_URI = "entry.cgi"
 
     def __init__(
@@ -43,7 +43,6 @@ class SynologyDSMMock(SynologyDSM):
         use_https=False,
         device_token=None,
         debugmode=False,
-        dsm_version=6,
     ):
         SynologyDSM.__init__(
             self,
@@ -54,14 +53,16 @@ class SynologyDSMMock(SynologyDSM):
             use_https,
             device_token,
             debugmode,
-            dsm_version,
         )
 
     def _execute_get_url(self, request_url):
         if VALID_DSM_HOST not in request_url or VALID_DSM_PORT not in request_url:
             return None
 
-        if self.LOGIN_URI in request_url:
+        if self.API_INFO in request_url:
+            return DSM_6_API_INFO
+
+        if self.API_AUTH in request_url:
             if VALID_USER_2SA in request_url and VALID_PASSWORD in request_url:
                 if "otp_code" not in request_url and "device_id" not in request_url:
                     return DSM_6_AUTH_LOGIN_2SA

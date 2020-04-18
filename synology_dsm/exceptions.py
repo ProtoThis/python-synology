@@ -6,6 +6,23 @@ class SynologyDSMException(Exception):
     """Generic Synology DSM exception."""
     pass
 
+# Request
+class SynologyDSMRequestException(Exception):
+    """Request exception."""
+    def __init__(self, exception):
+        ex_class = exception.__class__.__name__
+        ex_reason = exception.args[0]
+        if hasattr(exception.args[0], "reason"):
+            ex_reason = exception.args[0].reason
+        message = "%s = %s" % (ex_class, ex_reason)
+        super(SynologyDSMRequestException, self).__init__(message)
+
+# API
+class SynologyDSMAPINotExistsException(Exception):
+    """API not exists exception."""
+    def __init__(self, api):
+        message = "API %s does not exists" % api
+        super(SynologyDSMAPINotExistsException, self).__init__(message)
 
 # Login
 class SynologyDSMLoginFailedException(SynologyDSMException):

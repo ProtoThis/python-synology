@@ -4,9 +4,13 @@ import socket
 import urllib3
 from requests import Session
 from requests.compat import json
+from requests.exceptions import RequestException
+from simplejson.errors import JSONDecodeError
 import six
 
 from .exceptions import (
+    SynologyDSMAPINotExistsException,
+    SynologyDSMRequestException,
     SynologyDSMLoginFailedException,
     SynologyDSMLoginInvalidException,
     SynologyDSMLoginDisabledAccountException,
@@ -23,9 +27,14 @@ if six.PY2:
 else:
     from urllib.parse import urlencode  # pylint: disable=import-error,no-name-in-module
 
+import logging
+_LOGGER = logging.getLogger(__name__)
 
 class SynologyDSM(object):
     """Class containing the main Synology DSM functions."""
+
+    API_INFO = "SYNO.API.Info"
+    API_AUTH = "SYNO.API.Auth"
 
     def __init__(
         self,
@@ -36,12 +45,10 @@ class SynologyDSM(object):
         use_https=False,
         device_token=None,
         debugmode=False,
-        dsm_version=6,
     ):
         self.username = username
         self._password = password
         self._debugmode = debugmode
-        self._dsm_version = dsm_version
 
         # Session
         self._session_error = False
@@ -53,6 +60,7 @@ class SynologyDSM(object):
         self._device_token = device_token
 
         # Services
+        self._apis = {}
         self._information = None
         self._utilisation = None
         self._storage = None
@@ -63,26 +71,56 @@ class SynologyDSM(object):
             # disable SSL warnings due to the auto-genenerated cert
             urllib3.disable_warnings()
 
-            self.base_url = "https://%s:%s/webapi" % (dsm_ip, dsm_port)
+            self._base_url = "https://%s:%s" % (dsm_ip, dsm_port)
         else:
-            self.base_url = "http://%s:%s/webapi" % (dsm_ip, dsm_port)
-
-        if self._dsm_version == 5:
-            if use_https:
-                self._storage_url = (
-                    "https://%s:%s/webman/modules/StorageManager/storagehandler.cgi"
-                    % (dsm_ip, dsm_port)
-                )
-            else:
-                self._storage_url = (
-                    "http://%s:%s/webman/modules/StorageManager/storagehandler.cgi"
-                    % (dsm_ip, dsm_port)
-                )
+            self._base_url = "http://%s:%s" % (dsm_ip, dsm_port)
 
     def _debuglog(self, message):
         """Outputs message if debug mode is enabled."""
         if self._debugmode:
             print("DEBUG: " + message)
+
+    def _build_url(self, api, method, params=None):
+        if api == self.API_INFO:
+            return "%s/webapi/query.cgi?api=%s&version=1&method=query&query=ALL" % (
+                self._base_url,
+                api,
+            )
+
+        self._discover_apis()
+
+        _LOGGER.warning(api)
+        _LOGGER.warning(self.apis.get(api))
+        if not self.apis.get(api):
+            raise SynologyDSMAPINotExistsException(api)
+
+        if params is None:
+            params = {}
+        params = {
+            **{"api": api, "version": self.apis[api]["maxVersion"], "method": method},
+            **params,
+        }
+
+        if api == SynoStorage.API_KEY and self.information and self.information.version and int(self.information.version) < 7321: # < DSM 6
+            return "%s/webman/modules/StorageManager/storagehandler.cgi?action=%s" % (self._base_url, method)
+
+        return "%s/webapi/%s?%s" % (self._base_url, self.apis[api]["path"], urlencode(params))
+
+    def _discover_apis(self):
+        
+        _LOGGER.warning("_discover_apis")
+        if self._apis:
+            _LOGGER.warning("PAS_BESION")
+            return
+        url = self._build_url(self.API_INFO, None)
+        self._apis = self._execute_get_url(url)["data"]
+
+    @property
+    def apis(self):
+        return self._apis
+
+    # def request_api(self, api, method):
+    #     return None
 
     def login(self, otp_code=None):
         """Create a logged session."""
@@ -92,11 +130,11 @@ class SynologyDSM(object):
         self._debuglog("Creating new Session")
         self._session = Session()
         self._session.verify = False
+        _LOGGER.warning("login")
 
-        auth = {
-            "api": "SYNO.API.Auth",
-            "version": 6,
-            "method": "login",
+        # self._discover_apis()
+
+        params = {
             "account": self.username,
             "passwd": self._password,
             "enable_syno_token": "yes",
@@ -106,11 +144,11 @@ class SynologyDSM(object):
         }
 
         if otp_code:
-            auth["otp_code"] = otp_code
+            params["otp_code"] = otp_code
         if self._device_token:
-            auth["device_id"] = self._device_token
+            params["device_id"] = self._device_token
 
-        url = "%s/auth.cgi?%s" % (self.base_url, urlencode(auth))
+        url = self._build_url(self.API_AUTH, "login", params)
 
         result = self._execute_get_url(url)
 
@@ -140,6 +178,7 @@ class SynologyDSM(object):
             # Not available on API version < 6 && device token is given once per device_name
             self._device_token = result["data"]["did"]
         self._debuglog("Authentication Succesfull, token: " + str(self._session_id))
+
         return True
 
     @property
@@ -195,66 +234,35 @@ class SynologyDSM(object):
                     self._debuglog("Session error: " + str(json_data["error"]["code"]))
                     if json_data["error"]["code"] in {106, 107, 119}:
                         self._session_error = True
-                        return None
+                        raise RequestException(resp)
 
                 self._debuglog("Successful returning data")
                 self._debuglog(str(json_data))
                 return json_data
-            # We got a 404 or 401
-            return None
-        except:  # pylint: disable=bare-except
-            return None
+            # We got a 400, 401 or 404 ...
+            raise RequestException(resp)
+        except (RequestException, JSONDecodeError) as exp:
+            raise SynologyDSMRequestException(exp)
 
     def update(self, with_information=False):
         """Updates the various instanced modules."""
         if self._information and with_information:
-            endpoint = "dsm/info.cgi"
-            version = 1
-            if self._dsm_version >= 6:
-                endpoint = "entry.cgi"
-                version = 2
-            url = "%s/%s?api=%s&version=%s&method=getinfo" % (
-                self.base_url,
-                endpoint,
-                SynoDSMInformation.API_KEY,
-                version,
-            )
+            url = self._build_url(SynoDSMInformation.API_KEY, "getinfo")
             self._information.update(self._get_url(url))
 
         if self._utilisation:
-            url = "%s/entry.cgi?api=%s&version=1&method=get" % (
-                self.base_url,
-                SynoCoreUtilization.API_KEY,
-            )
+            url = self._build_url(SynoCoreUtilization.API_KEY, "get")
             self._utilisation.update(self._get_url(url))
 
         if self._storage:
-            if self._dsm_version >= 6:
-                url = "%s/entry.cgi?api=%s&version=1&method=load_info" % (
-                    self.base_url,
-                    SynoStorage.API_KEY,
-                )
-                self._storage.update(self._get_url(url))
-            else:
-                url = "%s?action=load_info" % self._storage_url
-                output = self._get_url(url)["data"]
-                self._storage.update(output)
+            url = self._build_url(SynoStorage.API_KEY, "load_info")
+            self._storage.update(self._get_url(url))
 
     @property
     def information(self):
-        """Getter for various Information variables."""
-        if self._information is None:
-            endpoint = "dsm/info.cgi"
-            version = 1
-            if self._dsm_version >= 6:
-                endpoint = "entry.cgi"
-                version = 2
-            url = "%s/%s?api=%s&version=%s&method=getinfo" % (
-                self.base_url,
-                endpoint,
-                SynoDSMInformation.API_KEY,
-                version,
-            )
+        """Gets NAS informations."""
+        if self._information is None and self._session_id:
+            url = self._build_url(SynoDSMInformation.API_KEY, "getinfo")
             self._information = SynoDSMInformation(self._get_url(url))
         return self._information
 
@@ -262,10 +270,7 @@ class SynologyDSM(object):
     def utilisation(self):
         """Getter for various Utilisation variables."""
         if self._utilisation is None:
-            url = "%s/entry.cgi?api=%s&version=1&method=get" % (
-                self.base_url,
-                SynoCoreUtilization.API_KEY,
-            )
+            url = self._build_url(SynoCoreUtilization.API_KEY, "get")
             self._utilisation = SynoCoreUtilization(self._get_url(url))
         return self._utilisation
 
@@ -273,17 +278,7 @@ class SynologyDSM(object):
     def storage(self):
         """Getter for various Storage variables."""
         if self._storage is None:
-            if self._dsm_version >= 6:
-                url = "%s/entry.cgi?api=%s&version=1&method=load_info" % (
-                    self.base_url,
-                    SynoStorage.API_KEY,
-                )
-            else:
-                url = "%s?action=load_info" % self._storage_url
-
-            output = self._get_url(url)
-            if self._dsm_version == 5:
-                output["data"] = output
-            self._storage = SynoStorage(output)
+            url = self._build_url(SynoStorage.API_KEY, "load_info")
+            self._storage = SynoStorage(self._get_url(url))
 
         return self._storage

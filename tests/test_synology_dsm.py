@@ -33,7 +33,7 @@ class TestSynologyDSM(TestCase):
         """Test init."""
         assert self.api.username
         assert not self.api._session_id  # pylint: disable=protected-access
-        assert self.api.base_url
+        assert self.api._base_url  # pylint: disable=protected-access
 
     def test_login(self):
         """Test login."""
@@ -105,6 +105,7 @@ class TestSynologyDSM(TestCase):
 
     def test_information(self):
         """Test information."""
+        # assert self.api.login()
         assert self.api.information
         assert self.api.information.model == "DS918+"
         assert self.api.information.ram == 4096
@@ -116,10 +117,12 @@ class TestSynologyDSM(TestCase):
 
     def test_utilisation(self):
         """Test utilization."""
+        # assert self.api.login()
         assert self.api.utilisation
 
     def test_utilisation_cpu(self):
         """Test utilization CPU."""
+        # assert self.api.login()
         assert self.api.utilisation.cpu
         assert self.api.utilisation.cpu_other_load
         assert self.api.utilisation.cpu_user_load
@@ -131,6 +134,7 @@ class TestSynologyDSM(TestCase):
 
     def test_utilisation_memory(self):
         """Test utilization memory."""
+        # assert self.api.login()
         assert self.api.utilisation.memory
         assert self.api.utilisation.memory_real_usage
         assert self.api.utilisation.memory_size
@@ -142,12 +146,14 @@ class TestSynologyDSM(TestCase):
 
     def test_utilisation_network(self):
         """Test utilization network."""
+        # assert self.api.login()
         assert self.api.utilisation.network
         assert self.api.utilisation.network_up
         assert self.api.utilisation.network_down
 
     def test_storage(self):
         """Test storage roots."""
+        # assert self.api.login()
         assert self.api.storage
         assert self.api.storage.disks
         assert self.api.storage.env
@@ -156,6 +162,7 @@ class TestSynologyDSM(TestCase):
 
     def test_storage_volumes(self):
         """Test storage volumes."""
+        # assert self.api.login()
         # Basics
         assert self.api.storage.volumes_ids
         for volume_id in self.api.storage.volumes_ids:
@@ -206,6 +213,7 @@ class TestSynologyDSM(TestCase):
 
     def test_storage_disks(self):
         """Test storage disks."""
+        # assert self.api.login()
         # Basics
         assert self.api.storage.disks_ids
         for disk_id in self.api.storage.disks_ids:

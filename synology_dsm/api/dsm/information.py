@@ -47,6 +47,11 @@ class SynoDSMInformation(object):
         return self._data.get("uptime")
 
     @property
+    def version(self):
+        """Version of the NAS (build version)."""
+        return self._data.get("version")
+
+    @property
     def version_string(self):
         """Version of the NAS."""
         return self._data.get("version_string")

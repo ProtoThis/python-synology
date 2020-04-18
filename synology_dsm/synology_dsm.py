@@ -49,7 +49,8 @@ class SynologyDSM(object):
 
         # Session
         self._session_error = False
-        self._session = None
+        self._session = Session()
+        self._session.verify = False
 
         # Login
         self._session_id = None
@@ -84,8 +85,6 @@ class SynologyDSM(object):
                 api,
             )
 
-        self._discover_apis()
-
         if not self.apis.get(api):
             raise SynologyDSMAPINotExistsException(api)
 
@@ -117,18 +116,13 @@ class SynologyDSM(object):
         """Retreives available API infos from the NAS."""
         if self._apis:
             return
-        if not self._session:
-            self._session = Session()
-            self._session.verify = False
         url = self._build_url(self.API_INFO, None)
-        self._apis = self._execute_get_url(url)["data"]
+        self._apis = self._execute_request(url)["data"]
 
     @property
     def apis(self):
+        """Gets available API infos from the NAS."""
         return self._apis
-
-    # def request_api(self, api, method):
-    #     return None
 
     def login(self, otp_code=None):
         """Create a logged session."""
@@ -136,6 +130,8 @@ class SynologyDSM(object):
         self._debuglog("Creating new Session")
         self._session = Session()
         self._session.verify = False
+
+        self._discover_apis()
 
         params = {
             "account": self.username,
@@ -152,8 +148,7 @@ class SynologyDSM(object):
             params["device_id"] = self._device_token
 
         url = self._build_url(self.API_AUTH, "login", params)
-
-        result = self._execute_get_url(url)
+        result = self._execute_request(url)
 
         if result.get("error"):
             switcher = {
@@ -182,28 +177,21 @@ class SynologyDSM(object):
         """Gets the device token to remember the 2SA access was granted on this device."""
         return self._device_token
 
-    def _get_url(self, url, retry_on_error=True):
-        """Function to handle sessions for a GET request."""
-        # Check if we failed to request the url or need to login
-        if self._session_id is None or self._session is None or self._session_error:
-            # Reset session error
-            self._session_error = False
+    def request(self, api, method, params=None):
+        """Handles API request."""
+        # Check if logged
+        if not self._session_id:
+            self.login()
 
-            # Created a new logged session
-            if self.login() is False:
-                self._session_error = True
-                self._debuglog("Login Failed, unable to process request")
-                return None
+        # Request the data
+        url = self._build_url(api, method, params)
+        response = self._execute_request(url)
 
-        # Now request the data
-        response = self._execute_get_url(url)
-        if (self._session_error or response is None) and retry_on_error:
-            self._debuglog("Error occured, retrying...")
-            return self._get_url(url, False)
+        # Handle data errors
 
         return response
 
-    def _execute_get_url(self, request_url):
+    def _execute_request(self, request_url):
         """Function to execute and handle a GET request."""
         # Prepare Request
         self._debuglog("Requesting URL: '" + request_url + "'")
@@ -235,46 +223,48 @@ class SynologyDSM(object):
                 self._debuglog("Successful returning data")
                 self._debuglog(str(json_data))
                 return json_data
+
             # We got a 400, 401 or 404 ...
             raise RequestException(resp)
+
         except (RequestException, JSONDecodeError) as exp:
             raise SynologyDSMRequestException(exp)
 
     def update(self, with_information=False):
         """Updates the various instanced modules."""
         if self._information and with_information:
-            url = self._build_url(SynoDSMInformation.API_KEY, "getinfo")
-            self._information.update(self._get_url(url))
+            data = self.request(SynoDSMInformation.API_KEY, "getinfo")
+            self._information.update(data)
 
         if self._utilisation:
-            url = self._build_url(SynoCoreUtilization.API_KEY, "get")
-            self._utilisation.update(self._get_url(url))
+            data = self.request(SynoCoreUtilization.API_KEY, "get")
+            self._utilisation.update(data)
 
         if self._storage:
-            url = self._build_url(SynoStorage.API_KEY, "load_info")
-            self._storage.update(self._get_url(url))
+            data = self.request(SynoStorage.API_KEY, "load_info")
+            self._storage.update(data)
 
     @property
     def information(self):
         """Gets NAS informations."""
         if self._information is None:
-            url = self._build_url(SynoDSMInformation.API_KEY, "getinfo")
-            self._information = SynoDSMInformation(self._get_url(url))
+            data = self.request(SynoDSMInformation.API_KEY, "getinfo")
+            self._information = SynoDSMInformation(data)
         return self._information
 
     @property
     def utilisation(self):
-        """Getter for various Utilisation variables."""
+        """Gets NAS utilisation informations."""
         if self._utilisation is None:
-            url = self._build_url(SynoCoreUtilization.API_KEY, "get")
-            self._utilisation = SynoCoreUtilization(self._get_url(url))
+            data = self.request(SynoCoreUtilization.API_KEY, "get")
+            self._utilisation = SynoCoreUtilization(data)
         return self._utilisation
 
     @property
     def storage(self):
-        """Getter for various Storage variables."""
+        """Gets NAS storage informations."""
         if self._storage is None:
-            url = self._build_url(SynoStorage.API_KEY, "load_info")
-            self._storage = SynoStorage(self._get_url(url))
+            data = self.request(SynoStorage.API_KEY, "load_info")
+            self._storage = SynoStorage(data)
 
         return self._storage

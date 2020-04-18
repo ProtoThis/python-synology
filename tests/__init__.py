@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Library tests."""
 from synology_dsm import SynologyDSM
+from synology_dsm.exceptions import SynologyDSMRequestException
+from simplejson.errors import JSONDecodeError
 
 from synology_dsm.api.core.utilization import SynoCoreUtilization
 from synology_dsm.api.dsm.information import SynoDSMInformation
@@ -55,9 +57,9 @@ class SynologyDSMMock(SynologyDSM):
             debugmode,
         )
 
-    def _execute_get_url(self, request_url):
+    def _execute_request(self, request_url):
         if VALID_DSM_HOST not in request_url or VALID_DSM_PORT not in request_url:
-            return None
+            raise SynologyDSMRequestException(JSONDecodeError("test", "doc", 0, 1))
 
         if self.API_INFO in request_url:
             return DSM_6_API_INFO

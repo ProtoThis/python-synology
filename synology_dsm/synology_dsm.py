@@ -3,7 +3,6 @@
 import socket
 import urllib3
 from requests import Session
-from requests.compat import json
 from requests.exceptions import RequestException
 from simplejson.errors import JSONDecodeError
 import six
@@ -27,8 +26,6 @@ if six.PY2:
 else:
     from urllib.parse import urlencode  # pylint: disable=import-error,no-name-in-module
 
-import logging
-_LOGGER = logging.getLogger(__name__)
 
 class SynologyDSM(object):
     """Class containing the main Synology DSM functions."""
@@ -89,8 +86,6 @@ class SynologyDSM(object):
 
         self._discover_apis()
 
-        _LOGGER.warning(api)
-        _LOGGER.warning(self.apis.get(api))
         if not self.apis.get(api):
             raise SynologyDSMAPINotExistsException(api)
 
@@ -101,17 +96,30 @@ class SynologyDSM(object):
             **params,
         }
 
-        if api == SynoStorage.API_KEY and self.information and self.information.version and int(self.information.version) < 7321: # < DSM 6
-            return "%s/webman/modules/StorageManager/storagehandler.cgi?action=%s" % (self._base_url, method)
+        if (
+            api == SynoStorage.API_KEY
+            and self._information
+            and self._information.version
+            and int(self._information.version) < 7321  # < DSM 6
+        ):
+            return "%s/webman/modules/StorageManager/storagehandler.cgi?action=%s" % (
+                self._base_url,
+                method,
+            )
 
-        return "%s/webapi/%s?%s" % (self._base_url, self.apis[api]["path"], urlencode(params))
+        return "%s/webapi/%s?%s" % (
+            self._base_url,
+            self.apis[api]["path"],
+            urlencode(params),
+        )
 
     def _discover_apis(self):
-        
-        _LOGGER.warning("_discover_apis")
+        """Retreives available API infos from the NAS."""
         if self._apis:
-            _LOGGER.warning("PAS_BESION")
             return
+        if not self._session:
+            self._session = Session()
+            self._session.verify = False
         url = self._build_url(self.API_INFO, None)
         self._apis = self._execute_get_url(url)["data"]
 
@@ -125,14 +133,9 @@ class SynologyDSM(object):
     def login(self, otp_code=None):
         """Create a logged session."""
         # First reset the session
-        if self._session:
-            self._session = None
         self._debuglog("Creating new Session")
         self._session = Session()
         self._session.verify = False
-        _LOGGER.warning("login")
-
-        # self._discover_apis()
 
         params = {
             "account": self.username,
@@ -151,13 +154,6 @@ class SynologyDSM(object):
         url = self._build_url(self.API_AUTH, "login", params)
 
         result = self._execute_get_url(url)
-
-        if not result:
-            self._session_id = None
-            self._syno_token = None
-            self._device_token = None
-            self._debuglog("Authentication Failed")
-            return False
 
         if result.get("error"):
             switcher = {
@@ -228,7 +224,7 @@ class SynologyDSM(object):
             self._debuglog("Request executed: " + str(resp.status_code))
             if resp.status_code == 200:
                 # We got a response
-                json_data = json.loads(resp.text)
+                json_data = resp.json()
 
                 if json_data.get("error"):
                     self._debuglog("Session error: " + str(json_data["error"]["code"]))
@@ -261,7 +257,7 @@ class SynologyDSM(object):
     @property
     def information(self):
         """Gets NAS informations."""
-        if self._information is None and self._session_id:
+        if self._information is None:
             url = self._build_url(SynoDSMInformation.API_KEY, "getinfo")
             self._information = SynoDSMInformation(self._get_url(url))
         return self._information

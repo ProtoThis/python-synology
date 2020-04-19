@@ -18,7 +18,7 @@ class SynologyDSMRequestException(SynologyDSMException):
         super(SynologyDSMRequestException, self).__init__(message)
 
 # API
-class SynologyDSMAPINotExistsException(Exception):
+class SynologyDSMAPINotExistsException(SynologyDSMException):
     """API not exists exception."""
     def __init__(self, api):
         message = "API %s does not exists" % api

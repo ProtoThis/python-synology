@@ -7,7 +7,7 @@ class SynologyDSMException(Exception):
     pass
 
 # Request
-class SynologyDSMRequestException(Exception):
+class SynologyDSMRequestException(SynologyDSMException):
     """Request exception."""
     def __init__(self, exception):
         ex_class = exception.__class__.__name__

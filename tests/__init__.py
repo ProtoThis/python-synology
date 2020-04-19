@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 """Library tests."""
+from simplejson.errors import JSONDecodeError
+from requests.exceptions import ConnectionError as ConnError, RequestException, SSLError
+
 from synology_dsm import SynologyDSM
 from synology_dsm.exceptions import SynologyDSMRequestException
-from simplejson.errors import JSONDecodeError
-
 from synology_dsm.api.core.utilization import SynoCoreUtilization
 from synology_dsm.api.dsm.information import SynoDSMInformation
 from synology_dsm.api.storage.storage import SynoStorage
 
 from .const import (
-    DSM_INSUFFICIENT_USER_PRIVILEGE,
-    DSM_AUTH_OTP_AUTHENTICATE_FAILED,
+    ERROR_INSUFFICIENT_USER_PRIVILEGE,
+    ERROR_AUTH_INVALID_CREDENTIALS,
+    ERROR_AUTH_OTP_AUTHENTICATE_FAILED,
     DEVICE_TOKEN,
 )
 from .api_data.dsm_6 import (
@@ -23,8 +25,9 @@ from .api_data.dsm_6 import (
     DSM_6_STORAGE_STORAGE,
 )
 
-VALID_DSM_HOST = "nas.mywebsite.me"
-VALID_DSM_PORT = "443"
+VALID_HOST = "nas.mywebsite.me"
+VALID_PORT = "443"
+VALID_SSL = True
 VALID_USER = "valid_user"
 VALID_USER_2SA = "valid_user_2sa"
 VALID_PASSWORD = "valid_password"
@@ -58,8 +61,34 @@ class SynologyDSMMock(SynologyDSM):
         )
 
     def _execute_request(self, request_url):
-        if VALID_DSM_HOST not in request_url or VALID_DSM_PORT not in request_url:
-            raise SynologyDSMRequestException(JSONDecodeError("test", "doc", 0, 1))
+        if "no_internet" in request_url:
+            raise SynologyDSMRequestException(
+                ConnError(
+                    "<urllib3.connection.VerifiedHTTPSConnection object at 0x106c1f250>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known"
+                )
+            )
+
+        if VALID_HOST not in request_url:
+            raise SynologyDSMRequestException(
+                ConnError(
+                    "<urllib3.connection.HTTPConnection object at 0x10d6f8090>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known"
+                )
+            )
+
+        if VALID_PORT not in request_url and "https" not in request_url:
+            raise SynologyDSMRequestException(
+                JSONDecodeError("Expecting value", "<html>document</html>", 0, None)
+            )
+
+        if VALID_PORT not in request_url:
+            raise SynologyDSMRequestException(
+                SSLError(
+                    "[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1076)"
+                )
+            )
+
+        if "https" not in request_url:
+            raise SynologyDSMRequestException(RequestException("Bad request"))
 
         if self.API_INFO in request_url:
             return DSM_6_API_INFO
@@ -75,14 +104,16 @@ class SynologyDSMMock(SynologyDSM):
                 if "otp_code" in request_url:
                     if VALID_OTP in request_url:
                         return DSM_6_AUTH_LOGIN_2SA_OTP
-                    return DSM_AUTH_OTP_AUTHENTICATE_FAILED
+                    return ERROR_AUTH_OTP_AUTHENTICATE_FAILED
 
             if VALID_USER in request_url and VALID_PASSWORD in request_url:
                 return DSM_6_AUTH_LOGIN
 
+            return ERROR_AUTH_INVALID_CREDENTIALS
+
         if self.API_URI in request_url:
             if not self._session_id or not self._syno_token:
-                return DSM_INSUFFICIENT_USER_PRIVILEGE
+                return ERROR_INSUFFICIENT_USER_PRIVILEGE
 
             if SynoDSMInformation.API_KEY in request_url:
                 return DSM_6_DSM_INFORMATION

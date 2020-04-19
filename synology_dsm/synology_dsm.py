@@ -48,7 +48,6 @@ class SynologyDSM(object):
         self._debugmode = debugmode
 
         # Session
-        self._session_error = False
         self._session = Session()
         self._session.verify = False
 
@@ -216,8 +215,11 @@ class SynologyDSM(object):
 
                 if json_data.get("error"):
                     self._debuglog("Session error: " + str(json_data["error"]["code"]))
-                    if json_data["error"]["code"] in {106, 107, 119}:
-                        self._session_error = True
+                    if json_data["error"]["code"] in [106, 107, 119]:
+                        self._session_id = None
+                        self._syno_token = None
+                        self._device_token = None
+                        self.login()
                         raise RequestException(resp)
 
                 self._debuglog("Successful returning data")

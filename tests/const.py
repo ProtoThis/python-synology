@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """Test constants."""
 
-# Name constants like this :
+# API test data are localized in
+# `tests/api_data/dsm_[dsm_major_version]`
+# Data constant names should be like :
 # "DSM_[dsm_version]_[API_KEY]"
 # if data failed, add "_FAILED"
 

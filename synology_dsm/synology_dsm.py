@@ -183,23 +183,20 @@ class SynologyDSM(object):
         # Build request params
         if not params:
             params = {}
-        params.pop("api", None)
-        params.pop("version", None)
-        params.pop("method", None)
-        params = {
-            **{"api": api, "version": self.apis[api]["maxVersion"], "method": method},
-            **params,
-        }
+        params["api"] = api
+        params["version"] = self.apis[api]["maxVersion"]
+        params["method"] = method
+
         if api == SynoStorage.API_KEY:
             params["action"] = method
         if self._session_id:
             params["_sid"] = self._session_id
         if self._syno_token:
             params["SynoToken"] = self._syno_token
+        self._debuglog("Request params: " + str(params))
 
         # Request data
         url = self._build_url(api)
-        self._debuglog("Request params: " + str(params))
         response = self._execute_request(request_method, url, params=params, **kwargs)
         self._debuglog("Successful returned data")
         self._debuglog("API: " + api)
@@ -221,7 +218,6 @@ class SynologyDSM(object):
     def _execute_request(self, method, url, **kwargs):
         """Function to execute and handle a request."""
         # Execute Request
-        resp = None
         try:
             if method == "GET":
                 resp = self._session.get(url, **kwargs)

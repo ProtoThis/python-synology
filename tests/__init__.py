@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 """Library tests."""
-from simplejson.errors import JSONDecodeError
-from requests.exceptions import ConnectionError as ConnError, RequestException, SSLError
 import six
-
-if six.PY2:
-    from future.moves.urllib.parse import urlencode
-else:
-    from urllib.parse import urlencode  # pylint: disable=import-error,no-name-in-module
+from requests.exceptions import ConnectionError as ConnError, RequestException, SSLError
+from simplejson.errors import JSONDecodeError
 
 from synology_dsm import SynologyDSM
 from synology_dsm.exceptions import SynologyDSMRequestException
@@ -30,6 +25,11 @@ from .api_data.dsm_6 import (
     DSM_6_CORE_UTILIZATION,
     DSM_6_STORAGE_STORAGE,
 )
+
+if six.PY2:
+    from future.moves.urllib.parse import urlencode
+else:
+    from urllib.parse import urlencode  # pylint: disable=import-error,no-name-in-module
 
 VALID_HOST = "nas.mywebsite.me"
 VALID_PORT = "443"

@@ -4,28 +4,7 @@ from .const import ERROR_AUTH, ERROR_COMMON, ERROR_DOWNLOAD_SEARCH, ERROR_DOWNLO
 
 class SynologyDSMException(Exception):
     """Generic Synology DSM exception."""
-    def __init__(self, api, code=None):
-        if "SYNO." not in api:
-            message = api
-        else:
-            reason = ERROR_COMMON.get(code)
-            if api and not reason:
-                if api == "SYNO.API.Auth":
-                    reason = ERROR_AUTH.get(code)
-                elif api == "SYNO.DownloadStation.BTSearch":
-                    reason = ERROR_DOWNLOAD_SEARCH.get(code)
-                elif api == "SYNO.DownloadStation.Task":
-                    reason = ERROR_DOWNLOAD_TASK.get(code)
-                elif "SYNO.FileStation" in api:
-                    reason = ERROR_FILE.get(code)
-                elif "SYNO.SurveillanceStation" in api:
-                    reason = ERROR_SURVEILLANCE.get(code)
-                elif "SYNO.Virtualization" in api:
-                    reason = ERROR_VIRTUALIZATION.get(code)
-            if not reason:
-                reason = "Unknown"
-            message = "\n Code: %s\n Reason: %s" % (str(code), reason)
-        super(SynologyDSMException, self).__init__(message)
+    pass
 
 # Request
 class SynologyDSMRequestException(SynologyDSMException):
@@ -44,6 +23,29 @@ class SynologyDSMAPINotExistsException(SynologyDSMException):
     def __init__(self, api):
         message = "API %s does not exists" % api
         super(SynologyDSMAPINotExistsException, self).__init__(message)
+
+class SynologyDSMAPIErrorException(SynologyDSMException):
+    """API returns an error exception."""
+    def __init__(self, api, code):
+        reason = ERROR_COMMON.get(code)
+        if api and not reason:
+            if api == "SYNO.API.Auth":
+                reason = ERROR_AUTH.get(code)
+            elif "SYNO.DownloadStation" in api:
+                if "BTSearch" in api:
+                    reason = ERROR_DOWNLOAD_SEARCH.get(code)
+                elif "Task" in api:
+                    reason = ERROR_DOWNLOAD_TASK.get(code)
+            elif "SYNO.FileStation" in api:
+                reason = ERROR_FILE.get(code)
+            elif "SYNO.SurveillanceStation" in api:
+                reason = ERROR_SURVEILLANCE.get(code)
+            elif "SYNO.Virtualization" in api:
+                reason = ERROR_VIRTUALIZATION.get(code)
+        if not reason:
+            reason = "Unknown"
+        message = "\n Code: %s\n Reason: %s" % (str(code), reason)
+        super(SynologyDSMAPIErrorException, self).__init__(message)
 
 # Login
 class SynologyDSMLoginFailedException(SynologyDSMException):

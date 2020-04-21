@@ -34,7 +34,7 @@ ERROR_AUTH = {
     411: "Account Locked (when account max try exceed)",
 }
 
-# SYNO.DownloadStation.BTSearch
+# SYNO.DownloadStation[2].BTSearch
 ERROR_DOWNLOAD_SEARCH = {
     400: "Unknown error",
     401: "Invalid parameter",
@@ -43,7 +43,7 @@ ERROR_DOWNLOAD_SEARCH = {
     404: "Get the search result from DB failed",
     405: "Get the user setting failed",
 }
-# SYNO.DownloadStation.Task
+# SYNO.DownloadStation[2].Task
 ERROR_DOWNLOAD_TASK = {
     400: "File upload failed",
     401: "Max number of tasks reached",

@@ -7,7 +7,7 @@ from requests.exceptions import RequestException
 from simplejson.errors import JSONDecodeError
 
 from .exceptions import (
-    SynologyDSMException,
+    SynologyDSMAPIErrorException,
     SynologyDSMAPINotExistsException,
     SynologyDSMRequestException,
     SynologyDSMLoginFailedException,
@@ -211,7 +211,7 @@ class SynologyDSM(object):
                 self._syno_token = None
                 self._device_token = None
                 return self._request(request_method, api, method, params, False)
-            raise SynologyDSMException(api, response["error"]["code"])
+            raise SynologyDSMAPIErrorException(api, response["error"]["code"])
 
         return response
 

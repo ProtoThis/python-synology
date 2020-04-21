@@ -131,4 +131,20 @@ class SynologyDSMMock(SynologyDSM):
             if SynoStorage.API_KEY in url:
                 return DSM_6_STORAGE_STORAGE
 
+            if (
+                "SYNO.FileStation.Upload" in url
+                and "upload" in url
+                and "file_already_exists" in kwargs["files"]["file"]
+            ):
+                return {"error": {"code": 1805}, "success": False}
+
+            if (
+                "SYNO.DownloadStation2.Task" in url
+                and "create" in url
+                and "test_not_exists" in url
+            ):
+                return {"error": {"code": 408}, "success": False}
+
+            return {"success": False}
+
         return None

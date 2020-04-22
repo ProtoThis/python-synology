@@ -3,14 +3,19 @@
 from unittest import TestCase
 
 from synology_dsm.exceptions import (
+    SynologyDSMRequestException,
+    SynologyDSMAPINotExistsException,
+    SynologyDSMAPIErrorException,
+    SynologyDSMLoginInvalidException,
     SynologyDSMLogin2SARequiredException,
     SynologyDSMLogin2SAFailedException,
 )
 
 from . import (
     SynologyDSMMock,
-    VALID_DSM_HOST,
-    VALID_DSM_PORT,
+    VALID_HOST,
+    VALID_PORT,
+    VALID_SSL,
     VALID_OTP,
     VALID_PASSWORD,
     VALID_USER,
@@ -26,43 +31,69 @@ class TestSynologyDSM(TestCase):
 
     def setUp(self):
         self.api = SynologyDSMMock(
-            VALID_DSM_HOST, VALID_DSM_PORT, VALID_USER, VALID_PASSWORD
+            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
         )
 
     def test_init(self):
         """Test init."""
         assert self.api.username
+        assert self.api._base_url  # pylint: disable=protected-access
+        assert not self.api.apis.get(SynologyDSMMock.API_AUTH)
         assert not self.api._session_id  # pylint: disable=protected-access
-        assert self.api.base_url
+
+    def test_connection_failed(self):  # pylint: disable=no-self-use
+        """Test failed connection."""
+        api = SynologyDSMMock(
+            "no_internet", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
+        )
+        with self.assertRaises(SynologyDSMRequestException):
+            assert not api.login()
+        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api._session_id  # pylint: disable=protected-access
+
+        api = SynologyDSMMock("host", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL)
+        with self.assertRaises(SynologyDSMRequestException):
+            assert not api.login()
+        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api._session_id  # pylint: disable=protected-access
+
+        api = SynologyDSMMock(VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL)
+        with self.assertRaises(SynologyDSMRequestException):
+            assert not api.login()
+        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api._session_id  # pylint: disable=protected-access
+
+        api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, False)
+        with self.assertRaises(SynologyDSMRequestException):
+            assert not api.login()
+        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api._session_id  # pylint: disable=protected-access
 
     def test_login(self):
         """Test login."""
         assert self.api.login()
+        assert self.api.apis.get(SynologyDSMMock.API_AUTH)
         assert self.api._session_id == SESSION_ID  # pylint: disable=protected-access
         assert self.api._syno_token == SYNO_TOKEN  # pylint: disable=protected-access
 
     def test_login_failed(self):  # pylint: disable=no-self-use
         """Test failed login."""
-        api = SynologyDSMMock("host", VALID_DSM_PORT, VALID_USER, VALID_PASSWORD)
-        assert not api.login()
+        api = SynologyDSMMock(VALID_HOST, VALID_PORT, "user", VALID_PASSWORD, VALID_SSL)
+        with self.assertRaises(SynologyDSMLoginInvalidException):
+            assert not api.login()
+        assert api.apis.get(SynologyDSMMock.API_AUTH)
         assert not api._session_id  # pylint: disable=protected-access
 
-        api = SynologyDSMMock(VALID_DSM_HOST, 0, VALID_USER, VALID_PASSWORD)
-        assert not api.login()
-        assert not api._session_id  # pylint: disable=protected-access
-
-        api = SynologyDSMMock(VALID_DSM_HOST, VALID_DSM_PORT, "user", VALID_PASSWORD)
-        assert not api.login()
-        assert not api._session_id  # pylint: disable=protected-access
-
-        api = SynologyDSMMock(VALID_DSM_HOST, VALID_DSM_PORT, VALID_USER, "pass")
-        assert not api.login()
+        api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, "pass", VALID_SSL)
+        with self.assertRaises(SynologyDSMLoginInvalidException):
+            assert not api.login()
+        assert api.apis.get(SynologyDSMMock.API_AUTH)
         assert not api._session_id  # pylint: disable=protected-access
 
     def test_login_2sa(self):
         """Test login with 2SA."""
         api = SynologyDSMMock(
-            VALID_DSM_HOST, VALID_DSM_PORT, VALID_USER_2SA, VALID_PASSWORD
+            VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL
         )
         with self.assertRaises(SynologyDSMLogin2SARequiredException):
             api.login()
@@ -76,10 +107,11 @@ class TestSynologyDSM(TestCase):
     def test_login_2sa_new_session(self):  # pylint: disable=no-self-use
         """Test login with 2SA and a new session with granted device."""
         api = SynologyDSMMock(
-            VALID_DSM_HOST,
-            VALID_DSM_PORT,
+            VALID_HOST,
+            VALID_PORT,
             VALID_USER_2SA,
             VALID_PASSWORD,
+            VALID_SSL,
             device_token=DEVICE_TOKEN,
         )
         assert api.login()
@@ -92,7 +124,7 @@ class TestSynologyDSM(TestCase):
     def test_login_2sa_failed(self):
         """Test failed login with 2SA."""
         api = SynologyDSMMock(
-            VALID_DSM_HOST, VALID_DSM_PORT, VALID_USER_2SA, VALID_PASSWORD
+            VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL
         )
         with self.assertRaises(SynologyDSMLogin2SARequiredException):
             api.login()
@@ -102,6 +134,58 @@ class TestSynologyDSM(TestCase):
         assert api._session_id is None  # pylint: disable=protected-access
         assert api._syno_token is None  # pylint: disable=protected-access
         assert api._device_token is None  # pylint: disable=protected-access
+
+    def test_request_get(self):
+        """Test get request."""
+        assert self.api.get(SynologyDSMMock.API_INFO, "query")
+        assert self.api.get(SynologyDSMMock.API_AUTH, "login")
+        assert self.api.get("SYNO.DownloadStation2.Task", "list")
+        assert self.api.get(SynologyDSMMock.API_AUTH, "logout")
+
+    def test_request_get_failed(self):
+        """Test failed get request."""
+        with self.assertRaises(SynologyDSMAPINotExistsException):
+            assert self.api.get("SYNO.Virtualization.API.Task.Info", "list")
+
+    def test_request_post(self):
+        """Test post request."""
+        assert self.api.post(
+            "SYNO.FileStation.Upload",
+            "upload",
+            params={"dest_folder_path": "/upload/test", "create_parents": True},
+            files={"file": "open('file.txt','rb')"},
+        )
+
+        assert self.api.post(
+            "SYNO.DownloadStation2.Task",
+            "create",
+            params={
+                "uri": "ftps://192.0.0.1:21/test/test.zip",
+                "username": "admin",
+                "password": "1234",
+            },
+        )
+
+    def test_request_post_failed(self):
+        """Test failed post request."""
+        with self.assertRaises(SynologyDSMAPIErrorException):
+            assert self.api.post(
+                "SYNO.FileStation.Upload",
+                "upload",
+                params={"dest_folder_path": "/upload/test", "create_parents": True},
+                files={"file": "open('file_already_exists.txt','rb')"},
+            )
+
+        with self.assertRaises(SynologyDSMAPIErrorException):
+            assert self.api.post(
+                "SYNO.DownloadStation2.Task",
+                "create",
+                params={
+                    "uri": "ftps://192.0.0.1:21/test/test_not_exists.zip",
+                    "username": "admin",
+                    "password": "1234",
+                },
+            )
 
     def test_information(self):
         """Test information."""

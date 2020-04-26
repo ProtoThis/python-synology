@@ -108,7 +108,7 @@ class SynologyDSM(object):
         params = {
             "account": self.username,
             "passwd": self._password,
-            "enable_syno_token": "yes",
+            # "enable_syno_token": "yes",
             "enable_device_token": "yes",
             "device_name": socket.gethostname(),
             "format": "sid",

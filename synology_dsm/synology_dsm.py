@@ -28,6 +28,10 @@ class SynologyDSM(object):
     API_INFO = "SYNO.API.Info"
     API_AUTH = "SYNO.API.Auth"
 
+    DSM_5_WEIRD_URL_API = [
+        SynoStorage.API_KEY,
+    ]
+
     def __init__(
         self,
         dsm_ip,
@@ -74,16 +78,22 @@ class SynologyDSM(object):
         if self._debugmode:
             print("DEBUG: " + message)
 
-    def _build_url(self, api):
-        if (
-            api == SynoStorage.API_KEY
+    def _is_weird_api_url(self, api):
+        """Returns True if the API URL is not common (nas_base_url/webapi/path?params) [Only handles DSM 5 for now]."""
+        return (
+            api in self.DSM_5_WEIRD_URL_API
             and self._information
             and self._information.version
             and int(self._information.version) < 7321  # < DSM 6
-        ):
-            return (
-                "%s/webman/modules/StorageManager/storagehandler.cgi?" % self._base_url
-            )
+        )
+
+    def _build_url(self, api):
+        if self._is_weird_api_url(api):
+            if api == SynoStorage.API_KEY:
+                return (
+                    "%s/webman/modules/StorageManager/storagehandler.cgi?"
+                    % self._base_url
+                )
 
         return "%s/webapi/%s?" % (self._base_url, self.apis[api]["path"])
 
@@ -176,15 +186,18 @@ class SynologyDSM(object):
         if not self._session_id and api not in [self.API_AUTH, self.API_INFO]:
             self.login()
 
-        # Check if API is available
-        if not self.apis.get(api):
-            raise SynologyDSMAPINotExistsException(api)
-
         # Build request params
         if not params:
             params = {}
         params["api"] = api
-        params["version"] = self.apis[api]["maxVersion"]
+        params["version"] = 1
+
+        if not self._is_weird_api_url(api):
+            # Check if API is available
+            if not self.apis.get(api):
+                raise SynologyDSMAPINotExistsException(api)
+            params["version"] = self.apis[api]["maxVersion"]
+
         params["method"] = method
 
         if api == SynoStorage.API_KEY:

@@ -25,6 +25,37 @@ from .api_data.dsm_6 import (
     DSM_6_CORE_UTILIZATION,
     DSM_6_STORAGE_STORAGE,
 )
+from .api_data.dsm_5 import (
+    DSM_5_API_INFO,
+    DSM_5_AUTH_LOGIN,
+    DSM_5_AUTH_LOGIN_2SA,
+    DSM_5_AUTH_LOGIN_2SA_OTP,
+    DSM_5_DSM_INFORMATION,
+    DSM_5_CORE_UTILIZATION,
+    DSM_5_STORAGE_STORAGE,
+)
+
+API_SWITCHER = {
+    5: {
+        "API_INFO": DSM_5_API_INFO,
+        "AUTH_LOGIN": DSM_5_AUTH_LOGIN,
+        "AUTH_LOGIN_2SA": DSM_5_AUTH_LOGIN_2SA,
+        "AUTH_LOGIN_2SA_OTP": DSM_5_AUTH_LOGIN_2SA_OTP,
+        "DSM_INFORMATION": DSM_5_DSM_INFORMATION,
+        "CORE_UTILIZATION": DSM_5_CORE_UTILIZATION,
+        "STORAGE_STORAGE": DSM_5_STORAGE_STORAGE,
+    },
+    6: {
+        "API_INFO": DSM_6_API_INFO,
+        "AUTH_LOGIN": DSM_6_AUTH_LOGIN,
+        "AUTH_LOGIN_2SA": DSM_6_AUTH_LOGIN_2SA,
+        "AUTH_LOGIN_2SA_OTP": DSM_6_AUTH_LOGIN_2SA_OTP,
+        "DSM_INFORMATION": DSM_6_DSM_INFORMATION,
+        "CORE_UTILIZATION": DSM_6_CORE_UTILIZATION,
+        "STORAGE_STORAGE": DSM_6_STORAGE_STORAGE,
+    },
+}
+
 
 if six.PY2:
     from future.moves.urllib.parse import urlencode
@@ -43,7 +74,7 @@ VALID_OTP = "123456"
 class SynologyDSMMock(SynologyDSM):
     """Mocked SynologyDSM."""
 
-    API_URI = "entry.cgi"
+    API_URI = "api="
 
     def __init__(
         self,
@@ -66,8 +97,11 @@ class SynologyDSMMock(SynologyDSM):
             debugmode,
         )
 
+        self.dsm_version = 6
+
     def _execute_request(self, method, url, **kwargs):
         url += urlencode(kwargs["params"])
+
         if "no_internet" in url:
             raise SynologyDSMRequestException(
                 ConnError(
@@ -98,38 +132,38 @@ class SynologyDSMMock(SynologyDSM):
             raise SynologyDSMRequestException(RequestException("Bad request"))
 
         if self.API_INFO in url:
-            return DSM_6_API_INFO
+            return API_SWITCHER[self.dsm_version]["API_INFO"]
 
         if self.API_AUTH in url:
             if VALID_USER_2SA in url and VALID_PASSWORD in url:
                 if "otp_code" not in url and "device_id" not in url:
-                    return DSM_6_AUTH_LOGIN_2SA
+                    return API_SWITCHER[self.dsm_version]["AUTH_LOGIN_2SA"]
 
                 if "device_id" in url and DEVICE_TOKEN in url:
-                    return DSM_6_AUTH_LOGIN
+                    return API_SWITCHER[self.dsm_version]["AUTH_LOGIN"]
 
                 if "otp_code" in url:
                     if VALID_OTP in url:
-                        return DSM_6_AUTH_LOGIN_2SA_OTP
+                        return API_SWITCHER[self.dsm_version]["AUTH_LOGIN_2SA_OTP"]
                     return ERROR_AUTH_OTP_AUTHENTICATE_FAILED
 
             if VALID_USER in url and VALID_PASSWORD in url:
-                return DSM_6_AUTH_LOGIN
+                return API_SWITCHER[self.dsm_version]["AUTH_LOGIN"]
 
             return ERROR_AUTH_INVALID_CREDENTIALS
 
         if self.API_URI in url:
-            if not self._session_id or not self._syno_token:
+            if not self._session_id:
                 return ERROR_INSUFFICIENT_USER_PRIVILEGE
 
             if SynoDSMInformation.API_KEY in url:
-                return DSM_6_DSM_INFORMATION
+                return API_SWITCHER[self.dsm_version]["DSM_INFORMATION"]
 
             if SynoCoreUtilization.API_KEY in url:
-                return DSM_6_CORE_UTILIZATION
+                return API_SWITCHER[self.dsm_version]["CORE_UTILIZATION"]
 
             if SynoStorage.API_KEY in url:
-                return DSM_6_STORAGE_STORAGE
+                return API_SWITCHER[self.dsm_version]["STORAGE_STORAGE"]
 
             if (
                 "SYNO.FileStation.Upload" in url

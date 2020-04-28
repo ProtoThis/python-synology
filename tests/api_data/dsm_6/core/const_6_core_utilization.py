@@ -9,7 +9,7 @@ DSM_6_CORE_UTILIZATION = {
             "5min_load": 33,
             "device": "System",
             "other_load": 3,
-            "system_load": 0,
+            "system_load": 2,
             "user_load": 4,
         },
         "disk": {

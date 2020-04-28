@@ -21,7 +21,7 @@ from . import (
     VALID_USER,
     VALID_USER_2SA,
 )
-from .const import SESSION_ID, DEVICE_TOKEN, SYNO_TOKEN
+from .const import SESSION_ID, DEVICE_TOKEN
 
 
 class TestSynologyDSM(TestCase):
@@ -33,6 +33,7 @@ class TestSynologyDSM(TestCase):
         self.api = SynologyDSMMock(
             VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
         )
+        self.api.dsm_version = 5
 
     def test_init(self):
         """Test init."""
@@ -46,24 +47,28 @@ class TestSynologyDSM(TestCase):
         api = SynologyDSMMock(
             "no_internet", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
         )
+        api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
         assert not api.apis.get(SynologyDSMMock.API_AUTH)
         assert not api._session_id  # pylint: disable=protected-access
 
         api = SynologyDSMMock("host", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL)
+        api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
         assert not api.apis.get(SynologyDSMMock.API_AUTH)
         assert not api._session_id  # pylint: disable=protected-access
 
         api = SynologyDSMMock(VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL)
+        api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
         assert not api.apis.get(SynologyDSMMock.API_AUTH)
         assert not api._session_id  # pylint: disable=protected-access
 
         api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, False)
+        api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
         assert not api.apis.get(SynologyDSMMock.API_AUTH)
@@ -74,17 +79,19 @@ class TestSynologyDSM(TestCase):
         assert self.api.login()
         assert self.api.apis.get(SynologyDSMMock.API_AUTH)
         assert self.api._session_id == SESSION_ID  # pylint: disable=protected-access
-        assert self.api._syno_token == SYNO_TOKEN  # pylint: disable=protected-access
+        assert self.api._syno_token is None  # pylint: disable=protected-access
 
     def test_login_failed(self):  # pylint: disable=no-self-use
         """Test failed login."""
         api = SynologyDSMMock(VALID_HOST, VALID_PORT, "user", VALID_PASSWORD, VALID_SSL)
+        api.dsm_version = 5
         with self.assertRaises(SynologyDSMLoginInvalidException):
             assert not api.login()
         assert api.apis.get(SynologyDSMMock.API_AUTH)
         assert not api._session_id  # pylint: disable=protected-access
 
         api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, "pass", VALID_SSL)
+        api.dsm_version = 5
         with self.assertRaises(SynologyDSMLoginInvalidException):
             assert not api.login()
         assert api.apis.get(SynologyDSMMock.API_AUTH)
@@ -95,12 +102,13 @@ class TestSynologyDSM(TestCase):
         api = SynologyDSMMock(
             VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL
         )
+        api.dsm_version = 5
         with self.assertRaises(SynologyDSMLogin2SARequiredException):
             api.login()
         api.login(VALID_OTP)
 
         assert api._session_id == SESSION_ID  # pylint: disable=protected-access
-        assert api._syno_token == SYNO_TOKEN  # pylint: disable=protected-access
+        assert api._syno_token is None  # pylint: disable=protected-access
         assert api._device_token == DEVICE_TOKEN  # pylint: disable=protected-access
         assert api.device_token == DEVICE_TOKEN
 
@@ -114,10 +122,11 @@ class TestSynologyDSM(TestCase):
             VALID_SSL,
             device_token=DEVICE_TOKEN,
         )
+        api.dsm_version = 5
         assert api.login()
 
         assert api._session_id == SESSION_ID  # pylint: disable=protected-access
-        assert api._syno_token == SYNO_TOKEN  # pylint: disable=protected-access
+        assert api._syno_token is None  # pylint: disable=protected-access
         assert api._device_token == DEVICE_TOKEN  # pylint: disable=protected-access
         assert api.device_token == DEVICE_TOKEN
 
@@ -126,6 +135,7 @@ class TestSynologyDSM(TestCase):
         api = SynologyDSMMock(
             VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL
         )
+        api.dsm_version = 5
         with self.assertRaises(SynologyDSMLogin2SARequiredException):
             api.login()
         with self.assertRaises(SynologyDSMLogin2SAFailedException):
@@ -190,14 +200,14 @@ class TestSynologyDSM(TestCase):
     def test_information(self):
         """Test information."""
         assert self.api.information
-        assert self.api.information.model == "DS918+"
-        assert self.api.information.ram == 4096
-        assert self.api.information.serial == "1920PDN001501"
+        assert self.api.information.model == "DS3615xs"
+        assert self.api.information.ram == 6144
+        assert self.api.information.serial == "B3J4N01003"
         assert self.api.information.temperature == 40
         assert not self.api.information.temperature_warn
-        assert self.api.information.uptime == 155084
-        assert self.api.information.version == "24922"
-        assert self.api.information.version_string == "DSM 6.2.2-24922 Update 4"
+        assert self.api.information.uptime == 3897
+        assert self.api.information.version == "5967"
+        assert self.api.information.version_string == "DSM 5.2-5967 Update 9"
 
     def test_utilisation(self):
         """Test utilization."""
@@ -236,7 +246,7 @@ class TestSynologyDSM(TestCase):
         assert self.api.storage
         assert self.api.storage.disks
         assert self.api.storage.env
-        assert self.api.storage.storage_pools
+        assert self.api.storage.storage_pools == []
         assert self.api.storage.volumes
 
     def test_storage_volumes(self):
@@ -253,19 +263,27 @@ class TestSynologyDSM(TestCase):
             assert self.api.storage.volume_size_used(volume_id)
             assert self.api.storage.volume_size_used(volume_id, False)
             assert self.api.storage.volume_percentage_used(volume_id)
-            assert self.api.storage.volume_disk_temp_avg(volume_id)
-            assert self.api.storage.volume_disk_temp_max(volume_id)
+            assert (
+                self.api.storage.volume_disk_temp_avg(volume_id) is None
+            )  # because of empty storagePools
+            assert (
+                self.api.storage.volume_disk_temp_max(volume_id) is None
+            )  # because of empty storagePools
 
         # Existing volume
         assert self.api.storage.volume_status("volume_1") == "normal"
         assert self.api.storage.volume_device_type("volume_1") == "raid_5"
-        assert self.api.storage.volume_size_total("volume_1") == "7.0Tb"
-        assert self.api.storage.volume_size_total("volume_1", False) == 7672030584832
-        assert self.api.storage.volume_size_used("volume_1") == "4.0Tb"
-        assert self.api.storage.volume_size_used("volume_1", False) == 4377452806144
-        assert self.api.storage.volume_percentage_used("volume_1") == 57.1
-        assert self.api.storage.volume_disk_temp_avg("volume_1") == 24.0
-        assert self.api.storage.volume_disk_temp_max("volume_1") == 24
+        assert self.api.storage.volume_size_total("volume_1") == "8.0Tb"
+        assert self.api.storage.volume_size_total("volume_1", False) == 8846249701376
+        assert self.api.storage.volume_size_used("volume_1") == "5.2Tb"
+        assert self.api.storage.volume_size_used("volume_1", False) == 5719795761152
+        assert self.api.storage.volume_percentage_used("volume_1") == 64.7
+        assert (
+            self.api.storage.volume_disk_temp_avg("volume_1") is None
+        )  # because of empty storagePools
+        assert (
+            self.api.storage.volume_disk_temp_max("volume_1") is None
+        )  # because of empty storagePools
 
         # Non existing volume
         assert not self.api.storage.volume_status("not_a_volume")
@@ -296,9 +314,12 @@ class TestSynologyDSM(TestCase):
         for disk_id in self.api.storage.disks_ids:
             if disk_id == "test_disk":
                 continue
-            assert "Drive" in self.api.storage.disk_name(disk_id)
+            assert "Disk" in self.api.storage.disk_name(disk_id)
             assert "/dev/" in self.api.storage.disk_device(disk_id)
-            assert self.api.storage.disk_smart_status(disk_id) == "normal"
+            if disk_id == "sda":
+                assert self.api.storage.disk_smart_status(disk_id) == "90%"
+            else:
+                assert self.api.storage.disk_smart_status(disk_id) == "safe"
             assert self.api.storage.disk_status(disk_id) == "normal"
             assert not self.api.storage.disk_exceed_bad_sector_thr(disk_id)
             assert not self.api.storage.disk_below_remain_life_thr(disk_id)

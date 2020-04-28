@@ -186,15 +186,18 @@ class SynologyDSM(object):
         if not self._session_id and api not in [self.API_AUTH, self.API_INFO]:
             self.login()
 
-        # Check if API is available
-        if not self.apis.get(api) and not self._is_weird_api_url(api):
-            raise SynologyDSMAPINotExistsException(api)
-
         # Build request params
         if not params:
             params = {}
         params["api"] = api
-        params["version"] = self.apis[api]["maxVersion"]
+        params["version"] = 1
+
+        if not self._is_weird_api_url(api):
+            # Check if API is available
+            if not self.apis.get(api):
+                raise SynologyDSMAPINotExistsException(api)
+            params["version"] = self.apis[api]["maxVersion"]
+
         params["method"] = method
 
         if api == SynoStorage.API_KEY:

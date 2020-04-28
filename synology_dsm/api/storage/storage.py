@@ -144,8 +144,7 @@ class SynoStorage(object):
     def _get_disks_for_volume(self, volume_id):
         """Returns a list of disk for a specific volume."""
         disks = []
-        pools = self._data.get("storagePools", [])
-        for pool in pools:
+        for pool in self.storage_pools:
             if pool["deploy_path"] == volume_id:
                 for disk_id in pool["disks"]:
                     disks.append(self._get_disk(disk_id))

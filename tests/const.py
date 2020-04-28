@@ -10,7 +10,6 @@
 SESSION_ID = "session_id"
 SYNO_TOKEN = "Syñ0_T0k€ñ"
 DEVICE_TOKEN = "Dév!cè_T0k€ñ"
-SERIAL = "1x2X3x!_SN"
 UNIQUE_KEY = "1x2X3x!_UK"
 
 # Common API error code

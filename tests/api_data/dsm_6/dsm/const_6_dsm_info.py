@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """DSM 6 SYNO.DSM.Info data."""
-from tests.const import SERIAL
 
 
 DSM_6_DSM_INFORMATION = {
@@ -8,7 +7,7 @@ DSM_6_DSM_INFORMATION = {
         "codepage": "fre",
         "model": "DS918+",
         "ram": 4096,
-        "serial": SERIAL,
+        "serial": "1920PDN001501",
         "temperature": 40,
         "temperature_warn": False,
         "time": "Sun Mar 29 19:33:41 2020",

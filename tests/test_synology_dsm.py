@@ -21,7 +21,7 @@ from . import (
     VALID_USER,
     VALID_USER_2SA,
 )
-from .const import SESSION_ID, SERIAL, DEVICE_TOKEN, SYNO_TOKEN
+from .const import SESSION_ID, DEVICE_TOKEN, SYNO_TOKEN
 
 
 class TestSynologyDSM(TestCase):
@@ -192,7 +192,7 @@ class TestSynologyDSM(TestCase):
         assert self.api.information
         assert self.api.information.model == "DS918+"
         assert self.api.information.ram == 4096
-        assert self.api.information.serial == SERIAL
+        assert self.api.information.serial == "1920PDN001501"
         assert self.api.information.temperature == 40
         assert not self.api.information.temperature_warn
         assert self.api.information.uptime == 155084

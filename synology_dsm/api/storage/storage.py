@@ -17,7 +17,9 @@ class SynoStorage(object):
     def update(self, raw_data):
         """Updates storage data."""
         if raw_data:
-            self._data = raw_data["data"]
+            self._data = raw_data
+            if raw_data.get("data"):
+                self._data = raw_data["data"]
 
     # Root
     @property

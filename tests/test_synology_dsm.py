@@ -239,8 +239,8 @@ class TestSynologyDSM(TestCase):
         assert self.api.storage.storage_pools
         assert self.api.storage.volumes
 
-    def test_storage_volumes(self):
-        """Test storage volumes."""
+    def test_storage_raid_volumes(self):
+        """Test RAID storage volumes."""
         # Basics
         assert self.api.storage.volumes_ids
         for volume_id in self.api.storage.volumes_ids:
@@ -288,6 +288,72 @@ class TestSynologyDSM(TestCase):
         assert self.api.storage.volume_percentage_used("test_volume") is None
         assert self.api.storage.volume_disk_temp_avg("test_volume") is None
         assert self.api.storage.volume_disk_temp_max("test_volume") is None
+
+
+    def test_storage_shr_volumes(self):
+        """Test SHR storage volumes."""
+        api = SynologyDSMMock(
+            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
+        )
+        api.disks_redundancy = "SHR"
+
+        # Basics
+        assert api.storage.volumes_ids
+        for volume_id in api.storage.volumes_ids:
+            if volume_id == "test_volume":
+                continue
+            assert api.storage.volume_status(volume_id)
+            assert api.storage.volume_device_type(volume_id)
+            assert api.storage.volume_size_total(volume_id)
+            assert api.storage.volume_size_total(volume_id, False)
+            assert api.storage.volume_size_used(volume_id)
+            assert api.storage.volume_size_used(volume_id, False)
+            assert api.storage.volume_percentage_used(volume_id)
+            assert api.storage.volume_disk_temp_avg(volume_id)
+            assert api.storage.volume_disk_temp_max(volume_id)
+
+        # Existing volume
+        assert api.storage.volume_status("volume_1") == "normal"
+        assert api.storage.volume_device_type("volume_1") == "shr_without_disk_protect"
+        assert api.storage.volume_size_total("volume_1") == "2.7Tb"
+        assert api.storage.volume_size_total("volume_1", False) == 2948623499264
+        assert api.storage.volume_size_used("volume_1") == "2.5Tb"
+        assert api.storage.volume_size_used("volume_1", False) == 2710796488704
+        assert api.storage.volume_percentage_used("volume_1") == 91.9
+        assert api.storage.volume_disk_temp_avg("volume_1") == 29.0
+        assert api.storage.volume_disk_temp_max("volume_1") == 29
+        
+        assert api.storage.volume_status("volume_2") == "normal"
+        assert api.storage.volume_device_type("volume_2") == "shr_without_disk_protect"
+        assert api.storage.volume_size_total("volume_2") == "1.8Tb"
+        assert api.storage.volume_size_total("volume_2", False) == 1964124495872
+        assert api.storage.volume_size_used("volume_2") == "1.5Tb"
+        assert api.storage.volume_size_used("volume_2", False) == 1684179374080
+        assert api.storage.volume_percentage_used("volume_2") == 85.7
+        assert api.storage.volume_disk_temp_avg("volume_2") == 30.0
+        assert api.storage.volume_disk_temp_max("volume_2") == 30
+
+        # Non existing volume
+        assert not api.storage.volume_status("not_a_volume")
+        assert not api.storage.volume_device_type("not_a_volume")
+        assert not api.storage.volume_size_total("not_a_volume")
+        assert not api.storage.volume_size_total("not_a_volume", False)
+        assert not api.storage.volume_size_used("not_a_volume")
+        assert not api.storage.volume_size_used("not_a_volume", False)
+        assert not api.storage.volume_percentage_used("not_a_volume")
+        assert not api.storage.volume_disk_temp_avg("not_a_volume")
+        assert not api.storage.volume_disk_temp_max("not_a_volume")
+
+        # Test volume
+        assert api.storage.volume_status("test_volume") is None
+        assert api.storage.volume_device_type("test_volume") is None
+        assert api.storage.volume_size_total("test_volume") is None
+        assert api.storage.volume_size_total("test_volume", False) is None
+        assert api.storage.volume_size_used("test_volume") is None
+        assert api.storage.volume_size_used("test_volume", False) is None
+        assert api.storage.volume_percentage_used("test_volume") is None
+        assert api.storage.volume_disk_temp_avg("test_volume") is None
+        assert api.storage.volume_disk_temp_max("test_volume") is None
 
     def test_storage_disks(self):
         """Test storage disks."""

@@ -23,7 +23,8 @@ from .api_data.dsm_6 import (
     DSM_6_AUTH_LOGIN_2SA_OTP,
     DSM_6_DSM_INFORMATION,
     DSM_6_CORE_UTILIZATION,
-    DSM_6_STORAGE_STORAGE,
+    DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
+    DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
 )
 from .api_data.dsm_5 import (
     DSM_5_API_INFO,
@@ -32,7 +33,7 @@ from .api_data.dsm_5 import (
     DSM_5_AUTH_LOGIN_2SA_OTP,
     DSM_5_DSM_INFORMATION,
     DSM_5_CORE_UTILIZATION,
-    DSM_5_STORAGE_STORAGE,
+    DSM_5_STORAGE_STORAGE_DS410J_RAID5_4DISKS_1VOL,
 )
 
 API_SWITCHER = {
@@ -43,7 +44,9 @@ API_SWITCHER = {
         "AUTH_LOGIN_2SA_OTP": DSM_5_AUTH_LOGIN_2SA_OTP,
         "DSM_INFORMATION": DSM_5_DSM_INFORMATION,
         "CORE_UTILIZATION": DSM_5_CORE_UTILIZATION,
-        "STORAGE_STORAGE": DSM_5_STORAGE_STORAGE,
+        "STORAGE_STORAGE": {
+            "RAID":DSM_5_STORAGE_STORAGE_DS410J_RAID5_4DISKS_1VOL,
+        },
     },
     6: {
         "API_INFO": DSM_6_API_INFO,
@@ -52,7 +55,10 @@ API_SWITCHER = {
         "AUTH_LOGIN_2SA_OTP": DSM_6_AUTH_LOGIN_2SA_OTP,
         "DSM_INFORMATION": DSM_6_DSM_INFORMATION,
         "CORE_UTILIZATION": DSM_6_CORE_UTILIZATION,
-        "STORAGE_STORAGE": DSM_6_STORAGE_STORAGE,
+        "STORAGE_STORAGE": {
+            "RAID": DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
+            "SHR": DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
+        }
     },
 }
 
@@ -97,7 +103,8 @@ class SynologyDSMMock(SynologyDSM):
             debugmode,
         )
 
-        self.dsm_version = 6
+        self.dsm_version = 6 # 5 or 6
+        self.disks_redundancy = "RAID" # RAID or SHR
 
     def _execute_request(self, method, url, **kwargs):
         url += urlencode(kwargs["params"])
@@ -163,7 +170,7 @@ class SynologyDSMMock(SynologyDSM):
                 return API_SWITCHER[self.dsm_version]["CORE_UTILIZATION"]
 
             if SynoStorage.API_KEY in url:
-                return API_SWITCHER[self.dsm_version]["STORAGE_STORAGE"]
+                return API_SWITCHER[self.dsm_version]["STORAGE_STORAGE"][self.disks_redundancy]
 
             if (
                 "SYNO.FileStation.Upload" in url

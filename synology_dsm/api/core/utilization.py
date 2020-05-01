@@ -75,7 +75,7 @@ class SynoCoreUtilization(object):
             return str(self._data["memory"]["real_usage"])
         return None
 
-    def memory_size(self, human_readable=True):
+    def memory_size(self, human_readable=False):
         """Total memory size of Synology DSM."""
         if self.memory:
             # Memory is actually returned in KB's so multiply before converting
@@ -85,7 +85,7 @@ class SynoCoreUtilization(object):
             return return_data
         return None
 
-    def memory_available_swap(self, human_readable=True):
+    def memory_available_swap(self, human_readable=False):
         """Total available memory swap."""
         if self.memory:
             # Memory is actually returned in KB's so multiply before converting
@@ -95,7 +95,7 @@ class SynoCoreUtilization(object):
             return return_data
         return None
 
-    def memory_cached(self, human_readable=True):
+    def memory_cached(self, human_readable=False):
         """Total cached memory."""
         if self.memory:
             # Memory is actually returned in KB's so multiply before converting
@@ -105,7 +105,7 @@ class SynoCoreUtilization(object):
             return return_data
         return None
 
-    def memory_available_real(self, human_readable=True):
+    def memory_available_real(self, human_readable=False):
         """Real available memory."""
         if self.memory:
             # Memory is actually returned in KB's so multiply before converting
@@ -115,7 +115,7 @@ class SynoCoreUtilization(object):
             return return_data
         return None
 
-    def memory_total_real(self, human_readable=True):
+    def memory_total_real(self, human_readable=False):
         """Total available real memory."""
         if self.memory:
             # Memory is actually returned in KB's so multiply before converting
@@ -125,7 +125,7 @@ class SynoCoreUtilization(object):
             return return_data
         return None
 
-    def memory_total_swap(self, human_readable=True):
+    def memory_total_swap(self, human_readable=False):
         """Total swap memory."""
         if self.memory:
             # Memory is actually returned in KB's so multiply before converting
@@ -147,7 +147,7 @@ class SynoCoreUtilization(object):
                 return network
         return None
 
-    def network_up(self, human_readable=True):
+    def network_up(self, human_readable=False):
         """Total upload speed being used."""
         network = self._get_network("total")
         if network:
@@ -157,7 +157,7 @@ class SynoCoreUtilization(object):
             return return_data
         return None
 
-    def network_down(self, human_readable=True):
+    def network_down(self, human_readable=False):
         """Total download speed being used."""
         network = self._get_network("total")
         if network:

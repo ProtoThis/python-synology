@@ -66,7 +66,7 @@ class SynoStorage(object):
         """Returns the volume type (RAID1, RAID2, etc)."""
         return self._get_volume(volume_id).get("device_type")
 
-    def volume_size_total(self, volume_id, human_readable=True):
+    def volume_size_total(self, volume_id, human_readable=False):
         """Total size of volume."""
         volume = self._get_volume(volume_id)
         if volume.get("size"):
@@ -76,7 +76,7 @@ class SynoStorage(object):
             return return_data
         return None
 
-    def volume_size_used(self, volume_id, human_readable=True):
+    def volume_size_used(self, volume_id, human_readable=False):
         """Total used size in volume."""
         volume = self._get_volume(volume_id)
         if volume.get("size"):

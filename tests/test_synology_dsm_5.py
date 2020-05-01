@@ -229,18 +229,26 @@ class TestSynologyDSM(TestCase):
         """Test utilization memory."""
         assert self.api.utilisation.memory
         assert self.api.utilisation.memory_real_usage
-        assert self.api.utilisation.memory_size
-        assert self.api.utilisation.memory_available_swap
-        assert self.api.utilisation.memory_cached
-        assert self.api.utilisation.memory_available_real
-        assert self.api.utilisation.memory_total_real
-        assert self.api.utilisation.memory_total_swap
+        assert self.api.utilisation.memory_size()
+        assert self.api.utilisation.memory_size(True)
+        assert self.api.utilisation.memory_available_swap()
+        assert self.api.utilisation.memory_available_swap(True)
+        assert self.api.utilisation.memory_cached()
+        assert self.api.utilisation.memory_cached(True)
+        assert self.api.utilisation.memory_available_real()
+        assert self.api.utilisation.memory_available_real(True)
+        assert self.api.utilisation.memory_total_real()
+        assert self.api.utilisation.memory_total_real(True)
+        assert self.api.utilisation.memory_total_swap()
+        assert self.api.utilisation.memory_total_swap(True)
 
     def test_utilisation_network(self):
         """Test utilization network."""
         assert self.api.utilisation.network
-        assert self.api.utilisation.network_up
-        assert self.api.utilisation.network_down
+        assert self.api.utilisation.network_up()
+        assert self.api.utilisation.network_up(True)
+        assert self.api.utilisation.network_down()
+        assert self.api.utilisation.network_down(True)
 
     def test_storage(self):
         """Test storage roots."""
@@ -260,9 +268,9 @@ class TestSynologyDSM(TestCase):
             assert self.api.storage.volume_status(volume_id)
             assert self.api.storage.volume_device_type(volume_id)
             assert self.api.storage.volume_size_total(volume_id)
-            assert self.api.storage.volume_size_total(volume_id, False)
+            assert self.api.storage.volume_size_total(volume_id, True)
             assert self.api.storage.volume_size_used(volume_id)
-            assert self.api.storage.volume_size_used(volume_id, False)
+            assert self.api.storage.volume_size_used(volume_id, True)
             assert self.api.storage.volume_percentage_used(volume_id)
             assert (
                 self.api.storage.volume_disk_temp_avg(volume_id) is None
@@ -274,10 +282,10 @@ class TestSynologyDSM(TestCase):
         # Existing volume
         assert self.api.storage.volume_status("volume_1") == "normal"
         assert self.api.storage.volume_device_type("volume_1") == "raid_5"
-        assert self.api.storage.volume_size_total("volume_1") == "8.0Tb"
-        assert self.api.storage.volume_size_total("volume_1", False) == 8846249701376
-        assert self.api.storage.volume_size_used("volume_1") == "5.2Tb"
-        assert self.api.storage.volume_size_used("volume_1", False) == 5719795761152
+        assert self.api.storage.volume_size_total("volume_1") == 8846249701376
+        assert self.api.storage.volume_size_total("volume_1", True) == "8.0Tb"
+        assert self.api.storage.volume_size_used("volume_1") == 5719795761152
+        assert self.api.storage.volume_size_used("volume_1", True) == "5.2Tb"
         assert self.api.storage.volume_percentage_used("volume_1") == 64.7
         assert (
             self.api.storage.volume_disk_temp_avg("volume_1") is None
@@ -290,9 +298,9 @@ class TestSynologyDSM(TestCase):
         assert not self.api.storage.volume_status("not_a_volume")
         assert not self.api.storage.volume_device_type("not_a_volume")
         assert not self.api.storage.volume_size_total("not_a_volume")
-        assert not self.api.storage.volume_size_total("not_a_volume", False)
+        assert not self.api.storage.volume_size_total("not_a_volume", True)
         assert not self.api.storage.volume_size_used("not_a_volume")
-        assert not self.api.storage.volume_size_used("not_a_volume", False)
+        assert not self.api.storage.volume_size_used("not_a_volume", True)
         assert not self.api.storage.volume_percentage_used("not_a_volume")
         assert not self.api.storage.volume_disk_temp_avg("not_a_volume")
         assert not self.api.storage.volume_disk_temp_max("not_a_volume")
@@ -301,9 +309,9 @@ class TestSynologyDSM(TestCase):
         assert self.api.storage.volume_status("test_volume") is None
         assert self.api.storage.volume_device_type("test_volume") is None
         assert self.api.storage.volume_size_total("test_volume") is None
-        assert self.api.storage.volume_size_total("test_volume", False) is None
+        assert self.api.storage.volume_size_total("test_volume", True) is None
         assert self.api.storage.volume_size_used("test_volume") is None
-        assert self.api.storage.volume_size_used("test_volume", False) is None
+        assert self.api.storage.volume_size_used("test_volume", True) is None
         assert self.api.storage.volume_percentage_used("test_volume") is None
         assert self.api.storage.volume_disk_temp_avg("test_volume") is None
         assert self.api.storage.volume_disk_temp_max("test_volume") is None

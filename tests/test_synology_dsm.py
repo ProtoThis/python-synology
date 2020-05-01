@@ -295,7 +295,7 @@ class TestSynologyDSM(TestCase):
         api = SynologyDSMMock(
             VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
         )
-        api.disks_redundancy = "SHR"
+        api.disks_redundancy = "SHR1"
 
         # Basics
         assert api.storage.volumes_ids
@@ -354,6 +354,68 @@ class TestSynologyDSM(TestCase):
         assert api.storage.volume_percentage_used("test_volume") is None
         assert api.storage.volume_disk_temp_avg("test_volume") is None
         assert api.storage.volume_disk_temp_max("test_volume") is None
+
+    def test_storage_shr2_volumes(self):
+        """Test SHR2 storage volumes."""
+        api = SynologyDSMMock(
+            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
+        )
+        api.disks_redundancy = "SHR2"
+
+        # Basics
+        assert api.storage.volumes_ids
+        for volume_id in api.storage.volumes_ids:
+            assert api.storage.volume_status(volume_id)
+            assert api.storage.volume_device_type(volume_id)
+            assert api.storage.volume_size_total(volume_id)
+            assert api.storage.volume_size_total(volume_id, False)
+            assert api.storage.volume_size_used(volume_id)
+            assert api.storage.volume_size_used(volume_id, False)
+            assert api.storage.volume_percentage_used(volume_id)
+            assert api.storage.volume_disk_temp_avg(volume_id)
+            assert api.storage.volume_disk_temp_max(volume_id)
+
+        # Existing volume
+        assert api.storage.volume_status("volume_1") == "normal"
+        assert api.storage.volume_device_type("volume_1") == "shr_with_2_disk_protect"
+        assert api.storage.volume_size_total("volume_1") == "34.9Tb"
+        assert api.storage.volume_size_total("volume_1", False) == 38378964738048
+        assert api.storage.volume_size_used("volume_1") == "24.3Tb"
+        assert api.storage.volume_size_used("volume_1", False) == 26724878606336
+        assert api.storage.volume_percentage_used("volume_1") == 69.6
+        assert api.storage.volume_disk_temp_avg("volume_1") == 37.0
+        assert api.storage.volume_disk_temp_max("volume_1") == 41
+
+    def test_storage_shr2_expansion_volumes(self):
+        """Test SHR2 storage with expansion unit volumes."""
+        api = SynologyDSMMock(
+            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
+        )
+        api.disks_redundancy = "SHR2_EXPANSION"
+
+        # Basics
+        assert api.storage.volumes_ids
+        for volume_id in api.storage.volumes_ids:
+            assert api.storage.volume_status(volume_id)
+            assert api.storage.volume_device_type(volume_id)
+            assert api.storage.volume_size_total(volume_id)
+            assert api.storage.volume_size_total(volume_id, False)
+            assert api.storage.volume_size_used(volume_id)
+            assert api.storage.volume_size_used(volume_id, False)
+            assert api.storage.volume_percentage_used(volume_id)
+            assert api.storage.volume_disk_temp_avg(volume_id)
+            assert api.storage.volume_disk_temp_max(volume_id)
+
+        # Existing volume
+        assert api.storage.volume_status("volume_1") == "normal"
+        assert api.storage.volume_device_type("volume_1") == "shr_with_2_disk_protect"
+        assert api.storage.volume_size_total("volume_1") == "28.8Tb"
+        assert api.storage.volume_size_total("volume_1", False) == 31714659872768
+        assert api.storage.volume_size_used("volume_1") == "23.1Tb"
+        assert api.storage.volume_size_used("volume_1", False) == 25419707531264
+        assert api.storage.volume_percentage_used("volume_1") == 80.2
+        assert api.storage.volume_disk_temp_avg("volume_1") == 33.0
+        assert api.storage.volume_disk_temp_max("volume_1") == 35
 
     def test_storage_disks(self):
         """Test storage disks."""

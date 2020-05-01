@@ -25,6 +25,8 @@ from .api_data.dsm_6 import (
     DSM_6_CORE_UTILIZATION,
     DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
     DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
+    DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL,
+    DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION,
 )
 from .api_data.dsm_5 import (
     DSM_5_API_INFO,
@@ -55,7 +57,9 @@ API_SWITCHER = {
         "CORE_UTILIZATION": DSM_6_CORE_UTILIZATION,
         "STORAGE_STORAGE": {
             "RAID": DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
-            "SHR": DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
+            "SHR1": DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
+            "SHR2": DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL,
+            "SHR2_EXPANSION": DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION,
         },
     },
 }
@@ -102,7 +106,7 @@ class SynologyDSMMock(SynologyDSM):
         )
 
         self.dsm_version = 6  # 5 or 6
-        self.disks_redundancy = "RAID"  # RAID or SHR
+        self.disks_redundancy = "RAID"  # RAID or SHR[number][_EXPANSION]
 
     def _execute_request(self, method, url, **kwargs):
         url += urlencode(kwargs["params"])

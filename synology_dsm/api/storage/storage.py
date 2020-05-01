@@ -147,9 +147,19 @@ class SynoStorage(object):
         """Returns a list of disk for a specific volume."""
         disks = []
         for pool in self.storage_pools:
-            if pool["deploy_path"] == volume_id:
+
+            if pool.get("deploy_path") == volume_id:
+                # RAID disk redundancy
                 for disk_id in pool["disks"]:
                     disks.append(self._get_disk(disk_id))
+
+            if pool.get("pool_child"):
+                # SHR disk redundancy
+                for pool_child in pool.get("pool_child"):
+                    if pool_child["id"] == volume_id:
+                        for disk_id in pool["disks"]:
+                            disks.append(self._get_disk(disk_id))
+
         return disks
 
     def disk_name(self, disk_id):

@@ -23,7 +23,8 @@ from . import (
 )
 from .const import SESSION_ID, DEVICE_TOKEN
 
-
+# pylint: disable=no-self-use
+# pylint: disable=protected-access
 class TestSynologyDSM(TestCase):
     """SynologyDSM test cases."""
 
@@ -38,11 +39,11 @@ class TestSynologyDSM(TestCase):
     def test_init(self):
         """Test init."""
         assert self.api.username
-        assert self.api._base_url  # pylint: disable=protected-access
+        assert self.api._base_url
         assert not self.api.apis.get(SynologyDSMMock.API_AUTH)
-        assert not self.api._session_id  # pylint: disable=protected-access
+        assert not self.api._session_id
 
-    def test_connection_failed(self):  # pylint: disable=no-self-use
+    def test_connection_failed(self):
         """Test failed connection."""
         api = SynologyDSMMock(
             "no_internet", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
@@ -51,51 +52,51 @@ class TestSynologyDSM(TestCase):
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
         assert not api.apis.get(SynologyDSMMock.API_AUTH)
-        assert not api._session_id  # pylint: disable=protected-access
+        assert not api._session_id
 
         api = SynologyDSMMock("host", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL)
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
         assert not api.apis.get(SynologyDSMMock.API_AUTH)
-        assert not api._session_id  # pylint: disable=protected-access
+        assert not api._session_id
 
         api = SynologyDSMMock(VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL)
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
         assert not api.apis.get(SynologyDSMMock.API_AUTH)
-        assert not api._session_id  # pylint: disable=protected-access
+        assert not api._session_id
 
         api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, False)
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
         assert not api.apis.get(SynologyDSMMock.API_AUTH)
-        assert not api._session_id  # pylint: disable=protected-access
+        assert not api._session_id
 
     def test_login(self):
         """Test login."""
         assert self.api.login()
         assert self.api.apis.get(SynologyDSMMock.API_AUTH)
-        assert self.api._session_id == SESSION_ID  # pylint: disable=protected-access
-        assert self.api._syno_token is None  # pylint: disable=protected-access
+        assert self.api._session_id == SESSION_ID
+        assert self.api._syno_token is None
 
-    def test_login_failed(self):  # pylint: disable=no-self-use
+    def test_login_failed(self):
         """Test failed login."""
         api = SynologyDSMMock(VALID_HOST, VALID_PORT, "user", VALID_PASSWORD, VALID_SSL)
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLoginInvalidException):
             assert not api.login()
         assert api.apis.get(SynologyDSMMock.API_AUTH)
-        assert not api._session_id  # pylint: disable=protected-access
+        assert not api._session_id
 
         api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, "pass", VALID_SSL)
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLoginInvalidException):
             assert not api.login()
         assert api.apis.get(SynologyDSMMock.API_AUTH)
-        assert not api._session_id  # pylint: disable=protected-access
+        assert not api._session_id
 
     def test_login_2sa(self):
         """Test login with 2SA."""
@@ -107,12 +108,12 @@ class TestSynologyDSM(TestCase):
             api.login()
         api.login(VALID_OTP)
 
-        assert api._session_id == SESSION_ID  # pylint: disable=protected-access
-        assert api._syno_token is None  # pylint: disable=protected-access
-        assert api._device_token == DEVICE_TOKEN  # pylint: disable=protected-access
+        assert api._session_id == SESSION_ID
+        assert api._syno_token is None
+        assert api._device_token == DEVICE_TOKEN
         assert api.device_token == DEVICE_TOKEN
 
-    def test_login_2sa_new_session(self):  # pylint: disable=no-self-use
+    def test_login_2sa_new_session(self):
         """Test login with 2SA and a new session with granted device."""
         api = SynologyDSMMock(
             VALID_HOST,
@@ -125,9 +126,9 @@ class TestSynologyDSM(TestCase):
         api.dsm_version = 5
         assert api.login()
 
-        assert api._session_id == SESSION_ID  # pylint: disable=protected-access
-        assert api._syno_token is None  # pylint: disable=protected-access
-        assert api._device_token == DEVICE_TOKEN  # pylint: disable=protected-access
+        assert api._session_id == SESSION_ID
+        assert api._syno_token is None
+        assert api._device_token == DEVICE_TOKEN
         assert api.device_token == DEVICE_TOKEN
 
     def test_login_2sa_failed(self):
@@ -141,9 +142,9 @@ class TestSynologyDSM(TestCase):
         with self.assertRaises(SynologyDSMLogin2SAFailedException):
             api.login(888888)
 
-        assert api._session_id is None  # pylint: disable=protected-access
-        assert api._syno_token is None  # pylint: disable=protected-access
-        assert api._device_token is None  # pylint: disable=protected-access
+        assert api._session_id is None
+        assert api._syno_token is None
+        assert api._device_token is None
 
     def test_request_get(self):
         """Test get request."""

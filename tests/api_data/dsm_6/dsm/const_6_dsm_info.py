@@ -1,8 +1,23 @@
 # -*- coding: utf-8 -*-
 """DSM 6 SYNO.DSM.Info data."""
 
+DSM_6_DSM_INFORMATION_DS213_PLUS = {
+    "data": {
+        "codepage": "enu",
+        "model": "DS213+",
+        "ram": 512,
+        "serial": "XXXXXXXXXXX",
+        "temperature": 30,
+        "temperature_warn": False,
+        "time": "Thu Apr 30 14:57:35 2020",
+        "uptime": 3258607,
+        "version": "24922",
+        "version_string": "DSM 6.2.2-24922 Update 4",
+    },
+    "success": True,
+}
 
-DSM_6_DSM_INFORMATION = {
+DSM_6_DSM_INFORMATION_DS918_PLUS = {
     "data": {
         "codepage": "fre",
         "model": "DS918+",
@@ -17,3 +32,5 @@ DSM_6_DSM_INFORMATION = {
     },
     "success": True,
 }
+
+DSM_6_DSM_INFORMATION = DSM_6_DSM_INFORMATION_DS918_PLUS

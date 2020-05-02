@@ -17,6 +17,7 @@ from .exceptions import (
     SynologyDSMLogin2SARequiredException,
     SynologyDSMLogin2SAFailedException,
 )
+from .api.core.security import SynoCoreSecurity
 from .api.core.utilization import SynoCoreUtilization
 from .api.dsm.information import SynoDSMInformation
 from .api.dsm.network import SynoDSMNetwork
@@ -62,6 +63,7 @@ class SynologyDSM(object):
         }
         self._information = None
         self._network = None
+        self._security = None
         self._utilisation = None
         self._storage = None
 
@@ -259,6 +261,10 @@ class SynologyDSM(object):
             data = self.get(SynoDSMInformation.API_KEY, "getinfo")
             self._information.update(data)
 
+        if self._security:
+            data = self.get(SynoCoreSecurity.API_KEY, "system_get")
+            self._security = SynoCoreSecurity(data)
+
         if self._utilisation:
             data = self.get(SynoCoreUtilization.API_KEY, "get")
             self._utilisation.update(data)
@@ -282,6 +288,14 @@ class SynologyDSM(object):
             data = self.get(SynoDSMNetwork.API_KEY, "list")
             self._network = SynoDSMNetwork(data)
         return self._network
+
+    @property
+    def security(self):
+        """Gets NAS security informations."""
+        if not self._security:
+            data = self.get(SynoCoreSecurity.API_KEY, "system_get")
+            self._security = SynoCoreSecurity(data)
+        return self._security
 
     @property
     def utilisation(self):

@@ -212,6 +212,16 @@ class TestSynologyDSM(TestCase):
         assert self.api.network.macs
         assert self.api.network.workgroup
 
+    def test_security(self):
+        """Test security."""
+        assert self.api.security
+        assert self.api.security.checks
+        assert self.api.security.last_scan_time
+        assert not self.api.security.start_time  # Finished scan
+        assert self.api.security.success
+        assert self.api.security.progress
+        assert self.api.security.status
+
     def test_utilisation(self):
         """Test utilization."""
         assert self.api.utilisation

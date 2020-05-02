@@ -6,6 +6,7 @@ from simplejson.errors import JSONDecodeError
 
 from synology_dsm import SynologyDSM
 from synology_dsm.exceptions import SynologyDSMRequestException
+from synology_dsm.api.core.security import SynoCoreSecurity
 from synology_dsm.api.core.utilization import SynoCoreUtilization
 from synology_dsm.api.dsm.information import SynoDSMInformation
 from synology_dsm.api.dsm.network import SynoDSMNetwork
@@ -25,6 +26,7 @@ from .api_data.dsm_6 import (
     DSM_6_DSM_INFORMATION,
     DSM_6_DSM_NETWORK,
     DSM_6_CORE_UTILIZATION,
+    DSM_6_CORE_SECURITY,
     DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
     DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
     DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL,
@@ -59,6 +61,7 @@ API_SWITCHER = {
         "AUTH_LOGIN_2SA_OTP": DSM_6_AUTH_LOGIN_2SA_OTP,
         "DSM_INFORMATION": DSM_6_DSM_INFORMATION,
         "DSM_NETWORK": DSM_6_DSM_NETWORK,
+        "CORE_SECURITY": DSM_6_CORE_SECURITY,
         "CORE_UTILIZATION": DSM_6_CORE_UTILIZATION,
         "STORAGE_STORAGE": {
             "RAID": DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
@@ -175,6 +178,9 @@ class SynologyDSMMock(SynologyDSM):
 
             if SynoDSMNetwork.API_KEY in url:
                 return API_SWITCHER[self.dsm_version]["DSM_NETWORK"]
+
+            if SynoCoreSecurity.API_KEY in url:
+                return API_SWITCHER[self.dsm_version]["CORE_SECURITY"]
 
             if SynoCoreUtilization.API_KEY in url:
                 return API_SWITCHER[self.dsm_version]["CORE_UTILIZATION"]

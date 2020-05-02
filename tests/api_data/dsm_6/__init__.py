@@ -6,6 +6,7 @@ from .const_6_api_auth import (
     DSM_6_AUTH_LOGIN_2SA_OTP,
 )
 from .core.const_6_core_utilization import DSM_6_CORE_UTILIZATION
+from .core.const_6_core_security import DSM_6_CORE_SECURITY
 from .dsm.const_6_dsm_info import DSM_6_DSM_INFORMATION
 from .dsm.const_6_dsm_network import DSM_6_DSM_NETWORK
 from .storage.const_6_storage_storage import (

@@ -200,6 +200,18 @@ class TestSynologyDSM(TestCase):
         assert self.api.information.version == "24922"
         assert self.api.information.version_string == "DSM 6.2.2-24922 Update 4"
 
+    def test_network(self):
+        """Test network."""
+        assert self.api.network
+        assert self.api.network.dns
+        assert self.api.network.gateway
+        assert self.api.network.hostname
+        assert self.api.network.interfaces
+        assert self.api.network.interface("eth0")
+        assert self.api.network.interface("eth1")
+        assert self.api.network.macs
+        assert self.api.network.workgroup
+
     def test_utilisation(self):
         """Test utilization."""
         assert self.api.utilisation

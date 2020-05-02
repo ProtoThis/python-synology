@@ -19,6 +19,7 @@ from .exceptions import (
 )
 from .api.core.utilization import SynoCoreUtilization
 from .api.dsm.information import SynoDSMInformation
+from .api.dsm.network import SynoDSMNetwork
 from .api.storage.storage import SynoStorage
 
 
@@ -60,6 +61,7 @@ class SynologyDSM(object):
             "SYNO.API.Info": {"maxVersion": 1, "minVersion": 1, "path": "query.cgi"}
         }
         self._information = None
+        self._network = None
         self._utilisation = None
         self._storage = None
 
@@ -272,6 +274,14 @@ class SynologyDSM(object):
             data = self.get(SynoDSMInformation.API_KEY, "getinfo")
             self._information = SynoDSMInformation(data)
         return self._information
+
+    @property
+    def network(self):
+        """Gets NAS network informations."""
+        if not self._network:
+            data = self.get(SynoDSMNetwork.API_KEY, "list")
+            self._network = SynoDSMNetwork(data)
+        return self._network
 
     @property
     def utilisation(self):

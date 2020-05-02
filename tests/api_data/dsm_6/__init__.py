@@ -7,6 +7,7 @@ from .const_6_api_auth import (
 )
 from .core.const_6_core_utilization import DSM_6_CORE_UTILIZATION
 from .dsm.const_6_dsm_info import DSM_6_DSM_INFORMATION
+from .dsm.const_6_dsm_network import DSM_6_DSM_NETWORK
 from .storage.const_6_storage_storage import (
     DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
     DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,

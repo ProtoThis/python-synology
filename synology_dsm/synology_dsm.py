@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Class to interact with Synology DSM."""
 import socket
+import urllib
 import urllib3
 from requests import Session
 from requests.exceptions import RequestException
@@ -232,14 +233,15 @@ class SynologyDSM(object):
 
         return response
 
-    def _execute_request(self, method, url, **kwargs):
+    def _execute_request(self, method, url, params, **kwargs):
         """Function to execute and handle a request."""
         # Execute Request
         try:
             if method == "GET":
-                resp = self._session.get(url, **kwargs)
+                encoded_params = urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
+                resp = self._session.get(url, params=encoded_params, **kwargs)
             elif method == "POST":
-                resp = self._session.post(url, **kwargs)
+                resp = self._session.post(url, pararms=params **kwargs)
 
             self._debuglog("Request url: " + resp.url)
             self._debuglog("Request status_code: " + str(resp.status_code))

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Class to interact with Synology DSM."""
 import socket
+import sys
 import urllib
 import urllib3
 from requests import Session
@@ -238,10 +239,18 @@ class SynologyDSM(object):
         # Execute Request
         try:
             if method == "GET":
-                encoded_params = urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
+                if sys.version_info[0] < 3:
+                    quote = urllib.quote  # pylint: disable=no-member
+                    param_items = params.iteritems()
+                else:
+                    quote = urllib.parse.quote  # pylint: disable=no-member
+                    param_items = params.items()
+                encoded_params = "&".join(
+                    ["%s=%s" % (key, quote(str(value))) for key, value in param_items]
+                )
                 resp = self._session.get(url, params=encoded_params, **kwargs)
             elif method == "POST":
-                resp = self._session.post(url, pararms=params **kwargs)
+                resp = self._session.post(url, pararms=params ** kwargs)
 
             self._debuglog("Request url: " + resp.url)
             self._debuglog("Request status_code: " + str(resp.status_code))

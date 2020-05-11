@@ -116,8 +116,8 @@ class SynologyDSMMock(SynologyDSM):
         self.dsm_version = 6  # 5 or 6
         self.disks_redundancy = "RAID"  # RAID or SHR[number][_EXPANSION]
 
-    def _execute_request(self, method, url, **kwargs):
-        url += urlencode(kwargs["params"])
+    def _execute_request(self, method, url, params, **kwargs):
+        url += urlencode(params)
 
         if "no_internet" in url:
             raise SynologyDSMRequestException(

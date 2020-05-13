@@ -276,7 +276,7 @@ class SynologyDSM(object):
     def reset(self, api):
         """Reset an API to avoid fetching in on update."""
         if isinstance(api, str):
-            if api == "information" or api == SynoDSMInformation.API_KEY:
+            if api in ("information", SynoDSMInformation.API_KEY):
                 return False
             if hasattr(self, "_" + api):
                 setattr(self, "_" + api, None)

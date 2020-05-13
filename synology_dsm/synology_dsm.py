@@ -243,8 +243,12 @@ class SynologyDSM(object):
         # Execute Request
         try:
             if method == "GET":
+                if six.PY2:
+                    items = params.iteritems()
+                else:
+                    items = params.items()
                 encoded_params = "&".join(
-                    "%s=%s" % (key, quote(value)) for key, value in params.iteritems()
+                    "%s=%s" % (key, quote(str(value))) for key, value in items
                 )
                 resp = self._session.get(url, params=encoded_params, **kwargs)
             elif method == "POST":

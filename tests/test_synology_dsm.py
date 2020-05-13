@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Synology DSM tests."""
 from unittest import TestCase
+import pytest
 
 from synology_dsm.api.core.security import SynoCoreSecurity
 from synology_dsm.api.dsm.information import SynoDSMInformation
@@ -12,6 +13,7 @@ from synology_dsm.exceptions import (
     SynologyDSMLogin2SARequiredException,
     SynologyDSMLogin2SAFailedException,
 )
+from synology_dsm.const import API_AUTH, API_INFO
 
 from . import (
     SynologyDSMMock,
@@ -25,8 +27,7 @@ from . import (
 )
 from .const import SESSION_ID, DEVICE_TOKEN, SYNO_TOKEN
 
-# pylint: disable=no-self-use
-# pylint: disable=protected-access
+# pylint: disable=no-self-use,protected-access,anomalous-backslash-in-string
 class TestSynologyDSM(TestCase):
     """SynologyDSM test cases."""
 
@@ -41,7 +42,7 @@ class TestSynologyDSM(TestCase):
         """Test init."""
         assert self.api.username
         assert self.api._base_url
-        assert not self.api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not self.api.apis.get(API_AUTH)
         assert not self.api._session_id
 
     def test_connection_failed(self):
@@ -49,48 +50,66 @@ class TestSynologyDSM(TestCase):
         api = SynologyDSMMock(
             "no_internet", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
         )
-        with self.assertRaises(SynologyDSMRequestException):
+        with pytest.raises(
+            SynologyDSMRequestException,
+            match="{'api': None, 'code': '-1', 'reason': 'Unknown', 'details': 'ConnectionError = <urllib3.connection.VerifiedHTTPSConnection ",
+        ):
             assert not api.login()
-        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
         api = SynologyDSMMock("host", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL)
-        with self.assertRaises(SynologyDSMRequestException):
+        with pytest.raises(
+            SynologyDSMRequestException,
+            match="{'api': None, 'code': '-1', 'reason': 'Unknown', 'details': 'ConnectionError = <urllib3.connection.HTTPConnection ",
+        ):
             assert not api.login()
-        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
         api = SynologyDSMMock(VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL)
-        with self.assertRaises(SynologyDSMRequestException):
+        with pytest.raises(
+            SynologyDSMRequestException,
+            match="{'api': None, 'code': '-1', 'reason': 'Unknown', 'details': 'SSLError = \[SSL: WRONG_VERSION_NUMBER\] wrong version number \(_ssl.c:1076\)'}",
+        ):
             assert not api.login()
-        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
         api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, False)
-        with self.assertRaises(SynologyDSMRequestException):
+        with pytest.raises(
+            SynologyDSMRequestException,
+            match="{'api': None, 'code': '-1', 'reason': 'Unknown', 'details': 'RequestException = Bad request'}",
+        ):
             assert not api.login()
-        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
     def test_login(self):
         """Test login."""
         assert self.api.login()
-        assert self.api.apis.get(SynologyDSMMock.API_AUTH)
+        assert self.api.apis.get(API_AUTH)
         assert self.api._session_id == SESSION_ID
         assert self.api._syno_token == SYNO_TOKEN
 
     def test_login_failed(self):
         """Test failed login."""
         api = SynologyDSMMock(VALID_HOST, VALID_PORT, "user", VALID_PASSWORD, VALID_SSL)
-        with self.assertRaises(SynologyDSMLoginInvalidException):
+        with pytest.raises(
+            SynologyDSMLoginInvalidException,
+            match="{'api': 'SYNO.API.Auth', 'code': '400', 'reason': 'Invalid credentials', 'details': 'Invalid password or not admin account: user'}",
+        ):
             assert not api.login()
-        assert api.apis.get(SynologyDSMMock.API_AUTH)
+        assert api.apis.get(API_AUTH)
         assert not api._session_id
 
         api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, "pass", VALID_SSL)
-        with self.assertRaises(SynologyDSMLoginInvalidException):
+        with pytest.raises(
+            SynologyDSMLoginInvalidException,
+            match="{'api': 'SYNO.API.Auth', 'code': '400', 'reason': 'Invalid credentials', 'details': 'Invalid password or not admin account: valid_user'}",
+        ):
             assert not api.login()
-        assert api.apis.get(SynologyDSMMock.API_AUTH)
+        assert api.apis.get(API_AUTH)
         assert not api._session_id
 
     def test_login_2sa(self):
@@ -98,7 +117,11 @@ class TestSynologyDSM(TestCase):
         api = SynologyDSMMock(
             VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL
         )
-        with self.assertRaises(SynologyDSMLogin2SARequiredException):
+
+        with pytest.raises(
+            SynologyDSMLogin2SARequiredException,
+            match="{'api': 'SYNO.API.Auth', 'code': '403', 'reason': 'One time password not specified', 'details': 'Two-step authentication required for account: valid_user_2sa'}",
+        ):
             api.login()
         api.login(VALID_OTP)
 
@@ -129,9 +152,15 @@ class TestSynologyDSM(TestCase):
         api = SynologyDSMMock(
             VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL
         )
-        with self.assertRaises(SynologyDSMLogin2SARequiredException):
+        with pytest.raises(
+            SynologyDSMLogin2SARequiredException,
+            match="{'api': 'SYNO.API.Auth', 'code': '403', 'reason': 'One time password not specified', 'details': 'Two-step authentication required for account: valid_user_2sa'}",
+        ):
             api.login()
-        with self.assertRaises(SynologyDSMLogin2SAFailedException):
+        with pytest.raises(
+            SynologyDSMLogin2SAFailedException,
+            match="{'api': 'SYNO.API.Auth', 'code': '404', 'reason': 'One time password authenticate failed', 'details': 'Two-step authentication failed, retry with a new pass code'}",
+        ):
             api.login(888888)
 
         assert api._session_id is None
@@ -140,14 +169,17 @@ class TestSynologyDSM(TestCase):
 
     def test_request_get(self):
         """Test get request."""
-        assert self.api.get(SynologyDSMMock.API_INFO, "query")
-        assert self.api.get(SynologyDSMMock.API_AUTH, "login")
+        assert self.api.get(API_INFO, "query")
+        assert self.api.get(API_AUTH, "login")
         assert self.api.get("SYNO.DownloadStation2.Task", "list")
-        assert self.api.get(SynologyDSMMock.API_AUTH, "logout")
+        assert self.api.get(API_AUTH, "logout")
 
     def test_request_get_failed(self):
         """Test failed get request."""
-        with self.assertRaises(SynologyDSMAPINotExistsException):
+        with pytest.raises(
+            SynologyDSMAPINotExistsException,
+            match="{'api': 'SYNO.Virtualization.API.Task.Info', 'code': '-2', 'reason': 'Unknown', 'details': 'API SYNO.Virtualization.API.Task.Info does not exists'}",
+        ):
             assert self.api.get("SYNO.Virtualization.API.Task.Info", "list")
 
     def test_request_post(self):
@@ -171,7 +203,10 @@ class TestSynologyDSM(TestCase):
 
     def test_request_post_failed(self):
         """Test failed post request."""
-        with self.assertRaises(SynologyDSMAPIErrorException):
+        with pytest.raises(
+            SynologyDSMAPIErrorException,
+            match="{'api': 'SYNO.FileStation.Upload', 'code': '1805', 'reason': 'Can’t overwrite or skip the existed file, if no overwrite parameter is given', 'details': None}",
+        ):
             assert self.api.post(
                 "SYNO.FileStation.Upload",
                 "upload",
@@ -179,7 +214,10 @@ class TestSynologyDSM(TestCase):
                 files={"file": "open('file_already_exists.txt','rb')"},
             )
 
-        with self.assertRaises(SynologyDSMAPIErrorException):
+        with pytest.raises(
+            SynologyDSMAPIErrorException,
+            match="{'api': 'SYNO.DownloadStation2.Task', 'code': '408', 'reason': 'File does not exist', 'details': None}",
+        ):
             assert self.api.post(
                 "SYNO.DownloadStation2.Task",
                 "create",
@@ -273,11 +311,23 @@ class TestSynologyDSM(TestCase):
         assert self.api.security.status
 
     def test_utilisation(self):
-        """Test utilization."""
+        """Test utilisation."""
         assert self.api.utilisation
 
+    def test_utilisation_error(self):
+        """Test utilisation error."""
+        api = SynologyDSMMock(
+            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
+        )
+        api.error = True
+        with pytest.raises(
+            SynologyDSMAPIErrorException,
+            match="{'api': 'SYNO.Core.System.Utilization', 'code': '1055', 'reason': 'Unknown', 'details': {'err_key': '', 'err_line': 883, 'err_msg': 'Transmition failed.', 'err_session': ''}}",
+        ):
+            assert not api.utilisation
+
     def test_utilisation_cpu(self):
-        """Test utilization CPU."""
+        """Test utilisation CPU."""
         assert self.api.utilisation.cpu
         assert self.api.utilisation.cpu_other_load
         assert self.api.utilisation.cpu_user_load
@@ -288,7 +338,7 @@ class TestSynologyDSM(TestCase):
         assert self.api.utilisation.cpu_15min_load
 
     def test_utilisation_memory(self):
-        """Test utilization memory."""
+        """Test utilisation memory."""
         assert self.api.utilisation.memory
         assert self.api.utilisation.memory_real_usage
         assert self.api.utilisation.memory_size()
@@ -305,7 +355,7 @@ class TestSynologyDSM(TestCase):
         assert self.api.utilisation.memory_total_swap(True)
 
     def test_utilisation_network(self):
-        """Test utilization network."""
+        """Test utilisation network."""
         assert self.api.utilisation.network
         assert self.api.utilisation.network_up()
         assert self.api.utilisation.network_up(True)

@@ -1,6 +1,19 @@
 # -*- coding: utf-8 -*-
 """DSM 6 SYNO.Core.System.Utilization data."""
 
+DSM_6_CORE_UTILIZATION_ERROR_1055 = {
+    "error": {
+        "code": 1055,
+        "errors": {
+            "err_key": "",
+            "err_line": 883,
+            "err_msg": "Transmition failed.",
+            "err_session": "",
+        },
+    },
+    "success": False,
+}
+
 DSM_6_CORE_UTILIZATION = {
     "data": {
         "cpu": {

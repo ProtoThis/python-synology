@@ -11,6 +11,7 @@ from synology_dsm.api.core.utilization import SynoCoreUtilization
 from synology_dsm.api.dsm.information import SynoDSMInformation
 from synology_dsm.api.dsm.network import SynoDSMNetwork
 from synology_dsm.api.storage.storage import SynoStorage
+from synology_dsm.const import API_AUTH, API_INFO
 
 from .const import (
     ERROR_INSUFFICIENT_USER_PRIVILEGE,
@@ -26,6 +27,7 @@ from .api_data.dsm_6 import (
     DSM_6_DSM_INFORMATION,
     DSM_6_DSM_NETWORK,
     DSM_6_CORE_UTILIZATION,
+    DSM_6_CORE_UTILIZATION_ERROR_1055,
     DSM_6_CORE_SECURITY,
     DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
     DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
@@ -115,6 +117,7 @@ class SynologyDSMMock(SynologyDSM):
 
         self.dsm_version = 6  # 5 or 6
         self.disks_redundancy = "RAID"  # RAID or SHR[number][_EXPANSION]
+        self.error = False
 
     def _execute_request(self, method, url, **kwargs):
         url += urlencode(kwargs["params"])
@@ -148,10 +151,10 @@ class SynologyDSMMock(SynologyDSM):
         if "https" not in url:
             raise SynologyDSMRequestException(RequestException("Bad request"))
 
-        if self.API_INFO in url:
+        if API_INFO in url:
             return API_SWITCHER[self.dsm_version]["API_INFO"]
 
-        if self.API_AUTH in url:
+        if API_AUTH in url:
             if VALID_USER_2SA in url and VALID_PASSWORD in url:
                 if "otp_code" not in url and "device_id" not in url:
                     return API_SWITCHER[self.dsm_version]["AUTH_LOGIN_2SA"]
@@ -183,6 +186,8 @@ class SynologyDSMMock(SynologyDSM):
                 return API_SWITCHER[self.dsm_version]["CORE_SECURITY"]
 
             if SynoCoreUtilization.API_KEY in url:
+                if self.error:
+                    return DSM_6_CORE_UTILIZATION_ERROR_1055
                 return API_SWITCHER[self.dsm_version]["CORE_UTILIZATION"]
 
             if SynoStorage.API_KEY in url:

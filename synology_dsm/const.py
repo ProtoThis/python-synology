@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Library constants."""
 
+# APIs
+API_INFO = "SYNO.API.Info"
+API_AUTH = "SYNO.API.Auth"
 
 # SYNO.*
 ERROR_COMMON = {

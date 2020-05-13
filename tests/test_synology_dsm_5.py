@@ -10,6 +10,7 @@ from synology_dsm.exceptions import (
     SynologyDSMLogin2SARequiredException,
     SynologyDSMLogin2SAFailedException,
 )
+from synology_dsm.const import API_AUTH, API_INFO
 
 from . import (
     SynologyDSMMock,
@@ -23,8 +24,7 @@ from . import (
 )
 from .const import SESSION_ID, DEVICE_TOKEN
 
-# pylint: disable=no-self-use
-# pylint: disable=protected-access
+# pylint: disable=no-self-use,protected-access,anomalous-backslash-in-string
 class TestSynologyDSM(TestCase):
     """SynologyDSM test cases."""
 
@@ -40,7 +40,7 @@ class TestSynologyDSM(TestCase):
         """Test init."""
         assert self.api.username
         assert self.api._base_url
-        assert not self.api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not self.api.apis.get(API_AUTH)
         assert not self.api._session_id
 
     def test_connection_failed(self):
@@ -51,34 +51,34 @@ class TestSynologyDSM(TestCase):
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
-        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
         api = SynologyDSMMock("host", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL)
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
-        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
         api = SynologyDSMMock(VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL)
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
-        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
         api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, False)
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
-        assert not api.apis.get(SynologyDSMMock.API_AUTH)
+        assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
     def test_login(self):
         """Test login."""
         assert self.api.login()
-        assert self.api.apis.get(SynologyDSMMock.API_AUTH)
+        assert self.api.apis.get(API_AUTH)
         assert self.api._session_id == SESSION_ID
         assert self.api._syno_token is None
 
@@ -88,14 +88,14 @@ class TestSynologyDSM(TestCase):
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLoginInvalidException):
             assert not api.login()
-        assert api.apis.get(SynologyDSMMock.API_AUTH)
+        assert api.apis.get(API_AUTH)
         assert not api._session_id
 
         api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, "pass", VALID_SSL)
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLoginInvalidException):
             assert not api.login()
-        assert api.apis.get(SynologyDSMMock.API_AUTH)
+        assert api.apis.get(API_AUTH)
         assert not api._session_id
 
     def test_login_2sa(self):
@@ -148,10 +148,10 @@ class TestSynologyDSM(TestCase):
 
     def test_request_get(self):
         """Test get request."""
-        assert self.api.get(SynologyDSMMock.API_INFO, "query")
-        assert self.api.get(SynologyDSMMock.API_AUTH, "login")
+        assert self.api.get(API_INFO, "query")
+        assert self.api.get(API_AUTH, "login")
         assert self.api.get("SYNO.DownloadStation2.Task", "list")
-        assert self.api.get(SynologyDSMMock.API_AUTH, "logout")
+        assert self.api.get(API_AUTH, "logout")
 
     def test_request_get_failed(self):
         """Test failed get request."""

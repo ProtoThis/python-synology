@@ -2,6 +2,8 @@
 """Synology DSM tests."""
 from unittest import TestCase
 
+from synology_dsm.api.core.security import SynoCoreSecurity
+from synology_dsm.api.dsm.information import SynoDSMInformation
 from synology_dsm.exceptions import (
     SynologyDSMRequestException,
     SynologyDSMAPINotExistsException,
@@ -187,6 +189,54 @@ class TestSynologyDSM(TestCase):
                     "password": "1234",
                 },
             )
+
+    def test_reset_str_attr(self):
+        """Test reset with string attr."""
+        assert not self.api._security
+        assert self.api.security
+        assert self.api._security
+        assert self.api.reset("security")
+        assert not self.api._security
+
+    def test_reset_str_key(self):
+        """Test reset with string API key."""
+        assert not self.api._security
+        assert self.api.security
+        assert self.api._security
+        assert self.api.reset(SynoCoreSecurity.API_KEY)
+        assert not self.api._security
+
+    def test_reset_object(self):
+        """Test reset with object."""
+        assert not self.api._security
+        assert self.api.security
+        assert self.api._security
+        assert self.api.reset(self.api.security)
+        assert not self.api._security
+
+    def test_reset_str_attr_information(self):
+        """Test reset with string information attr (should not be reset)."""
+        assert not self.api._information
+        assert self.api.information
+        assert self.api._information
+        assert not self.api.reset("information")
+        assert self.api._information
+
+    def test_reset_str_key_information(self):
+        """Test reset with string information API key (should not be reset)."""
+        assert not self.api._information
+        assert self.api.information
+        assert self.api._information
+        assert not self.api.reset(SynoDSMInformation.API_KEY)
+        assert self.api._information
+
+    def test_reset_object_information(self):
+        """Test reset with information object (should not be reset)."""
+        assert not self.api._information
+        assert self.api.information
+        assert self.api._information
+        assert not self.api.reset(self.api.information)
+        assert self.api._information
 
     def test_information(self):
         """Test information."""

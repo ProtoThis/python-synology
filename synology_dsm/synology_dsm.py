@@ -273,6 +273,34 @@ class SynologyDSM(object):
             data = self.get(SynoStorage.API_KEY, "load_info")
             self._storage.update(data)
 
+    def reset(self, api):
+        """Reset an API to avoid fetching in on update."""
+        if isinstance(api, str):
+            if api in ("information", SynoDSMInformation.API_KEY):
+                return False
+            if hasattr(self, "_" + api):
+                setattr(self, "_" + api, None)
+                return True
+            if api == SynoCoreSecurity.API_KEY:
+                self._security = None
+                return True
+            if api == SynoCoreUtilization.API_KEY:
+                self._utilisation = None
+                return True
+            if api == SynoStorage.API_KEY:
+                self._storage = None
+                return True
+        if isinstance(api, SynoCoreSecurity):
+            self._security = None
+            return True
+        if isinstance(api, SynoCoreUtilization):
+            self._utilisation = None
+            return True
+        if isinstance(api, SynoStorage):
+            self._storage = None
+            return True
+        return False
+
     @property
     def information(self):
         """Gets NAS informations."""

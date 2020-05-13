@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """Class to interact with Synology DSM."""
 import socket
-import sys
-import urllib
 import urllib3
+import six
 from requests import Session
 from requests.exceptions import RequestException
 from simplejson.errors import JSONDecodeError
@@ -24,6 +23,11 @@ from .api.core.utilization import SynoCoreUtilization
 from .api.dsm.information import SynoDSMInformation
 from .api.dsm.network import SynoDSMNetwork
 from .api.storage.storage import SynoStorage
+
+if six.PY2:
+    from future.moves.urllib.parse import quote
+else:
+    from urllib.parse import quote  # pylint: disable=import-error,no-name-in-module
 
 
 class SynologyDSM(object):
@@ -239,14 +243,8 @@ class SynologyDSM(object):
         # Execute Request
         try:
             if method == "GET":
-                if sys.version_info[0] < 3:
-                    quote = urllib.quote  # pylint: disable=no-member
-                    param_items = params.iteritems()
-                else:
-                    quote = urllib.parse.quote  # pylint: disable=no-member
-                    param_items = params.items()
                 encoded_params = "&".join(
-                    ["%s=%s" % (key, quote(str(value))) for key, value in param_items]
+                    "%s=%s" % (key, quote(value)) for key, value in params.iteritems()
                 )
                 resp = self._session.get(url, params=encoded_params, **kwargs)
             elif method == "POST":

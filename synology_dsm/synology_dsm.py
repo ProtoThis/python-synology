@@ -2,6 +2,7 @@
 """Class to interact with Synology DSM."""
 import socket
 import urllib3
+import six
 from requests import Session
 from requests.exceptions import RequestException
 from simplejson.errors import JSONDecodeError
@@ -23,6 +24,11 @@ from .api.dsm.information import SynoDSMInformation
 from .api.dsm.network import SynoDSMNetwork
 from .api.storage.storage import SynoStorage
 from .const import API_AUTH, API_INFO
+
+if six.PY2:
+    from future.moves.urllib.parse import quote
+else:
+    from urllib.parse import quote  # pylint: disable=import-error,no-name-in-module
 
 
 class SynologyDSM(object):
@@ -232,14 +238,21 @@ class SynologyDSM(object):
 
         return response
 
-    def _execute_request(self, method, url, **kwargs):
+    def _execute_request(self, method, url, params, **kwargs):
         """Function to execute and handle a request."""
         # Execute Request
         try:
             if method == "GET":
-                resp = self._session.get(url, **kwargs)
+                if six.PY2:
+                    items = params.iteritems()
+                else:
+                    items = params.items()
+                encoded_params = "&".join(
+                    "%s=%s" % (key, quote(str(value))) for key, value in items
+                )
+                resp = self._session.get(url, params=encoded_params, **kwargs)
             elif method == "POST":
-                resp = self._session.post(url, **kwargs)
+                resp = self._session.post(url, pararms=params, **kwargs)
 
             self._debuglog("Request url: " + resp.url)
             self._debuglog("Request status_code: " + str(resp.status_code))

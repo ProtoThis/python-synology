@@ -22,13 +22,11 @@ from .api.core.utilization import SynoCoreUtilization
 from .api.dsm.information import SynoDSMInformation
 from .api.dsm.network import SynoDSMNetwork
 from .api.storage.storage import SynoStorage
+from .const import API_AUTH, API_INFO
 
 
 class SynologyDSM(object):
     """Class containing the main Synology DSM functions."""
-
-    API_INFO = "SYNO.API.Info"
-    API_AUTH = "SYNO.API.Auth"
 
     DSM_5_WEIRD_URL_API = [
         SynoStorage.API_KEY,
@@ -103,9 +101,9 @@ class SynologyDSM(object):
 
     def discover_apis(self):
         """Retreives available API infos from the NAS."""
-        if self._apis.get(self.API_AUTH):
+        if self._apis.get(API_AUTH):
             return
-        self._apis = self.get(self.API_INFO, "query")["data"]
+        self._apis = self.get(API_INFO, "query")["data"]
 
     @property
     def apis(self):
@@ -134,7 +132,7 @@ class SynologyDSM(object):
             params["device_id"] = self._device_token
 
         # Request login
-        result = self.get(self.API_AUTH, "login", params)
+        result = self.get(API_AUTH, "login", params)
 
         # Handle errors
         if result.get("error"):
@@ -183,11 +181,11 @@ class SynologyDSM(object):
     ):
         """Handles API request."""
         # Discover existing APIs
-        if api != self.API_INFO:
+        if api != API_INFO:
             self.discover_apis()
 
         # Check if logged
-        if not self._session_id and api not in [self.API_AUTH, self.API_INFO]:
+        if not self._session_id and api not in [API_AUTH, API_INFO]:
             self.login()
 
         # Build request params
@@ -220,7 +218,7 @@ class SynologyDSM(object):
         self._debuglog(str(response))
 
         # Handle data errors
-        if response.get("error") and api != self.API_AUTH:
+        if response.get("error") and api != API_AUTH:
             self._debuglog("Session error: " + str(response["error"]["code"]))
             if response["error"]["code"] == 119 and retry_once:
                 # Session ID not valid, see https://github.com/aerialls/synology-srm/pull/3
@@ -228,7 +226,9 @@ class SynologyDSM(object):
                 self._syno_token = None
                 self._device_token = None
                 return self._request(request_method, api, method, params, False)
-            raise SynologyDSMAPIErrorException(api, response["error"]["code"])
+            raise SynologyDSMAPIErrorException(
+                api, response["error"]["code"], response["error"].get("errors")
+            )
 
         return response
 

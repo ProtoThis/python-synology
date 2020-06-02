@@ -23,6 +23,7 @@ from .api.core.utilization import SynoCoreUtilization
 from .api.dsm.information import SynoDSMInformation
 from .api.dsm.network import SynoDSMNetwork
 from .api.storage.storage import SynoStorage
+from .api.surveillance_station import SynoSurveillanceStation
 from .const import API_AUTH, API_INFO
 
 if six.PY2:
@@ -72,6 +73,7 @@ class SynologyDSM(object):
         self._security = None
         self._utilisation = None
         self._storage = None
+        self._surveillance = None
 
         # Build variables
         if use_https:
@@ -252,24 +254,29 @@ class SynologyDSM(object):
                 encoded_params = "&".join(
                     "%s=%s" % (key, quote(str(value))) for key, value in items
                 )
-                resp = self._session.get(
+                response = self._session.get(
                     url, params=encoded_params, timeout=self._timeout, **kwargs
                 )
             elif method == "POST":
-                resp = self._session.post(
+                response = self._session.post(
                     url, params=params, timeout=self._timeout, **kwargs
                 )
 
-            self._debuglog("Request url: " + resp.url)
-            self._debuglog("Request status_code: " + str(resp.status_code))
-            self._debuglog("Request headers: " + str(resp.headers))
+            self._debuglog("Request url: " + response.url)
+            self._debuglog("Request status_code: " + str(response.status_code))
+            self._debuglog("Request headers: " + str(response.headers))
 
-            if resp.status_code == 200:
+            if response.status_code == 200:
                 # We got a DSM response
-                return resp.json()
+                content_type = response.headers.get("Content-Type", "").split(";")[0]
+
+                if content_type in ["application/json", "text/json"]:
+                    return response.json()
+
+                return response.content
 
             # We got a 400, 401 or 404 ...
-            raise RequestException(resp)
+            raise RequestException(response)
 
         except (RequestException, JSONDecodeError) as exp:
             raise SynologyDSMRequestException(exp)
@@ -292,6 +299,9 @@ class SynologyDSM(object):
             data = self.get(SynoStorage.API_KEY, "load_info")
             self._storage.update(data)
 
+        if self._surveillance:
+            self._surveillance.update()
+
     def reset(self, api):
         """Reset an API to avoid fetching in on update."""
         if isinstance(api, str):
@@ -309,6 +319,9 @@ class SynologyDSM(object):
             if api == SynoStorage.API_KEY:
                 self._storage = None
                 return True
+            if api == SynoSurveillanceStation.API_KEY:
+                self._surveillance = None
+                return True
         if isinstance(api, SynoCoreSecurity):
             self._security = None
             return True
@@ -317,6 +330,9 @@ class SynologyDSM(object):
             return True
         if isinstance(api, SynoStorage):
             self._storage = None
+            return True
+        if isinstance(api, SynoSurveillanceStation):
+            self._surveillance = None
             return True
         return False
 
@@ -359,3 +375,10 @@ class SynologyDSM(object):
             data = self.get(SynoStorage.API_KEY, "load_info")
             self._storage = SynoStorage(data)
         return self._storage
+
+    @property
+    def surveillance_station(self):
+        """Gets NAS SurveillanceStation."""
+        if not self._surveillance:
+            self._surveillance = SynoSurveillanceStation(self)
+        return self._surveillance

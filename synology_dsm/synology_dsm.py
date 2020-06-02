@@ -228,7 +228,7 @@ class SynologyDSM(object):
         self._debuglog(str(response))
 
         # Handle data errors
-        if response.get("error") and api != API_AUTH:
+        if isinstance(response, dict) and response.get("error") and api != API_AUTH:
             self._debuglog("Session error: " + str(response["error"]["code"]))
             if response["error"]["code"] == 119 and retry_once:
                 # Session ID not valid, see https://github.com/aerialls/synology-srm/pull/3

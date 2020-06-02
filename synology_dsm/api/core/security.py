@@ -18,7 +18,7 @@ class SynoCoreSecurity(object):
 
     @property
     def checks(self):
-        """Gets the checklist."""
+        """Gets the checklist by check category."""
         return self._data.get("items", {})
 
     @property
@@ -43,5 +43,13 @@ class SynoCoreSecurity(object):
 
     @property
     def status(self):
-        """Gets the last scan status (safe, ...)."""
+        """Gets the last scan status (safe, danger, info, outOfDate, risk, warning)."""
         return self._data.get("sysStatus")
+
+    @property
+    def status_by_check(self):
+        """Gets the last scan status per check."""
+        status = {}
+        for category in self.checks:
+            status[category] = self.checks[category]["failSeverity"]
+        return status

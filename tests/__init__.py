@@ -29,6 +29,7 @@ from .api_data.dsm_6 import (
     DSM_6_CORE_UTILIZATION,
     DSM_6_CORE_UTILIZATION_ERROR_1055,
     DSM_6_CORE_SECURITY,
+    DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE,
     DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
     DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
     DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL,
@@ -183,6 +184,8 @@ class SynologyDSMMock(SynologyDSM):
                 return API_SWITCHER[self.dsm_version]["DSM_NETWORK"]
 
             if SynoCoreSecurity.API_KEY in url:
+                if self.error:
+                    return DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE
                 return API_SWITCHER[self.dsm_version]["CORE_SECURITY"]
 
             if SynoCoreUtilization.API_KEY in url:

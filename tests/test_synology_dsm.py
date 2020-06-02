@@ -221,8 +221,9 @@ class TestSynologyDSM(TestCase):
         assert api._device_token is None
 
     def test_request_timeout(self):
+        """Test request timeout."""
         api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, 2
+            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, timeout=2
         )
         assert api._timeout == 2
 

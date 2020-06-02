@@ -252,7 +252,7 @@ class SynologyDSM(object):
                 )
                 resp = self._session.get(url, params=encoded_params, **kwargs)
             elif method == "POST":
-                resp = self._session.post(url, pararms=params, **kwargs)
+                resp = self._session.post(url, params=params, **kwargs)
 
             self._debuglog("Request url: " + resp.url)
             self._debuglog("Request status_code: " + str(resp.status_code))

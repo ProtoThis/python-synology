@@ -2,7 +2,7 @@
 from .const import RECORDING_STATUS, MOTION_DETECTION_DISABLED
 
 
-class SynoCamera:
+class SynoCamera(object):
     """An representation of a Synology SurveillanceStation camera."""
 
     def __init__(self, data, live_view_data=None):
@@ -62,7 +62,7 @@ class SynoCamera:
         return self._data["recStatus"] in RECORDING_STATUS
 
 
-class SynoCameraLiveView:
+class SynoCameraLiveView(object):
     """An representation of a Synology SurveillanceStation camera live view."""
 
     def __init__(self, data):

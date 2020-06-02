@@ -45,11 +45,13 @@ class SynologyDSM(object):
         username,
         password,
         use_https=False,
+        timeout=None,
         device_token=None,
         debugmode=False,
     ):
         self.username = username
         self._password = password
+        self._timeout = timeout or 10
         self._debugmode = debugmode
 
         # Session
@@ -250,9 +252,9 @@ class SynologyDSM(object):
                 encoded_params = "&".join(
                     "%s=%s" % (key, quote(str(value))) for key, value in items
                 )
-                resp = self._session.get(url, params=encoded_params, **kwargs)
+                resp = self._session.get(url, params=encoded_params, timeout=self._timeout, **kwargs)
             elif method == "POST":
-                resp = self._session.post(url, params=params, **kwargs)
+                resp = self._session.post(url, params=params, timeout=self._timeout, **kwargs)
 
             self._debuglog("Request url: " + resp.url)
             self._debuglog("Request status_code: " + str(resp.status_code))

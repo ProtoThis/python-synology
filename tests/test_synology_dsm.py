@@ -27,7 +27,7 @@ from . import (
 )
 from .const import SESSION_ID, DEVICE_TOKEN, SYNO_TOKEN
 
-# pylint: disable=no-self-use,protected-access,anomalous-backslash-in-string
+# pylint: disable=no-self-use,protected-access
 class TestSynologyDSM(TestCase):
     """SynologyDSM test cases."""
 
@@ -42,6 +42,7 @@ class TestSynologyDSM(TestCase):
         """Test init."""
         assert self.api.username
         assert self.api._base_url
+        assert self.api._timeout == 10
         assert not self.api.apis.get(API_AUTH)
         assert not self.api._session_id
 
@@ -218,6 +219,13 @@ class TestSynologyDSM(TestCase):
         assert api._session_id is None
         assert api._syno_token is None
         assert api._device_token is None
+
+    def test_request_timeout(self):
+        """Test request timeout."""
+        api = SynologyDSMMock(
+            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, timeout=2
+        )
+        assert api._timeout == 2
 
     def test_request_get(self):
         """Test get request."""

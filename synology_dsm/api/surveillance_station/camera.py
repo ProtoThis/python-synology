@@ -67,11 +67,11 @@ class SynoCameraLiveView(object):
 
     def __init__(self, data):
         """Initialize a Surveillance Station camera live view."""
-        self._data = data or {}
+        self.update(data)
 
     def update(self, data):
         """Update the camera live view."""
-        self._data = data or {}
+        self._data = data
 
     @property
     def mjpeg_http(self):

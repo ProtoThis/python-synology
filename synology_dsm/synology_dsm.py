@@ -270,7 +270,11 @@ class SynologyDSM(object):
                 # We got a DSM response
                 content_type = response.headers.get("Content-Type", "").split(";")[0]
 
-                if content_type in ["application/json", "text/json"]:
+                if content_type in [
+                    "application/json",
+                    "text/json",
+                    "text/plain",  # Can happen with some API
+                ]:
                     return response.json()
 
                 return response.content

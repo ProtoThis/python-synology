@@ -95,7 +95,12 @@ class SynoSurveillanceStation(object):
     def capture_camera_image(self, camera_id, save=True):
         """Capture a snapshot for camera matching camera_id."""
         return self._dsm.get(
-            self.SNAPSHOT_API_KEY, "TakeSnapshot", {"camId": camera_id, "blSave": save},
+            self.SNAPSHOT_API_KEY,
+            "TakeSnapshot",
+            {
+                "camId": camera_id,
+                "blSave": int(save),  # API requires an integer instead of a boolean
+            },
         )
 
     def download_snapshot(self, snapshot_id, snapshot_size):

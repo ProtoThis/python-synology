@@ -38,7 +38,7 @@ class SynoSurveillanceStation(object):
         live_view_response = self._dsm.get(
             self.CAMERA_API_KEY,
             "getLiveViewPath",
-            {"idList": ",".join(str(k) for k in self._cameras_by_id.keys())},
+            {"idList": ",".join(str(k) for k in self._cameras_by_id)},
         )
         for live_view_data in live_view_response["data"]:
             self._cameras_by_id[live_view_data["id"]].live_view.update(live_view_data)

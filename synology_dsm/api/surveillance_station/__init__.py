@@ -9,6 +9,7 @@ class SynoSurveillanceStation(object):
     """An implementation of a Synology SurveillanceStation."""
 
     API_KEY = "SYNO.SurveillanceStation.*"
+    INFO_API_KEY = "SYNO.SurveillanceStation.Info"
     CAMERA_API_KEY = "SYNO.SurveillanceStation.Camera"
     CAMERA_EVENT_API_KEY = "SYNO.SurveillanceStation.Camera.Event"
     HOME_MODE_API_KEY = "SYNO.SurveillanceStation.HomeMode"
@@ -42,6 +43,11 @@ class SynoSurveillanceStation(object):
         )
         for live_view_data in live_view_response["data"]:
             self._cameras_by_id[live_view_data["id"]].live_view.update(live_view_data)
+
+    # Global
+    def get_info(self):
+        """Return general informations about the Surveillance Station instance."""
+        return self._dsm.get(self.INFO_API_KEY, "GetInfo")
 
     # Camera
     def get_all_cameras(self):

@@ -22,12 +22,21 @@ class SynoSurveillanceStation(object):
 
     def update(self):
         """Update cameras and motion settings with latest from API."""
-        response = self._dsm.get(self.CAMERA_API_KEY, "List")
-        for data in response["data"]["cameras"]:
-            if data["id"] in self._cameras_by_id:
-                self._cameras_by_id[data["id"]].update(data)
+        list_data = self._dsm.get(self.CAMERA_API_KEY, "List")["data"]
+        cameras_data = self._dsm.get(
+            self.CAMERA_API_KEY,
+            "GetInfo",
+            {
+                "cameraIds": ",".join(
+                    str(list_data["cameras"][cam]["id"]) for cam in list_data["cameras"]
+                )
+            },
+        )["data"]
+        for camera_data in cameras_data["cameras"]:
+            if camera_data["id"] in self._cameras_by_id:
+                self._cameras_by_id[camera_data["id"]].update(camera_data)
             else:
-                self._cameras_by_id[data["id"]] = SynoCamera(data)
+                self._cameras_by_id[camera_data["id"]] = SynoCamera(camera_data)
 
         for camera_id in self._cameras_by_id:
             self._cameras_by_id[camera_id].update_motion_detection(
@@ -36,12 +45,12 @@ class SynoSurveillanceStation(object):
                 )["data"]
             )
 
-        live_view_response = self._dsm.get(
+        live_view_data = self._dsm.get(
             self.CAMERA_API_KEY,
             "GetLiveViewPath",
             {"idList": ",".join(str(k) for k in self._cameras_by_id)},
-        )
-        for live_view_data in live_view_response["data"]:
+        )["data"]
+        for live_view_data in live_view_data:
             self._cameras_by_id[live_view_data["id"]].live_view.update(live_view_data)
 
     # Global

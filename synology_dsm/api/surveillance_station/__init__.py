@@ -61,7 +61,7 @@ class SynoSurveillanceStation(object):
     def get_camera_image(self, camera_id):
         """Return bytes of camera image for camera matching camera_id."""
         return self._dsm.get(
-            self.CAMERA_API_KEY, "getSnapshot", {"cameraId": camera_id}
+            self.CAMERA_API_KEY, "GetSnapshot", {"id": camera_id}
         )
 
     def enable_camera(self, camera_id):

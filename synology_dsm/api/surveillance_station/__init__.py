@@ -37,7 +37,7 @@ class SynoSurveillanceStation(object):
 
         live_view_response = self._dsm.get(
             self.CAMERA_API_KEY,
-            "getLiveViewPath",
+            "GetLiveViewPath",
             {"idList": ",".join(str(k) for k in self._cameras_by_id)},
         )
         for live_view_data in live_view_response["data"]:
@@ -64,13 +64,13 @@ class SynoSurveillanceStation(object):
 
     def enable_camera(self, camera_id):
         """Enable camera(s) - multiple ID or single ex 1 or 1,2,3."""
-        return self._dsm.get(self.CAMERA_API_KEY, "enable", {"idList": camera_id})[
+        return self._dsm.get(self.CAMERA_API_KEY, "Enable", {"idList": camera_id})[
             "success"
         ]
 
     def disable_camera(self, camera_id):
         """Disable camera(s) - multiple ID or single ex 1 or 1,2,3."""
-        return self._dsm.get(self.CAMERA_API_KEY, "disable", {"idList": camera_id})[
+        return self._dsm.get(self.CAMERA_API_KEY, "Disable", {"idList": camera_id})[
             "success"
         ]
 
@@ -78,14 +78,14 @@ class SynoSurveillanceStation(object):
     def capture_camera_image(self, camera_id, save=True):
         """Capture a snapshot for camera matching camera_id."""
         return self._dsm.get(
-            self.SNAPSHOT_API_KEY, "takeSnapshot", {"camId": camera_id, "blSave": save},
+            self.SNAPSHOT_API_KEY, "TakeSnapshot", {"camId": camera_id, "blSave": save},
         )
 
     def download_snapshot(self, snapshot_id, snapshot_size):
         """Download snapshot image binary for a givent snapshot_id (snapshot_size: SNAPSHOT_SIZE_ICON | SNAPSHOT_SIZE_FULL)."""
         return self._dsm.get(
             self.SNAPSHOT_API_KEY,
-            "loadSnapshot",
+            "LoadSnapshot",
             {"id": snapshot_id, "imgSize": snapshot_size},
         )
 
@@ -113,8 +113,8 @@ class SynoSurveillanceStation(object):
     # Home mode
     def get_home_mode_status(self):
         """Get the state of Home Mode"""
-        return self._dsm.get(self.HOME_MODE_API_KEY, "getinfo")["data"]["on"]
+        return self._dsm.get(self.HOME_MODE_API_KEY, "GetInfo")["data"]["on"]
 
     def set_home_mode(self, state):
         """Set the state of Home Mode (state: bool)"""
-        return self._dsm.get(self.HOME_MODE_API_KEY, "switch", {"on": state})["success"]
+        return self._dsm.get(self.HOME_MODE_API_KEY, "Switch", {"on": state})["success"]

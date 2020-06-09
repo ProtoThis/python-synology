@@ -11,6 +11,7 @@ from synology_dsm.api.core.utilization import SynoCoreUtilization
 from synology_dsm.api.dsm.information import SynoDSMInformation
 from synology_dsm.api.dsm.network import SynoDSMNetwork
 from synology_dsm.api.storage.storage import SynoStorage
+from synology_dsm.api.surveillance_station import SynoSurveillanceStation
 from synology_dsm.const import API_AUTH, API_INFO
 
 from .const import (
@@ -34,6 +35,10 @@ from .api_data.dsm_6 import (
     DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
     DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL,
     DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION,
+    DSM_6_API_INFO_SURVEILLANCE_STATION,
+    DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MOTION_ENUM,
+    DSM_6_SURVEILLANCE_STATION_CAMERA_GET_LIVE_VIEW_PATH,
+    DSM_6_SURVEILLANCE_STATION_CAMERA_LIST,
 )
 from .api_data.dsm_5 import (
     DSM_5_API_INFO,
@@ -121,6 +126,7 @@ class SynologyDSMMock(SynologyDSM):
         self.dsm_version = 6  # 5 or 6
         self.disks_redundancy = "RAID"  # RAID or SHR[number][_EXPANSION]
         self.error = False
+        self.with_surveillance = False
 
     def _execute_request(self, method, url, params, **kwargs):
         url += urlencode(params)
@@ -155,6 +161,8 @@ class SynologyDSMMock(SynologyDSM):
             raise SynologyDSMRequestException(RequestException("Bad request"))
 
         if API_INFO in url:
+            if self.with_surveillance:
+                return DSM_6_API_INFO_SURVEILLANCE_STATION
             return API_SWITCHER[self.dsm_version]["API_INFO"]
 
         if API_AUTH in url:
@@ -199,6 +207,14 @@ class SynologyDSMMock(SynologyDSM):
                 return API_SWITCHER[self.dsm_version]["STORAGE_STORAGE"][
                     self.disks_redundancy
                 ]
+            
+            if SynoSurveillanceStation.CAMERA_API_KEY in url:
+                if "List" in url:
+                    return DSM_6_SURVEILLANCE_STATION_CAMERA_LIST
+                if "MDParamSave" in url:
+                    return DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MOTION_ENUM
+                if "GetLiveViewPath" in url:
+                    return DSM_6_SURVEILLANCE_STATION_CAMERA_GET_LIVE_VIEW_PATH
 
             if (
                 "SYNO.FileStation.Upload" in url

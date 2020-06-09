@@ -28,7 +28,7 @@ class SynoSurveillanceStation(object):
             "GetInfo",
             {
                 "cameraIds": ",".join(
-                    str(list_data["cameras"][cam]["id"]) for cam in list_data["cameras"]
+                    str(cam["id"]) for cam in list_data["cameras"]
                 )
             },
         )["data"]

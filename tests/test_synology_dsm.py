@@ -681,3 +681,14 @@ class TestSynologyDSM(TestCase):
         assert self.api.storage.disk_exceed_bad_sector_thr("test_disk") is None
         assert self.api.storage.disk_below_remain_life_thr("test_disk") is None
         assert self.api.storage.disk_temp("test_disk") is None
+
+    def test_surveillance_camera(self):
+        """Test surveillance."""
+        self.api.with_surveillance = True
+        assert self.api.surveillance_station
+        self.api.surveillance_station.update()
+        assert self.api.surveillance_station.get_all_cameras
+        assert self.api.surveillance_station.get_camera(1)
+        assert self.api.surveillance_station.get_camera_live_view_path(1)
+        assert self.api.surveillance_station.enable_motion_detection(1)
+        assert self.api.surveillance_station.disable_motion_detection(1)

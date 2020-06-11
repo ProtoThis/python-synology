@@ -207,14 +207,15 @@ class SynologyDSMMock(SynologyDSM):
                 return API_SWITCHER[self.dsm_version]["STORAGE_STORAGE"][
                     self.disks_redundancy
                 ]
-            
+
             if SynoSurveillanceStation.CAMERA_API_KEY in url:
-                if "List" in url:
-                    return DSM_6_SURVEILLANCE_STATION_CAMERA_LIST
-                if "MDParamSave" in url:
-                    return DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MOTION_ENUM
                 if "GetLiveViewPath" in url:
                     return DSM_6_SURVEILLANCE_STATION_CAMERA_GET_LIVE_VIEW_PATH
+                if "List" in url:
+                    assert params["version"] == 7
+                    return DSM_6_SURVEILLANCE_STATION_CAMERA_LIST
+                if "MotionEnum" in url:
+                    return DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MOTION_ENUM
 
             if (
                 "SYNO.FileStation.Upload" in url

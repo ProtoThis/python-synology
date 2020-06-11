@@ -209,6 +209,9 @@ class SynologyDSM(object):
             if not self.apis.get(api):
                 raise SynologyDSMAPINotExistsException(api)
             params["version"] = self.apis[api]["maxVersion"]
+            max_version = kwargs.pop("max_version", None)
+            if max_version and params["version"] > max_version:
+                params["version"] = max_version
 
         params["method"] = method
 
@@ -222,7 +225,7 @@ class SynologyDSM(object):
 
         # Request data
         url = self._build_url(api)
-        response = self._execute_request(request_method, url, params=params, **kwargs)
+        response = self._execute_request(request_method, url, params, **kwargs)
         self._debuglog("Successful returned data")
         self._debuglog("API: " + api)
         self._debuglog(str(response))

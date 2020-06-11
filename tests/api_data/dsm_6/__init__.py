@@ -22,5 +22,11 @@ from .storage.const_6_storage_storage import (
     DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL,
 )
 
-from .surveillance_station.const_6_api_info import DSM_6_API_INFO as DSM_6_API_INFO_SURVEILLANCE_STATION
-from .surveillance_station.const_6_surveillance_station_camera import DSM_6_SURVEILLANCE_STATION_CAMERA_LIST, DSM_6_SURVEILLANCE_STATION_CAMERA_GET_LIVE_VIEW_PATH, DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MOTION_ENUM
+from .surveillance_station.const_6_api_info import (
+    DSM_6_API_INFO as DSM_6_API_INFO_SURVEILLANCE_STATION,
+)
+from .surveillance_station.const_6_surveillance_station_camera import (
+    DSM_6_SURVEILLANCE_STATION_CAMERA_LIST,
+    DSM_6_SURVEILLANCE_STATION_CAMERA_GET_LIVE_VIEW_PATH,
+    DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MOTION_ENUM,
+)

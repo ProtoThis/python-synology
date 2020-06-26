@@ -130,4 +130,4 @@ class SynoSurveillanceStation(object):
 
     def set_home_mode(self, state):
         """Set the state of Home Mode (state: bool)"""
-        return self._dsm.get(self.HOME_MODE_API_KEY, "Switch", {"on": state})["success"]
+        return self._dsm.get(self.HOME_MODE_API_KEY, "Switch", {"on": str(state).lower()})["success"]

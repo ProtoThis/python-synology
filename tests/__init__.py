@@ -38,7 +38,10 @@ from .api_data.dsm_6 import (
     DSM_6_API_INFO_SURVEILLANCE_STATION,
     DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MOTION_ENUM,
     DSM_6_SURVEILLANCE_STATION_CAMERA_GET_LIVE_VIEW_PATH,
+    DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MD_PARAM_SAVE,
     DSM_6_SURVEILLANCE_STATION_CAMERA_LIST,
+    DSM_6_SURVEILLANCE_STATION_HOME_MODE_GET_INFO,
+    DSM_6_SURVEILLANCE_STATION_HOME_MODE_SWITCH,
 )
 from .api_data.dsm_5 import (
     DSM_5_API_INFO,
@@ -214,8 +217,16 @@ class SynologyDSMMock(SynologyDSM):
                 if "List" in url:
                     assert params["version"] == 7
                     return DSM_6_SURVEILLANCE_STATION_CAMERA_LIST
+                if "MDParamSave" in url:
+                    return DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MD_PARAM_SAVE
                 if "MotionEnum" in url:
                     return DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MOTION_ENUM
+
+            if SynoSurveillanceStation.HOME_MODE_API_KEY in url:
+                if "GetInfo" in url:
+                    return DSM_6_SURVEILLANCE_STATION_HOME_MODE_GET_INFO
+                if "Switch" in url:
+                    return DSM_6_SURVEILLANCE_STATION_HOME_MODE_SWITCH
 
             if (
                 "SYNO.FileStation.Upload" in url

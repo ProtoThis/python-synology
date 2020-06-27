@@ -686,9 +686,17 @@ class TestSynologyDSM(TestCase):
         """Test surveillance."""
         self.api.with_surveillance = True
         assert self.api.surveillance_station
+
         self.api.surveillance_station.update()
         assert self.api.surveillance_station.get_all_cameras
         assert self.api.surveillance_station.get_camera(1)
         assert self.api.surveillance_station.get_camera_live_view_path(1)
-        assert self.api.surveillance_station.enable_motion_detection(1)
-        assert self.api.surveillance_station.disable_motion_detection(1)
+
+        # Motion detection
+        assert self.api.surveillance_station.enable_motion_detection(1).get("success")
+        assert self.api.surveillance_station.disable_motion_detection(1).get("success")
+
+        # Home mode
+        assert self.api.surveillance_station.get_home_mode_status()
+        assert self.api.surveillance_station.set_home_mode(False)
+        assert self.api.surveillance_station.set_home_mode(True)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """DSM 6 SYNO.SurveillanceStation.Camera data."""
 
 DSM_6_SURVEILLANCE_STATION_CAMERA_LIST = {

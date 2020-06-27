@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """DSM 6 SYNO.API.SurveillanceStation.HomeMode data."""
 
 DSM_6_SURVEILLANCE_STATION_HOME_MODE_GET_INFO = {

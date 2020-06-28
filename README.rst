@@ -113,6 +113,7 @@ Surveillance Station usage
 --------------------------
 
 .. code-block:: python
+
     from synology_dsm import SynologyDSM
 
     api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")

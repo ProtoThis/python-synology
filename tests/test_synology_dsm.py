@@ -686,9 +686,10 @@ class TestSynologyDSM(TestCase):
         """Test surveillance."""
         self.api.with_surveillance = True
         assert self.api.surveillance_station
+        assert not self.api.surveillance_station.get_all_cameras()
 
         self.api.surveillance_station.update()
-        assert self.api.surveillance_station.get_all_cameras
+        assert self.api.surveillance_station.get_all_cameras()
         assert self.api.surveillance_station.get_camera(1)
         assert self.api.surveillance_station.get_camera_live_view_path(1)
         assert self.api.surveillance_station.get_camera_live_view_path(1, "rtsp")

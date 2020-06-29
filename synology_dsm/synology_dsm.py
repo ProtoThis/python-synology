@@ -7,6 +7,7 @@ from requests import Session
 from requests.exceptions import RequestException
 from simplejson.errors import JSONDecodeError
 
+
 from .exceptions import (
     SynologyDSMAPIErrorException,
     SynologyDSMAPINotExistsException,
@@ -20,6 +21,7 @@ from .exceptions import (
 )
 from .api.core.security import SynoCoreSecurity
 from .api.core.utilization import SynoCoreUtilization
+from .api.core.share import SynoShare
 from .api.dsm.information import SynoDSMInformation
 from .api.dsm.network import SynoDSMNetwork
 from .api.storage.storage import SynoStorage
@@ -72,6 +74,7 @@ class SynologyDSM(object):
         self._security = None
         self._utilisation = None
         self._storage = None
+        self._share = None
 
         # Build variables
         if use_https:
@@ -318,6 +321,9 @@ class SynologyDSM(object):
         if isinstance(api, SynoStorage):
             self._storage = None
             return True
+        if isinstance(api, SynoShare):
+            self._share = None
+            return True
         return False
 
     @property
@@ -359,3 +365,11 @@ class SynologyDSM(object):
             data = self.get(SynoStorage.API_KEY, "load_info")
             self._storage = SynoStorage(data)
         return self._storage
+
+    @property
+    def share(self):
+        """Gets NAS shares information."""
+        if not self._share:
+            data = self.get(SynoShare.API_KEY, "list")
+            self._share = SynoShare(data)
+        return self._share

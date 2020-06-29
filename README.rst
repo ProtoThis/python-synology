@@ -166,6 +166,7 @@ Credits / Special Thanks
 - https://github.com/chemelli74 (2SA tests)
 - https://github.com/snjoetw    (Surveillance Station library)
 - https://github.com/shenxn     (Surveillance Station tests)
+- https://github.com/Gestas     (Shared Folders)
 
 Found Synology API "documentation" on this repo : https://github.com/kwent/syno/tree/master/definitions
 

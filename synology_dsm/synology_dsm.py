@@ -25,6 +25,7 @@ from .api.core.share import SynoShare
 from .api.dsm.information import SynoDSMInformation
 from .api.dsm.network import SynoDSMNetwork
 from .api.storage.storage import SynoStorage
+from .api.surveillance_station import SynoSurveillanceStation
 from .const import API_AUTH, API_INFO
 
 if six.PY2:
@@ -75,6 +76,7 @@ class SynologyDSM(object):
         self._utilisation = None
         self._storage = None
         self._share = None
+        self._surveillance = None
 
         # Build variables
         if use_https:
@@ -167,8 +169,8 @@ class SynologyDSM(object):
         self._debuglog("Authentication successful, token: " + str(self._session_id))
 
         if not self._information:
-            data = self.get(SynoDSMInformation.API_KEY, "getinfo")
-            self._information = SynoDSMInformation(data)
+            self._information = SynoDSMInformation(self)
+            self._information.update()
 
         return True
 
@@ -210,6 +212,9 @@ class SynologyDSM(object):
             if not self.apis.get(api):
                 raise SynologyDSMAPINotExistsException(api)
             params["version"] = self.apis[api]["maxVersion"]
+            max_version = kwargs.pop("max_version", None)
+            if max_version and params["version"] > max_version:
+                params["version"] = max_version
 
         params["method"] = method
 
@@ -223,13 +228,13 @@ class SynologyDSM(object):
 
         # Request data
         url = self._build_url(api)
-        response = self._execute_request(request_method, url, params=params, **kwargs)
+        response = self._execute_request(request_method, url, params, **kwargs)
         self._debuglog("Successful returned data")
         self._debuglog("API: " + api)
         self._debuglog(str(response))
 
         # Handle data errors
-        if response.get("error") and api != API_AUTH:
+        if isinstance(response, dict) and response.get("error") and api != API_AUTH:
             self._debuglog("Session error: " + str(response["error"]["code"]))
             if response["error"]["code"] == 119 and retry_once:
                 # Session ID not valid, see https://github.com/aerialls/synology-srm/pull/3
@@ -255,45 +260,56 @@ class SynologyDSM(object):
                 encoded_params = "&".join(
                     "%s=%s" % (key, quote(str(value))) for key, value in items
                 )
-                resp = self._session.get(
+                response = self._session.get(
                     url, params=encoded_params, timeout=self._timeout, **kwargs
                 )
             elif method == "POST":
-                resp = self._session.post(
+                response = self._session.post(
                     url, params=params, timeout=self._timeout, **kwargs
                 )
 
-            self._debuglog("Request url: " + resp.url)
-            self._debuglog("Request status_code: " + str(resp.status_code))
-            self._debuglog("Request headers: " + str(resp.headers))
+            self._debuglog("Request url: " + response.url)
+            self._debuglog("Request status_code: " + str(response.status_code))
+            self._debuglog("Request headers: " + str(response.headers))
 
-            if resp.status_code == 200:
+            if response.status_code == 200:
                 # We got a DSM response
-                return resp.json()
+                content_type = response.headers.get("Content-Type", "").split(";")[0]
+
+                if content_type in [
+                    "application/json",
+                    "text/json",
+                    "text/plain",  # Can happen with some API
+                ]:
+                    return response.json()
+
+                return response.content
 
             # We got a 400, 401 or 404 ...
-            raise RequestException(resp)
+            raise RequestException(response)
 
         except (RequestException, JSONDecodeError) as exp:
             raise SynologyDSMRequestException(exp)
 
-    def update(self, with_information=False):
+    def update(self, with_information=False, with_network=False):
         """Updates the various instanced modules."""
         if self._information and with_information:
-            data = self.get(SynoDSMInformation.API_KEY, "getinfo")
-            self._information.update(data)
+            self._information.update()
+
+        if self._network and with_network:
+            self._network.update()
 
         if self._security:
-            data = self.get(SynoCoreSecurity.API_KEY, "system_get")
-            self._security = SynoCoreSecurity(data)
+            self._security.update()
 
         if self._utilisation:
-            data = self.get(SynoCoreUtilization.API_KEY, "get")
-            self._utilisation.update(data)
+            self._utilisation.update()
 
         if self._storage:
-            data = self.get(SynoStorage.API_KEY, "load_info")
-            self._storage.update(data)
+            self._storage.update()
+
+        if self._surveillance:
+            self._surveillance.update()
 
     def reset(self, api):
         """Reset an API to avoid fetching in on update."""
@@ -312,6 +328,9 @@ class SynologyDSM(object):
             if api == SynoStorage.API_KEY:
                 self._storage = None
                 return True
+            if api == SynoSurveillanceStation.API_KEY:
+                self._surveillance = None
+                return True
         if isinstance(api, SynoCoreSecurity):
             self._security = None
             return True
@@ -323,6 +342,8 @@ class SynologyDSM(object):
             return True
         if isinstance(api, SynoShare):
             self._share = None
+        if isinstance(api, SynoSurveillanceStation):
+            self._surveillance = None
             return True
         return False
 
@@ -330,40 +351,35 @@ class SynologyDSM(object):
     def information(self):
         """Gets NAS informations."""
         if not self._information:
-            data = self.get(SynoDSMInformation.API_KEY, "getinfo")
-            self._information = SynoDSMInformation(data)
+            self._information = SynoDSMInformation(self)
         return self._information
 
     @property
     def network(self):
         """Gets NAS network informations."""
         if not self._network:
-            data = self.get(SynoDSMNetwork.API_KEY, "list")
-            self._network = SynoDSMNetwork(data)
+            self._network = SynoDSMNetwork(self)
         return self._network
 
     @property
     def security(self):
         """Gets NAS security informations."""
         if not self._security:
-            data = self.get(SynoCoreSecurity.API_KEY, "system_get")
-            self._security = SynoCoreSecurity(data)
+            self._security = SynoCoreSecurity(self)
         return self._security
 
     @property
     def utilisation(self):
         """Gets NAS utilisation informations."""
         if not self._utilisation:
-            data = self.get(SynoCoreUtilization.API_KEY, "get")
-            self._utilisation = SynoCoreUtilization(data)
+            self._utilisation = SynoCoreUtilization(self)
         return self._utilisation
 
     @property
     def storage(self):
         """Gets NAS storage informations."""
         if not self._storage:
-            data = self.get(SynoStorage.API_KEY, "load_info")
-            self._storage = SynoStorage(data)
+            self._storage = SynoStorage(self)
         return self._storage
 
     @property
@@ -373,3 +389,10 @@ class SynologyDSM(object):
             data = self.get(SynoShare.API_KEY, "list")
             self._share = SynoShare(data)
         return self._share
+
+    @property
+    def surveillance_station(self):
+        """Gets NAS SurveillanceStation."""
+        if not self._surveillance:
+            self._surveillance = SynoSurveillanceStation(self)
+        return self._surveillance

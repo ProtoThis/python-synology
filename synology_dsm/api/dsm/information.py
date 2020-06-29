@@ -7,12 +7,13 @@ class SynoDSMInformation(object):
 
     API_KEY = "SYNO.DSM.Info"
 
-    def __init__(self, raw_data):
+    def __init__(self, dsm):
+        self._dsm = dsm
         self._data = {}
-        self.update(raw_data)
 
-    def update(self, raw_data):
+    def update(self):
         """Updates information data."""
+        raw_data = self._dsm.get(self.API_KEY, "getinfo")
         if raw_data:
             self._data = raw_data["data"]
 

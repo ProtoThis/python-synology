@@ -21,6 +21,7 @@ Python API for Synology DSM
     :alt: Formated with Black
     :target: https://github.com/psf/black
 
+
 Installation
 ============
 
@@ -33,6 +34,7 @@ Usage
 =====
 
 You can import the module as `synology_dsm`.
+
 
 Constructor
 -----------
@@ -54,6 +56,7 @@ Constructor
 
 Default ``timeout`` is 10 seconds.
 
+
 Login
 ------
 
@@ -69,14 +72,19 @@ Store the ``device_token`` property so that you do not need to reconnect with pa
 Code exemple
 ------------
 
+Every API has an ``update()`` function that is needed to get the first data, then the data is cached and updated at the next ``update()`` call.
+
+The ``SynologyDSM`` class can also ``update()`` all APIs at once.
+
 .. code-block:: python
 
     from synology_dsm import SynologyDSM
 
     print("Creating Valid API")
-    api = SynologyDSM("<SynologyIp>", "<SynologyPort>", "<Username>", "<Password>")
+    api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")
 
     print("=== Information ===")
+    api.information.update()
     print("Model:           " + str(api.information.model))
     print("RAM:             " + str(api.information.ram) + " MB")
     print("Serial number:   " + str(api.information.serial))
@@ -86,12 +94,14 @@ Code exemple
     print("Full DSM version:" + str(api.information.version_string))
 
     print("=== Utilisation ===")
+    api.utilisation.update()
     print("CPU Load:        " + str(api.utilisation.cpu_total_load) + " %")
     print("Memory Use:      " + str(api.utilisation.memory_real_usage) + " %")
     print("Net Up:          " + str(api.utilisation.network_up()))
     print("Net Down:        " + str(api.utilisation.network_down()))
     
     print("=== Storage ===")
+    api.storage.update()
     for volume_id in api.storage.volumes_ids:
         print("ID:          " + str(volume_id))
         print("Status:      " + str(api.storage.volume_status(volume_id)))
@@ -104,15 +114,57 @@ Code exemple
         print("Status:      " + str(api.storage.disk_status(disk_id)))
         print("Temp:        " + str(api.storage.disk_temp(disk_id)))
 
+
+
+Surveillance Station usage
+--------------------------
+
+.. code-block:: python
+
+    from synology_dsm import SynologyDSM
+
+    api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")
+    surveillance = api.surveillance_station
+    surveillance.update() # First update is required
+
+    # Returns a list of cached cameras available
+    cameras = surveillance.get_all_cameras()
+
+    # Assuming there's at least one camera, get the first camera_id
+    camera_id = cameras[0].camera_id
+
+    # Returns cached camera object by camera_id
+    camera = surveillance.get_camera(camera_id)
+
+    # Returns cached motion detection enabled
+    motion_setting = camera.is_motion_detection_enabled
+
+    # Return bytes of camera image
+    surveillance.get_camera_image(camera_id)
+
+    # Updates all cameras/motion settings and cahce them
+    surveillance.update()
+
+    # Gets Home Mode status
+    home_mode_status =  surveillance.get_home_mode_status()
+
+    # Sets home mode - true is on, false is off
+    surveillance.set_home_mode(True)
+
+
+
 Credits / Special Thanks
 ========================
 - https://github.com/florianeinfalt
 - https://github.com/tchellomello
-- https://github.com/Quentame
-- https://github.com/aaska
-- https://github.com/chemelli74
+- https://github.com/Quentame   (Multiple API addition & tests)
+- https://github.com/aaska      (DSM 5 tests)
+- https://github.com/chemelli74 (2SA tests)
+- https://github.com/snjoetw    (Surveillance Station library)
+- https://github.com/shenxn     (Surveillance Station tests)
 
 Found Synology API "documentation" on this repo : https://github.com/kwent/syno/tree/master/definitions
+
 
 Official references
 ===================

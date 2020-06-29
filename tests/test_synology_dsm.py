@@ -716,3 +716,9 @@ class TestSynologyDSM(TestCase):
         assert self.api.surveillance_station.get_home_mode_status()
         assert self.api.surveillance_station.set_home_mode(False)
         assert self.api.surveillance_station.set_home_mode(True)
+
+    def test_share(self):
+        """Test shares."""
+        assert self.api.share
+        self.api.share.update()
+        assert self.api.share.shares

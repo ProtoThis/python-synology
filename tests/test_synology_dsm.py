@@ -351,6 +351,7 @@ class TestSynologyDSM(TestCase):
     def test_information(self):
         """Test information."""
         assert self.api.information
+        self.api.information.update()
         assert self.api.information.model == "DS918+"
         assert self.api.information.ram == 4096
         assert self.api.information.serial == "1920PDN001501"
@@ -363,6 +364,7 @@ class TestSynologyDSM(TestCase):
     def test_network(self):
         """Test network."""
         assert self.api.network
+        self.api.network.update()
         assert self.api.network.dns
         assert self.api.network.gateway
         assert self.api.network.hostname
@@ -375,6 +377,7 @@ class TestSynologyDSM(TestCase):
     def test_security(self):
         """Test security, safe status."""
         assert self.api.security
+        self.api.security.update()
         assert self.api.security.checks
         assert self.api.security.last_scan_time
         assert not self.api.security.start_time  # Finished scan
@@ -393,6 +396,7 @@ class TestSynologyDSM(TestCase):
         """Test security, outOfDate status."""
         self.api.error = True
         assert self.api.security
+        self.api.security.update()
         assert self.api.security.checks
         assert self.api.security.last_scan_time
         assert not self.api.security.start_time  # Finished scan
@@ -410,12 +414,13 @@ class TestSynologyDSM(TestCase):
     def test_utilisation(self):
         """Test utilisation."""
         assert self.api.utilisation
+        self.api.utilisation.update()
 
     def test_utilisation_error(self):
         """Test utilisation error."""
         self.api.error = True
         with pytest.raises(SynologyDSMAPIErrorException) as error:
-            assert self.api.utilisation
+            self.api.utilisation.update()
         error_value = error.value.args[0]
         assert error_value["api"] == "SYNO.Core.System.Utilization"
         assert error_value["code"] == 1055
@@ -429,6 +434,7 @@ class TestSynologyDSM(TestCase):
 
     def test_utilisation_cpu(self):
         """Test utilisation CPU."""
+        self.api.utilisation.update()
         assert self.api.utilisation.cpu
         assert self.api.utilisation.cpu_other_load
         assert self.api.utilisation.cpu_user_load
@@ -440,6 +446,7 @@ class TestSynologyDSM(TestCase):
 
     def test_utilisation_memory(self):
         """Test utilisation memory."""
+        self.api.utilisation.update()
         assert self.api.utilisation.memory
         assert self.api.utilisation.memory_real_usage
         assert self.api.utilisation.memory_size()
@@ -457,6 +464,7 @@ class TestSynologyDSM(TestCase):
 
     def test_utilisation_network(self):
         """Test utilisation network."""
+        self.api.utilisation.update()
         assert self.api.utilisation.network
         assert self.api.utilisation.network_up()
         assert self.api.utilisation.network_up(True)
@@ -466,6 +474,7 @@ class TestSynologyDSM(TestCase):
     def test_storage(self):
         """Test storage roots."""
         assert self.api.storage
+        self.api.storage.update()
         assert self.api.storage.disks
         assert self.api.storage.env
         assert self.api.storage.storage_pools
@@ -473,6 +482,7 @@ class TestSynologyDSM(TestCase):
 
     def test_storage_raid_volumes(self):
         """Test RAID storage volumes."""
+        self.api.storage.update()
         # Basics
         assert self.api.storage.volumes_ids
         for volume_id in self.api.storage.volumes_ids:
@@ -524,6 +534,7 @@ class TestSynologyDSM(TestCase):
     def test_storage_shr_volumes(self):
         """Test SHR storage volumes."""
         self.api.disks_redundancy = "SHR1"
+        self.api.storage.update()
 
         # Basics
         assert self.api.storage.volumes_ids
@@ -592,6 +603,7 @@ class TestSynologyDSM(TestCase):
     def test_storage_shr2_volumes(self):
         """Test SHR2 storage volumes."""
         self.api.disks_redundancy = "SHR2"
+        self.api.storage.update()
 
         # Basics
         assert self.api.storage.volumes_ids
@@ -622,6 +634,7 @@ class TestSynologyDSM(TestCase):
     def test_storage_shr2_expansion_volumes(self):
         """Test SHR2 storage with expansion unit volumes."""
         self.api.disks_redundancy = "SHR2_EXPANSION"
+        self.api.storage.update()
 
         # Basics
         assert self.api.storage.volumes_ids
@@ -651,6 +664,7 @@ class TestSynologyDSM(TestCase):
 
     def test_storage_disks(self):
         """Test storage disks."""
+        self.api.storage.update()
         # Basics
         assert self.api.storage.disks_ids
         for disk_id in self.api.storage.disks_ids:

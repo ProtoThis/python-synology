@@ -166,8 +166,8 @@ class SynologyDSM(object):
         self._debuglog("Authentication successful, token: " + str(self._session_id))
 
         if not self._information:
-            data = self.get(SynoDSMInformation.API_KEY, "getinfo")
-            self._information = SynoDSMInformation(data)
+            self._information = SynoDSMInformation(self)
+            self._information.update()
 
         return True
 
@@ -288,23 +288,22 @@ class SynologyDSM(object):
         except (RequestException, JSONDecodeError) as exp:
             raise SynologyDSMRequestException(exp)
 
-    def update(self, with_information=False):
+    def update(self, with_information=False, with_network=False):
         """Updates the various instanced modules."""
         if self._information and with_information:
-            data = self.get(SynoDSMInformation.API_KEY, "getinfo")
-            self._information.update(data)
+            self._information.update()
+
+        if self._network and with_network:
+            self._network.update()
 
         if self._security:
-            data = self.get(SynoCoreSecurity.API_KEY, "system_get")
-            self._security = SynoCoreSecurity(data)
+            self._security.update()
 
         if self._utilisation:
-            data = self.get(SynoCoreUtilization.API_KEY, "get")
-            self._utilisation.update(data)
+            self._utilisation.update()
 
         if self._storage:
-            data = self.get(SynoStorage.API_KEY, "load_info")
-            self._storage.update(data)
+            self._storage.update()
 
         if self._surveillance:
             self._surveillance.update()
@@ -347,40 +346,35 @@ class SynologyDSM(object):
     def information(self):
         """Gets NAS informations."""
         if not self._information:
-            data = self.get(SynoDSMInformation.API_KEY, "getinfo")
-            self._information = SynoDSMInformation(data)
+            self._information = SynoDSMInformation(self)
         return self._information
 
     @property
     def network(self):
         """Gets NAS network informations."""
         if not self._network:
-            data = self.get(SynoDSMNetwork.API_KEY, "list")
-            self._network = SynoDSMNetwork(data)
+            self._network = SynoDSMNetwork(self)
         return self._network
 
     @property
     def security(self):
         """Gets NAS security informations."""
         if not self._security:
-            data = self.get(SynoCoreSecurity.API_KEY, "system_get")
-            self._security = SynoCoreSecurity(data)
+            self._security = SynoCoreSecurity(self)
         return self._security
 
     @property
     def utilisation(self):
         """Gets NAS utilisation informations."""
         if not self._utilisation:
-            data = self.get(SynoCoreUtilization.API_KEY, "get")
-            self._utilisation = SynoCoreUtilization(data)
+            self._utilisation = SynoCoreUtilization(self)
         return self._utilisation
 
     @property
     def storage(self):
         """Gets NAS storage informations."""
         if not self._storage:
-            data = self.get(SynoStorage.API_KEY, "load_info")
-            self._storage = SynoStorage(data)
+            self._storage = SynoStorage(self)
         return self._storage
 
     @property

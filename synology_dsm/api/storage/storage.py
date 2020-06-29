@@ -10,12 +10,13 @@ class SynoStorage(object):
 
     API_KEY = "SYNO.Storage.CGI.Storage"
 
-    def __init__(self, raw_data):
+    def __init__(self, dsm):
+        self._dsm = dsm
         self._data = {}
-        self.update(raw_data)
 
-    def update(self, raw_data):
+    def update(self):
         """Updates storage data."""
+        raw_data = self._dsm.get(self.API_KEY, "load_info")
         if raw_data:
             self._data = raw_data
             if raw_data.get("data"):

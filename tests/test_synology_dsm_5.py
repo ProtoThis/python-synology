@@ -201,6 +201,7 @@ class TestSynologyDSM(TestCase):
     def test_information(self):
         """Test information."""
         assert self.api.information
+        self.api.information.update()
         assert self.api.information.model == "DS3615xs"
         assert self.api.information.ram == 6144
         assert self.api.information.serial == "B3J4N01003"
@@ -213,6 +214,7 @@ class TestSynologyDSM(TestCase):
     def test_network(self):
         """Test network."""
         assert self.api.network
+        self.api.network.update()
         assert self.api.network.dns
         assert self.api.network.gateway
         assert self.api.network.hostname
@@ -225,9 +227,11 @@ class TestSynologyDSM(TestCase):
     def test_utilisation(self):
         """Test utilization."""
         assert self.api.utilisation
+        self.api.utilisation.update()
 
     def test_utilisation_cpu(self):
         """Test utilization CPU."""
+        self.api.utilisation.update()
         assert self.api.utilisation.cpu
         assert self.api.utilisation.cpu_other_load
         assert self.api.utilisation.cpu_user_load
@@ -239,6 +243,7 @@ class TestSynologyDSM(TestCase):
 
     def test_utilisation_memory(self):
         """Test utilization memory."""
+        self.api.utilisation.update()
         assert self.api.utilisation.memory
         assert self.api.utilisation.memory_real_usage
         assert self.api.utilisation.memory_size()
@@ -256,6 +261,7 @@ class TestSynologyDSM(TestCase):
 
     def test_utilisation_network(self):
         """Test utilization network."""
+        self.api.utilisation.update()
         assert self.api.utilisation.network
         assert self.api.utilisation.network_up()
         assert self.api.utilisation.network_up(True)
@@ -265,6 +271,7 @@ class TestSynologyDSM(TestCase):
     def test_storage(self):
         """Test storage roots."""
         assert self.api.storage
+        self.api.storage.update()
         assert self.api.storage.disks
         assert self.api.storage.env
         assert self.api.storage.storage_pools == []
@@ -272,6 +279,7 @@ class TestSynologyDSM(TestCase):
 
     def test_storage_volumes(self):
         """Test storage volumes."""
+        self.api.storage.update()
         # Basics
         assert self.api.storage.volumes_ids
         for volume_id in self.api.storage.volumes_ids:
@@ -330,6 +338,7 @@ class TestSynologyDSM(TestCase):
 
     def test_storage_disks(self):
         """Test storage disks."""
+        self.api.storage.update()
         # Basics
         assert self.api.storage.disks_ids
         for disk_id in self.api.storage.disks_ids:

@@ -114,7 +114,11 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
         print("Status:      " + str(api.storage.disk_status(disk_id)))
         print("Temp:        " + str(api.storage.disk_temp(disk_id)))
 
-
+    print("=== Shared Folders ===")
+    api.share.update()
+    for uuid in api.share.shares_uuids:
+        print("Share name:        " + str(api.share.share_name(uuid)))
+        print("Share path:        " + str(api.share.share_path(uuid)))
 
 Surveillance Station usage
 --------------------------

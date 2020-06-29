@@ -308,6 +308,9 @@ class SynologyDSM(object):
         if self._storage:
             self._storage.update()
 
+        if self._share:
+            self._share.update()
+
         if self._surveillance:
             self._surveillance.update()
 
@@ -340,8 +343,7 @@ class SynologyDSM(object):
         if isinstance(api, SynoStorage):
             self._storage = None
             return True
-        if isinstance(api, SynoShare):
-            self._share = None
+
         if isinstance(api, SynoSurveillanceStation):
             self._surveillance = None
             return True
@@ -386,8 +388,7 @@ class SynologyDSM(object):
     def share(self):
         """Gets NAS shares information."""
         if not self._share:
-            data = self.get(SynoShare.API_KEY, "list")
-            self._share = SynoShare(data)
+            self._share = SynoShare(self)
         return self._share
 
     @property

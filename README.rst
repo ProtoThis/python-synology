@@ -72,6 +72,10 @@ Store the ``device_token`` property so that you do not need to reconnect with pa
 Code exemple
 ------------
 
+Every API has an ``update()`` function that is needed to get the first data, then the data is cached and updated at the next ``update()`` call.
+
+The ``SynologyDSM`` class can also ``update()`` all APIs at once.
+
 .. code-block:: python
 
     from synology_dsm import SynologyDSM
@@ -80,6 +84,7 @@ Code exemple
     api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")
 
     print("=== Information ===")
+    api.information.update()
     print("Model:           " + str(api.information.model))
     print("RAM:             " + str(api.information.ram) + " MB")
     print("Serial number:   " + str(api.information.serial))
@@ -89,12 +94,14 @@ Code exemple
     print("Full DSM version:" + str(api.information.version_string))
 
     print("=== Utilisation ===")
+    api.utilisation.update()
     print("CPU Load:        " + str(api.utilisation.cpu_total_load) + " %")
     print("Memory Use:      " + str(api.utilisation.memory_real_usage) + " %")
     print("Net Up:          " + str(api.utilisation.network_up()))
     print("Net Down:        " + str(api.utilisation.network_down()))
     
     print("=== Storage ===")
+    api.storage.update()
     for volume_id in api.storage.volumes_ids:
         print("ID:          " + str(volume_id))
         print("Status:      " + str(api.storage.volume_status(volume_id)))

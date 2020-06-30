@@ -190,8 +190,8 @@ class SynologyDSM(object):
         )
 
     def _request(
-        self, request_method, api, method, params=None, retry_once=True,
-            **kwargs):
+        self, request_method, api, method, params=None, retry_once=True, **kwargs
+    ):
         """Handles API request."""
         # Discover existing APIs
         if api != API_INFO:
@@ -234,14 +234,15 @@ class SynologyDSM(object):
         # to the request body. Used to support the weird Syno use of POST
         # to choose what fields to return. See ./api/core/share.py
         # for an example.
-        if request_method == "POST" and 'data' in kwargs:
+        if request_method == "POST" and "data" in kwargs:
             body = {}
             body.update(params)
-            body.update(kwargs.pop('data'))
+            body.update(kwargs.pop("data"))
             body["mimeType"] = "application/json"
             # Request data via POST (excluding FileStation file uploads)
-            response = self._execute_request(request_method, url,
-                                             params=None, data=body)
+            response = self._execute_request(
+                request_method, url, params=None, data=body
+            )
         else:
             # Request data
             response = self._execute_request(request_method, url, params, **kwargs)
@@ -280,8 +281,8 @@ class SynologyDSM(object):
                 response = self._session.get(
                     url, params=encoded_params, timeout=self._timeout, **kwargs
                 )
-            elif method == "POST" and 'data' in kwargs:
-                data = kwargs.pop('data')
+            elif method == "POST" and "data" in kwargs:
+                data = kwargs.pop("data")
                 response = self._session.post(
                     url, data=data, timeout=self._timeout, **kwargs
                 )

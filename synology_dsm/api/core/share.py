@@ -11,12 +11,14 @@ class SynoShare(object):
     # GET returns a limited set of keys. With POST the same keys as GET
     # are returned plus any keys listed in the "additional" parameter.
     # NOTE: The value of the additional key must be a string.
-    REQUEST_DATA = {"additional": '["hidden","encryption","is_aclmode","unite_permission","is_support_acl",'
-                                  '"is_sync_share","is_force_readonly","force_readonly_reason","recyclebin",'
-                                  '"is_share_moving","is_cluster_share","is_exfat_share","is_cold_storage_share",'
-                                  '"support_snapshot","share_quota","enable_share_compress","enable_share_cow",'
-                                  '"include_cold_storage_share","is_cold_storage_share"]',
-                    "shareType": "all"}
+    REQUEST_DATA = {
+        "additional": '["hidden","encryption","is_aclmode","unite_permission","is_support_acl",'
+        '"is_sync_share","is_force_readonly","force_readonly_reason","recyclebin",'
+        '"is_share_moving","is_cluster_share","is_exfat_share","is_cold_storage_share",'
+        '"support_snapshot","share_quota","enable_share_compress","enable_share_cow",'
+        '"include_cold_storage_share","is_cold_storage_share"]',
+        "shareType": "all",
+    }
 
     def __init__(self, dsm):
         self._dsm = dsm
@@ -69,7 +71,3 @@ class SynoShare(object):
         # Share size is returned in MB so we convert it.
         share_size_bytes = SynoFormatHelper.megabytes_to_bytes(share_size_mb)
         return SynoFormatHelper.bytes_to_readable(share_size_bytes)
-
-
-
-

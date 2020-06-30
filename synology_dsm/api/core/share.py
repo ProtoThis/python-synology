@@ -55,10 +55,6 @@ class SynoShare(object):
                 return share
         return {}
 
-    #def share_name(self, uuid):
-    #    """The name of this share."""
-    #    return self._get_share(uuid).get("name")
-
     def share_path(self, name):
         """The volume path of this share."""
         return self._get_share(name).get("vol_path")

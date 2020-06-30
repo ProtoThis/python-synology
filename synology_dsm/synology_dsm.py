@@ -239,11 +239,11 @@ class SynologyDSM(object):
             body.update(params)
             body.update(kwargs.pop('data'))
             body["mimeType"] = "application/json"
-            # Request data via POST
+            # Request data via POST (excluding FileStation file uploads)
             response = self._execute_request(request_method, url,
                                              params=None, data=body)
         else:
-            # Request data via GET
+            # Request data
             response = self._execute_request(request_method, url, params, **kwargs)
         self._debuglog("Request Method: " + request_method)
         self._debuglog("Successful returned data")

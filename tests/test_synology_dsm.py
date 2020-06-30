@@ -28,6 +28,8 @@ from . import (
 from .const import SESSION_ID, DEVICE_TOKEN, SYNO_TOKEN
 
 # pylint: disable=no-self-use,protected-access
+
+
 class TestSynologyDSM(TestCase):
     """SynologyDSM test cases."""
 
@@ -719,9 +721,6 @@ class TestSynologyDSM(TestCase):
 
     def test_share(self):
         """Test shares."""
+        assert self.api.share
         self.api.share.update()
         assert self.api.share.shares
-        for name in self.api.share.shares_names:
-            assert self.api.share(name)
-        assert self.api.share("homes")
-        assert self.api.share.share_size_human_readable("homes")

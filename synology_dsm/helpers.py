@@ -39,3 +39,10 @@ class SynoFormatHelper(object):
         var_tb = num / 1024.0 / 1024.0 / 1024.0 / 1024.0
 
         return round(var_tb, 1)
+
+    @staticmethod
+    def megabytes_to_bytes(num):
+        """Converts megabytes to bytes."""
+        var_bytes = num * 1024.0 * 1024.0
+
+        return round(var_bytes, 1)

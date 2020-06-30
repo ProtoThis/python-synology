@@ -7,7 +7,6 @@ from requests import Session
 from requests.exceptions import RequestException
 from simplejson.errors import JSONDecodeError
 
-
 from .exceptions import (
     SynologyDSMAPIErrorException,
     SynologyDSMAPINotExistsException,
@@ -19,6 +18,7 @@ from .exceptions import (
     SynologyDSMLogin2SARequiredException,
     SynologyDSMLogin2SAFailedException,
 )
+
 from .api.core.security import SynoCoreSecurity
 from .api.core.utilization import SynoCoreUtilization
 from .api.core.share import SynoShare
@@ -190,8 +190,8 @@ class SynologyDSM(object):
         )
 
     def _request(
-        self, request_method, api, method, params=None, retry_once=True, **kwargs
-    ):
+        self, request_method, api, method, params=None, retry_once=True,
+            **kwargs):
         """Handles API request."""
         # Discover existing APIs
         if api != API_INFO:
@@ -224,11 +224,28 @@ class SynologyDSM(object):
             params["_sid"] = self._session_id
         if self._syno_token:
             params["SynoToken"] = self._syno_token
-        self._debuglog("Request params: " + str(params))
 
-        # Request data
+        if request_method == "GET":
+            self._debuglog("GET request params: " + str(params))
+
         url = self._build_url(api)
-        response = self._execute_request(request_method, url, params, **kwargs)
+
+        # If the request method is POST and includes data move the params
+        # to the request body. Used to support the weird Syno use of POST
+        # to choose what fields to return. See ./api/core/share.py
+        # for an example.
+        if request_method == "POST" and 'data' in kwargs:
+            body = {}
+            body.update(params)
+            body.update(kwargs.pop('data'))
+            body["mimeType"] = "application/json"
+            # Request data via POST
+            response = self._execute_request(request_method, url,
+                                             params=None, data=body)
+        else:
+            # Request data via GET
+            response = self._execute_request(request_method, url, params, **kwargs)
+        self._debuglog("Request Method: " + request_method)
         self._debuglog("Successful returned data")
         self._debuglog("API: " + api)
         self._debuglog(str(response))
@@ -262,6 +279,11 @@ class SynologyDSM(object):
                 )
                 response = self._session.get(
                     url, params=encoded_params, timeout=self._timeout, **kwargs
+                )
+            elif method == "POST" and 'data' in kwargs:
+                data = kwargs.pop('data')
+                response = self._session.post(
+                    url, data=data, timeout=self._timeout, **kwargs
                 )
             elif method == "POST":
                 response = self._session.post(

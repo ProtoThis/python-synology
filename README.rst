@@ -106,6 +106,7 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
         print("ID:          " + str(volume_id))
         print("Status:      " + str(api.storage.volume_status(volume_id)))
         print("% Used:      " + str(api.storage.volume_percentage_used(volume_id)) + " %")
+        print("--")
 
     for disk_id in api.storage.disks_ids:
         print("ID:          " + str(disk_id))
@@ -113,13 +114,16 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
         print("S-Status:    " + str(api.storage.disk_smart_status(disk_id)))
         print("Status:      " + str(api.storage.disk_status(disk_id)))
         print("Temp:        " + str(api.storage.disk_temp(disk_id)))
+        print("--")
 
     print("=== Shared Folders ===")
     api.share.update()
-    for uuid in api.share.shares_uuids:
-        print("Share name:        " + str(api.share.share_name(uuid)))
-        print("Share path:        " + str(api.share.share_path(uuid)))
-
+    for name in api.share.shares_names:
+        print("Share name:        " + str(name))
+        print("Share path:        " + str(api.share.share_path(name)))
+        print("Space used:        " + str(api.share.share_size_human_readable(name)))
+        print("Recycle Bin Enabled: " + str(api.share.share_recycle_bin(name)))
+        print("--")
 Surveillance Station usage
 --------------------------
 

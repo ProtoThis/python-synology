@@ -73,5 +73,4 @@ class SynoShare(object):
         # function for each.
         if attribute in self.share(name):
             return self.share(name).get(attribute)
-        else:
-            raise ValueError("Specified attribute does not exist: " + attribute)
+        raise ValueError("Specified attribute does not exist: " + attribute)

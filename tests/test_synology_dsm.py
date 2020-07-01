@@ -721,6 +721,7 @@ class TestSynologyDSM(TestCase):
 
     def test_shares(self):
         """Test shares."""
+        assert self.api.share
         self.api.share.update()
         assert self.api.share.shares_names
         for share_name in self.api.share.shares_names:

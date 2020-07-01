@@ -234,7 +234,7 @@ class SynologyDSM(object):
         # to the request body. Used to support the weird Syno use of POST
         # to choose what fields to return. See ./api/core/share.py
         # for an example.
-        if request_method == "POST" and "data" in kwargs:
+        if request_method == "POST" and api == "SYNO.Core.Share":
             body = {}
             body.update(params)
             body.update(kwargs.pop("data"))

@@ -92,6 +92,7 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
     print("Temp. warning:   " + str(api.information.temperature_warn))
     print("Uptime:          " + str(api.information.uptime))
     print("Full DSM version:" + str(api.information.version_string))
+    print("--")
 
     print("=== Utilisation ===")
     api.utilisation.update()
@@ -99,7 +100,8 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
     print("Memory Use:      " + str(api.utilisation.memory_real_usage) + " %")
     print("Net Up:          " + str(api.utilisation.network_up()))
     print("Net Down:        " + str(api.utilisation.network_down()))
-    
+    print("--")
+
     print("=== Storage ===")
     api.storage.update()
     for volume_id in api.storage.volumes_ids:
@@ -121,7 +123,7 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
     for name in api.share.shares_names:
         print("Share name:        " + str(name))
         print("Share path:        " + str(api.share.share_path(name)))
-        print("Space used:        " + str(api.share.share_size_human_readable(name)))
+        print("Space used:        " + str(api.share.share_size(name, human_readable=True)))
         print("Recycle Bin Enabled: " + str(api.share.share_recycle_bin(name)))
         print("--")
 Surveillance Station usage

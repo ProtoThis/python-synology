@@ -50,24 +50,19 @@ class SynoShare(object):
             shares.append(share["name"])
         return shares
 
-    def _get_share(self, name):
-        """Returns a specific share."""
-        for share in self.shares:
-            if share["name"] == name:
-                return share
-        return {}
-
     def share_path(self, name):
         """The volume path of this share."""
-        return self._get_share(name).get("vol_path")
+        return self.share(name).get("vol_path")
 
     def share_recycle_bin(self, name):
         """Is the recycle bin enabled for this share?"""
-        return self._get_share(name).get("enable_recycle_bin")
+        return self.share(name).get("enable_recycle_bin")
 
-    def share_size_human_readable(self, name):
-        """Get a human readable version of this shares size."""
-        share_size_mb = self._get_share(name).get("share_quota_used")
+    def share_size(self, name, human_readable=False):
+        """Total size of share."""
+        share_size_mb = self.share(name).get("share_quota_used")
         # Share size is returned in MB so we convert it.
         share_size_bytes = SynoFormatHelper.megabytes_to_bytes(share_size_mb)
-        return SynoFormatHelper.bytes_to_readable(share_size_bytes)
+        if human_readable:
+            return SynoFormatHelper.bytes_to_readable(share_size_bytes)
+        return share_size_bytes

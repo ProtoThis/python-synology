@@ -225,21 +225,19 @@ class SynologyDSM(object):
         if self._syno_token:
             params["SynoToken"] = self._syno_token
 
-        if request_method == "GET":
-            self._debuglog("GET request params: " + str(params))
-
         url = self._build_url(api)
 
-        # If the request method is POST and includes data move the params
+        # If the request method is POST and the API is SynoShare the params
         # to the request body. Used to support the weird Syno use of POST
         # to choose what fields to return. See ./api/core/share.py
         # for an example.
-        if request_method == "POST" and api == "SYNO.Core.Share":
+        if request_method == "POST" and api == SynoShare.API_KEY:
             body = {}
             body.update(params)
             body.update(kwargs.pop("data"))
             body["mimeType"] = "application/json"
             # Request data via POST (excluding FileStation file uploads)
+            self._debuglog("POST BODY: " + str(body))
             response = self._execute_request(
                 request_method, url, params=None, data=body
             )
@@ -249,7 +247,7 @@ class SynologyDSM(object):
         self._debuglog("Request Method: " + request_method)
         self._debuglog("Successful returned data")
         self._debuglog("API: " + api)
-        self._debuglog(str(response))
+        self._debuglog("RESPONSE: " + str(response))
 
         # Handle data errors
         if isinstance(response, dict) and response.get("error") and api != API_AUTH:

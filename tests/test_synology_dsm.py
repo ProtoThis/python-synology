@@ -719,8 +719,19 @@ class TestSynologyDSM(TestCase):
         assert self.api.surveillance_station.set_home_mode(False)
         assert self.api.surveillance_station.set_home_mode(True)
 
-    def test_share(self):
+    def test_shares(self):
         """Test shares."""
-        assert self.api.share
         self.api.share.update()
-        assert self.api.share.shares
+        assert self.api.share.shares_names
+        for share_name in self.api.share.shares_names:
+            if share_name == "test_share":
+                continue
+            assert self.api.share.share_path(share_name)
+            assert self.api.share.share_recycle_bin(share_name)
+            assert self.api.share.share_size(share_name)
+            assert self.api.share.share_size(share_name, True)
+
+        assert self.api.share.share_path("test_share") == "/volume1"
+        assert self.api.share.share_recycle_bin("test_share") == "True"
+        assert self.api.share.share_size("test_share") == "801622786048.0"
+        assert self.api.share.share_size("test_share", True) == "746.6Gb"

@@ -132,7 +132,7 @@ class SynologyDSMMock(SynologyDSM):
         self.with_surveillance = False
 
     def _execute_request(self, method, url, params, **kwargs):
-        url += urlencode(params)
+        url += urlencode(params or {})
 
         if "no_internet" in url:
             raise SynologyDSMRequestException(

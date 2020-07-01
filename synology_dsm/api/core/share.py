@@ -66,3 +66,12 @@ class SynoShare(object):
         if human_readable:
             return SynoFormatHelper.bytes_to_readable(share_size_bytes)
         return share_size_bytes
+
+    def share_attribute(self, name, attribute):
+        """Returns the value of the specified share attribute."""
+        # Makes it easier to get a specific attribute without requiring a
+        # function for each.
+        if attribute in self.share(name):
+            return self.share(name).get(attribute)
+        else:
+            raise ValueError("Specified attribute does not exist: " + attribute)

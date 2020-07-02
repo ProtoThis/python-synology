@@ -44,7 +44,7 @@ class SynoShare(object):
 
     @property
     def shares_names(self):
-        """Returns (internal) share names."""
+        """Returns share names."""
         shares = []
         for share in self.shares:
             shares.append(share["name"])

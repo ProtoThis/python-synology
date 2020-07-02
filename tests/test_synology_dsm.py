@@ -723,7 +723,7 @@ class TestSynologyDSM(TestCase):
         """Test shares."""
         assert self.api.share
         self.api.share.update()
-        assert self.api.share.shares_names
+        assert self.api.share.shares
         for share_name in self.api.share.shares_names:
             if share_name == "test_share":
                 continue
@@ -734,5 +734,5 @@ class TestSynologyDSM(TestCase):
 
         assert self.api.share.share_path("test_share") == "/volume1"
         assert self.api.share.share_recycle_bin("test_share") == "True"
-        assert self.api.share.share_size("test_share") == "801622786048.0"
-        assert self.api.share.share_size("test_share", True) == "746.6Gb"
+        assert self.api.share.share_size("test_share") == "993300480.0"
+        assert self.api.share.share_size("test_share", True) == "947.3Mb"

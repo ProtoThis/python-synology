@@ -35,42 +35,38 @@ class SynoShare(object):
         """Gets all shares."""
         return self._data.get("shares", [])
 
-    def share(self, share_name):
-        """Returns a specific share."""
+    @property
+    def shares_uuids(self):
+        """Return (internal) share ids."""
+        shares = []
         for share in self.shares:
-            if share["name"] == share_name:
+            shares.append(share["uuid"])
+        return shares
+
+    def get_share(self, share_uuid):
+        """Returns a specific share by uuid.."""
+        for share in self.shares:
+            if share["uuid"] == share_uuid:
                 return share
         return {}
 
-    @property
-    def shares_names(self):
-        """Returns share names."""
-        shares = []
-        for share in self.shares:
-            shares.append(share["name"])
-        return shares
+    def share_name(self, share_uuid):
+        """Return the name of this share."""
+        return self.get_share(share_uuid).get("name")
 
-    def share_path(self, name):
-        """The volume path of this share."""
-        return self.share(name).get("vol_path")
+    def share_path(self, share_uuid):
+        """Return the volume path of this share."""
+        return self.get_share(share_uuid).get("vol_path")
 
-    def share_recycle_bin(self, name):
+    def share_recycle_bin(self, share_uuid):
         """Is the recycle bin enabled for this share?"""
-        return self.share(name).get("enable_recycle_bin")
+        return self.get_share(share_uuid).get("enable_recycle_bin")
 
-    def share_size(self, name, human_readable=False):
+    def share_size(self, share_uuid, human_readable=False):
         """Total size of share."""
-        share_size_mb = self.share(name).get("share_quota_used")
+        share_size_mb = self.get_share(share_uuid).get("share_quota_used")
         # Share size is returned in MB so we convert it.
         share_size_bytes = SynoFormatHelper.megabytes_to_bytes(share_size_mb)
         if human_readable:
             return SynoFormatHelper.bytes_to_readable(share_size_bytes)
         return share_size_bytes
-
-    def share_attribute(self, name, attribute):
-        """Returns the value of the specified share attribute."""
-        # Makes it easier to get a specific attribute without requiring a
-        # function for each.
-        if attribute in self.share(name):
-            return self.share(name).get(attribute)
-        raise ValueError("Specified attribute does not exist: " + attribute)

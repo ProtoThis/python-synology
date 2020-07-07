@@ -52,7 +52,7 @@ class SynoStorage(object):
             volumes.append(volume["id"])
         return volumes
 
-    def _get_volume(self, volume_id):
+    def get_volume(self, volume_id):
         """Returns a specific volume."""
         for volume in self.volumes:
             if volume["id"] == volume_id:
@@ -61,15 +61,15 @@ class SynoStorage(object):
 
     def volume_status(self, volume_id):
         """Status of the volume (normal, degraded, etc)."""
-        return self._get_volume(volume_id).get("status")
+        return self.get_volume(volume_id).get("status")
 
     def volume_device_type(self, volume_id):
         """Returns the volume type (RAID1, RAID2, etc)."""
-        return self._get_volume(volume_id).get("device_type")
+        return self.get_volume(volume_id).get("device_type")
 
     def volume_size_total(self, volume_id, human_readable=False):
         """Total size of volume."""
-        volume = self._get_volume(volume_id)
+        volume = self.get_volume(volume_id)
         if volume.get("size"):
             return_data = int(volume["size"]["total"])
             if human_readable:
@@ -79,7 +79,7 @@ class SynoStorage(object):
 
     def volume_size_used(self, volume_id, human_readable=False):
         """Total used size in volume."""
-        volume = self._get_volume(volume_id)
+        volume = self.get_volume(volume_id)
         if volume.get("size"):
             return_data = int(volume["size"]["used"])
             if human_readable:
@@ -89,7 +89,7 @@ class SynoStorage(object):
 
     def volume_percentage_used(self, volume_id):
         """Total used size in percentage for volume."""
-        volume = self._get_volume(volume_id)
+        volume = self.get_volume(volume_id)
         if volume.get("size"):
             total = int(volume["size"]["total"])
             used = int(volume["size"]["used"])
@@ -137,7 +137,7 @@ class SynoStorage(object):
             disks.append(disk["id"])
         return disks
 
-    def _get_disk(self, disk_id):
+    def get_disk(self, disk_id):
         """Returns a specific disk."""
         for disk in self.disks:
             if disk["id"] == disk_id:
@@ -152,41 +152,41 @@ class SynoStorage(object):
             if pool.get("deploy_path") == volume_id:
                 # RAID disk redundancy
                 for disk_id in pool["disks"]:
-                    disks.append(self._get_disk(disk_id))
+                    disks.append(self.get_disk(disk_id))
 
             if pool.get("pool_child"):
                 # SHR disk redundancy
                 for pool_child in pool.get("pool_child"):
                     if pool_child["id"] == volume_id:
                         for disk_id in pool["disks"]:
-                            disks.append(self._get_disk(disk_id))
+                            disks.append(self.get_disk(disk_id))
 
         return disks
 
     def disk_name(self, disk_id):
         """The name of this disk."""
-        return self._get_disk(disk_id).get("name")
+        return self.get_disk(disk_id).get("name")
 
     def disk_device(self, disk_id):
         """The mount point of this disk."""
-        return self._get_disk(disk_id).get("device")
+        return self.get_disk(disk_id).get("device")
 
     def disk_smart_status(self, disk_id):
         """Status of disk according to S.M.A.R.T)."""
-        return self._get_disk(disk_id).get("smart_status")
+        return self.get_disk(disk_id).get("smart_status")
 
     def disk_status(self, disk_id):
         """Status of disk."""
-        return self._get_disk(disk_id).get("status")
+        return self.get_disk(disk_id).get("status")
 
     def disk_exceed_bad_sector_thr(self, disk_id):
         """Checks if disk has exceeded maximum bad sector threshold."""
-        return self._get_disk(disk_id).get("exceed_bad_sector_thr")
+        return self.get_disk(disk_id).get("exceed_bad_sector_thr")
 
     def disk_below_remain_life_thr(self, disk_id):
         """Checks if disk has fallen below minimum life threshold."""
-        return self._get_disk(disk_id).get("below_remain_life_thr")
+        return self.get_disk(disk_id).get("below_remain_life_thr")
 
     def disk_temp(self, disk_id):
         """Returns the temperature of the disk."""
-        return self._get_disk(disk_id).get("temp")
+        return self.get_disk(disk_id).get("temp")

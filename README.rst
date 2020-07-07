@@ -120,11 +120,11 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
 
     print("=== Shared Folders ===")
     api.share.update()
-    for name in api.share.shares_names:
-        print("Share name:        " + str(name))
-        print("Share path:        " + str(api.share.share_path(name)))
-        print("Space used:        " + str(api.share.share_size(name, human_readable=True)))
-        print("Recycle Bin Enabled: " + str(api.share.share_recycle_bin(name)))
+    for share_uuid in api.share.shares_uuids:
+        print("Share name:        " + str(api.share.share_name(share_uuid)))
+        print("Share path:        " + str(api.share.share_path(share_uuid)))
+        print("Space used:        " + str(api.share.share_size(share_uuid, human_readable=True)))
+        print("Recycle Bin Enabled: " + str(api.share.share_recycle_bin(share_uuid)))
         print("--")
 Surveillance Station usage
 --------------------------

@@ -698,8 +698,36 @@ class TestSynologyDSM(TestCase):
         assert self.api.storage.disk_below_remain_life_thr("test_disk") is None
         assert self.api.storage.disk_temp("test_disk") is None
 
-    def test_surveillance_camera(self):
-        """Test surveillance."""
+    def test_download_station(self):
+        """Test DownloadStation."""
+        assert self.api.download_station
+        assert not self.api.download_station.get_all_tasks()
+
+        assert self.api.download_station.get_info()
+        self.api.download_station.update()
+        assert self.api.download_station.get_all_tasks()
+        assert len(self.api.download_station.get_all_tasks()) == 8
+
+        # BT DL
+        assert self.api.download_station.get_task("dbid_86").status == "downloading"
+        assert not self.api.download_station.get_task("dbid_86").status_extra
+        assert self.api.download_station.get_task("dbid_86").type == "bt"
+        assert self.api.download_station.get_task("dbid_86").additional.get("file")
+        assert (
+            len(self.api.download_station.get_task("dbid_86").additional.get("file"))
+            == 9
+        )
+
+        # HTTPS error
+        assert self.api.download_station.get_task("dbid_549").status == "error"
+        assert (
+            self.api.download_station.get_task("dbid_549").status_extra["error_detail"]
+            == "broken_link"
+        )
+        assert self.api.download_station.get_task("dbid_549").type == "https"
+
+    def test_surveillance_station(self):
+        """Test SurveillanceStation."""
         self.api.with_surveillance = True
         assert self.api.surveillance_station
         assert not self.api.surveillance_station.get_all_cameras()

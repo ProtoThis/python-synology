@@ -383,7 +383,7 @@ class SynologyDSM(object):
 
     @property
     def download_station(self):
-        """Gets NAS informations."""
+        """Gets NAS DownloadStation."""
         if not self._download:
             self._download = SynoDownloadStation(self)
         return self._download

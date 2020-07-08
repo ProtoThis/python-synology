@@ -24,7 +24,7 @@ class SynoDownloadTask(object):
 
     @property
     def type(self):
-        """Return type of the task."""
+        """Return type of the task (bt, nzb, http(s), ftp, emule)."""
         return self._data["type"]
 
     @property
@@ -45,7 +45,7 @@ class SynoDownloadTask(object):
     @property
     def status_extra(self):
         """Return status_extra of the task."""
-        return self._data["status_extra"]
+        return self._data.get("status_extra")
 
     @property
     def additional(self):

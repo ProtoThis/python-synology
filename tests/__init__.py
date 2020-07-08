@@ -10,6 +10,7 @@ from synology_dsm.api.core.security import SynoCoreSecurity
 from synology_dsm.api.core.utilization import SynoCoreUtilization
 from synology_dsm.api.dsm.information import SynoDSMInformation
 from synology_dsm.api.dsm.network import SynoDSMNetwork
+from synology_dsm.api.download_station import SynoDownloadStation
 from synology_dsm.api.storage.storage import SynoStorage
 from synology_dsm.api.core.share import SynoCoreShare
 from synology_dsm.api.surveillance_station import SynoSurveillanceStation
@@ -44,6 +45,8 @@ from .api_data.dsm_6 import (
     DSM_6_SURVEILLANCE_STATION_CAMERA_LIST,
     DSM_6_SURVEILLANCE_STATION_HOME_MODE_GET_INFO,
     DSM_6_SURVEILLANCE_STATION_HOME_MODE_SWITCH,
+    DSM_6_DOWNLOAD_STATION_INFO,
+    DSM_6_DOWNLOAD_STATION_TASK_LIST,
 )
 from .api_data.dsm_5 import (
     DSM_5_API_INFO,
@@ -193,24 +196,30 @@ class SynologyDSMMock(SynologyDSM):
             if not self._session_id:
                 return ERROR_INSUFFICIENT_USER_PRIVILEGE
 
+            if SynoCoreSecurity.API_KEY in url:
+                if self.error:
+                    return DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE
+                return API_SWITCHER[self.dsm_version]["CORE_SECURITY"]
+
+            if SynoCoreShare.API_KEY in url:
+                return API_SWITCHER[self.dsm_version]["CORE_SHARE"]
+
+            if SynoCoreUtilization.API_KEY in url:
+                if self.error:
+                    return DSM_6_CORE_UTILIZATION_ERROR_1055
+                return API_SWITCHER[self.dsm_version]["CORE_UTILIZATION"]
+
             if SynoDSMInformation.API_KEY in url:
                 return API_SWITCHER[self.dsm_version]["DSM_INFORMATION"]
 
             if SynoDSMNetwork.API_KEY in url:
                 return API_SWITCHER[self.dsm_version]["DSM_NETWORK"]
 
-            if SynoCoreShare.API_KEY in url:
-                return API_SWITCHER[self.dsm_version]["CORE_SHARE"]
-
-            if SynoCoreSecurity.API_KEY in url:
-                if self.error:
-                    return DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE
-                return API_SWITCHER[self.dsm_version]["CORE_SECURITY"]
-
-            if SynoCoreUtilization.API_KEY in url:
-                if self.error:
-                    return DSM_6_CORE_UTILIZATION_ERROR_1055
-                return API_SWITCHER[self.dsm_version]["CORE_UTILIZATION"]
+            if SynoDownloadStation.TASK_API_KEY in url:
+                if "GetInfo" in url:
+                    return DSM_6_DOWNLOAD_STATION_INFO
+                if "List" in url:
+                    return DSM_6_DOWNLOAD_STATION_TASK_LIST
 
             if SynoStorage.API_KEY in url:
                 return API_SWITCHER[self.dsm_version]["STORAGE_STORAGE"][

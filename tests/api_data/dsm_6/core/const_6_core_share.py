@@ -56,7 +56,7 @@ DSM_6_CORE_SHARE = {
                 "name": "test_share",
                 "quota_value": 0,
                 "recycle_bin_admin_only": False,
-                "share_quota_used": 993300480.0,
+                "share_quota_used": 36146658672640.0,
                 "support_action": 511,
                 "support_snapshot": True,
                 "task_id": "",

@@ -725,12 +725,10 @@ class TestSynologyDSM(TestCase):
         self.api.share.update()
         assert self.api.share.shares
         for share_uuid in self.api.share.shares_uuids:
-            if share_uuid == "2ee6c06a-8766-48b5-013d-63b18652a393":
-                continue
             assert self.api.share.share_name(share_uuid)
             assert self.api.share.share_path(share_uuid)
-            assert self.api.share.share_recycle_bin(share_uuid)
-            assert self.api.share.share_size(share_uuid)
+            assert self.api.share.share_recycle_bin(share_uuid) is not None
+            assert self.api.share.share_size(share_uuid) is not None
             assert self.api.share.share_size(share_uuid, human_readable=True)
 
         assert (
@@ -743,13 +741,13 @@ class TestSynologyDSM(TestCase):
         )
         assert (
             self.api.share.share_recycle_bin("2ee6c06a-8766-48b5-013d-63b18652a393")
-            == "True"
+            is True
         )
         assert (
             self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393")
-            == "36146658672640.0"
+            == 3.790251876432216e19
         )
         assert (
             self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393", True)
-            == "32.9Tb"
+            == "32.9Eb"
         )

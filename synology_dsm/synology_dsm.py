@@ -278,11 +278,6 @@ class SynologyDSM(object):
                 response = self._session.get(
                     url, params=encoded_params, timeout=self._timeout, **kwargs
                 )
-            elif method == "POST" and "data" in kwargs:
-                data = kwargs.pop("data")
-                response = self._session.post(
-                    url, data=data, timeout=self._timeout, **kwargs
-                )
             elif method == "POST":
                 response = self._session.post(
                     url, params=params, timeout=self._timeout, **kwargs

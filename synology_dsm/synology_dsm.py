@@ -21,7 +21,7 @@ from .exceptions import (
 
 from .api.core.security import SynoCoreSecurity
 from .api.core.utilization import SynoCoreUtilization
-from .api.core.share import SynoShare
+from .api.core.share import SynoCoreShare
 from .api.dsm.information import SynoDSMInformation
 from .api.dsm.network import SynoDSMNetwork
 from .api.storage.storage import SynoStorage
@@ -227,11 +227,11 @@ class SynologyDSM(object):
 
         url = self._build_url(api)
 
-        # If the request method is POST and the API is SynoShare the params
+        # If the request method is POST and the API is SynoCoreShare the params
         # to the request body. Used to support the weird Syno use of POST
         # to choose what fields to return. See ./api/core/share.py
         # for an example.
-        if request_method == "POST" and api == SynoShare.API_KEY:
+        if request_method == "POST" and api == SynoCoreShare.API_KEY:
             body = {}
             body.update(params)
             body.update(kwargs.pop("data"))
@@ -345,6 +345,9 @@ class SynologyDSM(object):
             if api == SynoCoreSecurity.API_KEY:
                 self._security = None
                 return True
+            if api == SynoCoreShare.API_KEY:
+                self._share = None
+                return True
             if api == SynoCoreUtilization.API_KEY:
                 self._utilisation = None
                 return True
@@ -356,6 +359,9 @@ class SynologyDSM(object):
                 return True
         if isinstance(api, SynoCoreSecurity):
             self._security = None
+            return True
+        if isinstance(api, SynoCoreShare):
+            self._share = None
             return True
         if isinstance(api, SynoCoreUtilization):
             self._utilisation = None
@@ -408,7 +414,7 @@ class SynologyDSM(object):
     def share(self):
         """Gets NAS shares information."""
         if not self._share:
-            self._share = SynoShare(self)
+            self._share = SynoCoreShare(self)
         return self._share
 
     @property

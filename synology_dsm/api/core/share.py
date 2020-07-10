@@ -3,7 +3,7 @@
 from synology_dsm.helpers import SynoFormatHelper
 
 
-class SynoShare(object):
+class SynoCoreShare(object):
     """Class containing Share data."""
 
     API_KEY = "SYNO.Core.Share"

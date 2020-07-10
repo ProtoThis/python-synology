@@ -11,7 +11,7 @@ from synology_dsm.api.core.utilization import SynoCoreUtilization
 from synology_dsm.api.dsm.information import SynoDSMInformation
 from synology_dsm.api.dsm.network import SynoDSMNetwork
 from synology_dsm.api.storage.storage import SynoStorage
-from synology_dsm.api.core.share import SynoShare
+from synology_dsm.api.core.share import SynoCoreShare
 from synology_dsm.api.surveillance_station import SynoSurveillanceStation
 from synology_dsm.const import API_AUTH, API_INFO
 
@@ -199,7 +199,7 @@ class SynologyDSMMock(SynologyDSM):
             if SynoDSMNetwork.API_KEY in url:
                 return API_SWITCHER[self.dsm_version]["DSM_NETWORK"]
 
-            if SynoShare.API_KEY in url:
+            if SynoCoreShare.API_KEY in url:
                 return API_SWITCHER[self.dsm_version]["CORE_SHARE"]
 
             if SynoCoreSecurity.API_KEY in url:

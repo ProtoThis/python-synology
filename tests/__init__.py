@@ -11,6 +11,7 @@ from synology_dsm.api.core.utilization import SynoCoreUtilization
 from synology_dsm.api.dsm.information import SynoDSMInformation
 from synology_dsm.api.dsm.network import SynoDSMNetwork
 from synology_dsm.api.storage.storage import SynoStorage
+from synology_dsm.api.core.share import SynoCoreShare
 from synology_dsm.api.surveillance_station import SynoSurveillanceStation
 from synology_dsm.const import API_AUTH, API_INFO
 
@@ -35,6 +36,7 @@ from .api_data.dsm_6 import (
     DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
     DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL,
     DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION,
+    DSM_6_CORE_SHARE,
     DSM_6_API_INFO_SURVEILLANCE_STATION,
     DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MOTION_ENUM,
     DSM_6_SURVEILLANCE_STATION_CAMERA_GET_LIVE_VIEW_PATH,
@@ -74,6 +76,7 @@ API_SWITCHER = {
         "DSM_NETWORK": DSM_6_DSM_NETWORK,
         "CORE_SECURITY": DSM_6_CORE_SECURITY,
         "CORE_UTILIZATION": DSM_6_CORE_UTILIZATION,
+        "CORE_SHARE": DSM_6_CORE_SHARE,
         "STORAGE_STORAGE": {
             "RAID": DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
             "SHR1": DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
@@ -132,7 +135,7 @@ class SynologyDSMMock(SynologyDSM):
         self.with_surveillance = False
 
     def _execute_request(self, method, url, params, **kwargs):
-        url += urlencode(params)
+        url += urlencode(params or {})
 
         if "no_internet" in url:
             raise SynologyDSMRequestException(
@@ -195,6 +198,9 @@ class SynologyDSMMock(SynologyDSM):
 
             if SynoDSMNetwork.API_KEY in url:
                 return API_SWITCHER[self.dsm_version]["DSM_NETWORK"]
+
+            if SynoCoreShare.API_KEY in url:
+                return API_SWITCHER[self.dsm_version]["CORE_SHARE"]
 
             if SynoCoreSecurity.API_KEY in url:
                 if self.error:

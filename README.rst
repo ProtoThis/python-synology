@@ -92,6 +92,7 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
     print("Temp. warning:   " + str(api.information.temperature_warn))
     print("Uptime:          " + str(api.information.uptime))
     print("Full DSM version:" + str(api.information.version_string))
+    print("--")
 
     print("=== Utilisation ===")
     api.utilisation.update()
@@ -99,13 +100,15 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
     print("Memory Use:      " + str(api.utilisation.memory_real_usage) + " %")
     print("Net Up:          " + str(api.utilisation.network_up()))
     print("Net Down:        " + str(api.utilisation.network_down()))
-    
+    print("--")
+
     print("=== Storage ===")
     api.storage.update()
     for volume_id in api.storage.volumes_ids:
         print("ID:          " + str(volume_id))
         print("Status:      " + str(api.storage.volume_status(volume_id)))
         print("% Used:      " + str(api.storage.volume_percentage_used(volume_id)) + " %")
+        print("--")
 
     for disk_id in api.storage.disks_ids:
         print("ID:          " + str(disk_id))
@@ -113,9 +116,16 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
         print("S-Status:    " + str(api.storage.disk_smart_status(disk_id)))
         print("Status:      " + str(api.storage.disk_status(disk_id)))
         print("Temp:        " + str(api.storage.disk_temp(disk_id)))
+        print("--")
 
-
-
+    print("=== Shared Folders ===")
+    api.share.update()
+    for share_uuid in api.share.shares_uuids:
+        print("Share name:        " + str(api.share.share_name(share_uuid)))
+        print("Share path:        " + str(api.share.share_path(share_uuid)))
+        print("Space used:        " + str(api.share.share_size(share_uuid, human_readable=True)))
+        print("Recycle Bin Enabled: " + str(api.share.share_recycle_bin(share_uuid)))
+        print("--")
 Surveillance Station usage
 --------------------------
 
@@ -162,6 +172,7 @@ Credits / Special Thanks
 - https://github.com/chemelli74 (2SA tests)
 - https://github.com/snjoetw    (Surveillance Station library)
 - https://github.com/shenxn     (Surveillance Station tests)
+- https://github.com/Gestas     (Shared Folders)
 
 Found Synology API "documentation" on this repo : https://github.com/kwent/syno/tree/master/definitions
 

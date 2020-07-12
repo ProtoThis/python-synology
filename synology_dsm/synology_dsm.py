@@ -18,8 +18,10 @@ from .exceptions import (
     SynologyDSMLogin2SARequiredException,
     SynologyDSMLogin2SAFailedException,
 )
+
 from .api.core.security import SynoCoreSecurity
 from .api.core.utilization import SynoCoreUtilization
+from .api.core.share import SynoCoreShare
 from .api.dsm.information import SynoDSMInformation
 from .api.dsm.network import SynoDSMNetwork
 from .api.storage.storage import SynoStorage
@@ -73,6 +75,7 @@ class SynologyDSM(object):
         self._security = None
         self._utilisation = None
         self._storage = None
+        self._share = None
         self._surveillance = None
 
         # Build variables
@@ -221,14 +224,29 @@ class SynologyDSM(object):
             params["_sid"] = self._session_id
         if self._syno_token:
             params["SynoToken"] = self._syno_token
-        self._debuglog("Request params: " + str(params))
+
+        url = self._build_url(api)
+
+        # If the request method is POST and the API is SynoCoreShare the params
+        # to the request body. Used to support the weird Syno use of POST
+        # to choose what fields to return. See ./api/core/share.py
+        # for an example.
+        if request_method == "POST" and api == SynoCoreShare.API_KEY:
+            body = {}
+            body.update(params)
+            body.update(kwargs.pop("data"))
+            body["mimeType"] = "application/json"
+            # Request data via POST (excluding FileStation file uploads)
+            self._debuglog("POST BODY: " + str(body))
+
+            kwargs["data"] = body
 
         # Request data
-        url = self._build_url(api)
         response = self._execute_request(request_method, url, params, **kwargs)
+        self._debuglog("Request Method: " + request_method)
         self._debuglog("Successful returned data")
         self._debuglog("API: " + api)
-        self._debuglog(str(response))
+        self._debuglog("RESPONSE: " + str(response))
 
         # Handle data errors
         if isinstance(response, dict) and response.get("error") and api != API_AUTH:
@@ -305,6 +323,9 @@ class SynologyDSM(object):
         if self._storage:
             self._storage.update()
 
+        if self._share:
+            self._share.update()
+
         if self._surveillance:
             self._surveillance.update()
 
@@ -319,6 +340,9 @@ class SynologyDSM(object):
             if api == SynoCoreSecurity.API_KEY:
                 self._security = None
                 return True
+            if api == SynoCoreShare.API_KEY:
+                self._share = None
+                return True
             if api == SynoCoreUtilization.API_KEY:
                 self._utilisation = None
                 return True
@@ -331,12 +355,16 @@ class SynologyDSM(object):
         if isinstance(api, SynoCoreSecurity):
             self._security = None
             return True
+        if isinstance(api, SynoCoreShare):
+            self._share = None
+            return True
         if isinstance(api, SynoCoreUtilization):
             self._utilisation = None
             return True
         if isinstance(api, SynoStorage):
             self._storage = None
             return True
+
         if isinstance(api, SynoSurveillanceStation):
             self._surveillance = None
             return True
@@ -376,6 +404,13 @@ class SynologyDSM(object):
         if not self._storage:
             self._storage = SynoStorage(self)
         return self._storage
+
+    @property
+    def share(self):
+        """Gets NAS shares information."""
+        if not self._share:
+            self._share = SynoCoreShare(self)
+        return self._share
 
     @property
     def surveillance_station(self):

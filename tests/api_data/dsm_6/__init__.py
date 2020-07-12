@@ -21,7 +21,6 @@ from .storage.const_6_storage_storage import (
     DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION,
     DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL,
 )
-
 from .surveillance_station.const_6_api_info import (
     DSM_6_API_INFO as DSM_6_API_INFO_SURVEILLANCE_STATION,
 )
@@ -31,7 +30,7 @@ from .surveillance_station.const_6_surveillance_station_camera import (
     DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MOTION_ENUM,
     DSM_6_SURVEILLANCE_STATION_CAMERA_EVENT_MD_PARAM_SAVE,
 )
-
+from .core.const_6_core_share import DSM_6_CORE_SHARE
 from .surveillance_station.const_6_surveillance_station_home_mode import (
     DSM_6_SURVEILLANCE_STATION_HOME_MODE_GET_INFO,
     DSM_6_SURVEILLANCE_STATION_HOME_MODE_SWITCH,

@@ -28,6 +28,8 @@ from . import (
 from .const import SESSION_ID, DEVICE_TOKEN, SYNO_TOKEN
 
 # pylint: disable=no-self-use,protected-access
+
+
 class TestSynologyDSM(TestCase):
     """SynologyDSM test cases."""
 
@@ -716,3 +718,36 @@ class TestSynologyDSM(TestCase):
         assert self.api.surveillance_station.get_home_mode_status()
         assert self.api.surveillance_station.set_home_mode(False)
         assert self.api.surveillance_station.set_home_mode(True)
+
+    def test_shares(self):
+        """Test shares."""
+        assert self.api.share
+        self.api.share.update()
+        assert self.api.share.shares
+        for share_uuid in self.api.share.shares_uuids:
+            assert self.api.share.share_name(share_uuid)
+            assert self.api.share.share_path(share_uuid)
+            assert self.api.share.share_recycle_bin(share_uuid) is not None
+            assert self.api.share.share_size(share_uuid) is not None
+            assert self.api.share.share_size(share_uuid, human_readable=True)
+
+        assert (
+            self.api.share.share_name("2ee6c06a-8766-48b5-013d-63b18652a393")
+            == "test_share"
+        )
+        assert (
+            self.api.share.share_path("2ee6c06a-8766-48b5-013d-63b18652a393")
+            == "/volume1"
+        )
+        assert (
+            self.api.share.share_recycle_bin("2ee6c06a-8766-48b5-013d-63b18652a393")
+            is True
+        )
+        assert (
+            self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393")
+            == 3.790251876432216e19
+        )
+        assert (
+            self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393", True)
+            == "32.9Eb"
+        )

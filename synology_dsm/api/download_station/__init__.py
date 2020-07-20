@@ -45,7 +45,7 @@ class SynoDownloadStation(object):
 
     def create(self, uri, unzip_password=None):
         """Create a new task (uri accepts HTTP/FTP/magnet/ED2K links)."""
-        return self._dsm.get(
+        return self._dsm.post(
             self.TASK_API_KEY,
             "create",
             {"uri": ",".join(uri), "unzip_password": unzip_password},
@@ -54,6 +54,10 @@ class SynoDownloadStation(object):
     def pause(self, task_id):
         """Pause a download task."""
         return self._dsm.get(self.TASK_API_KEY, "pause", {"id": ",".join(task_id)})
+
+    def resume(self, task_id):
+        """Resume a paused download task."""
+        return self._dsm.get(self.TASK_API_KEY, "resume", {"id": ",".join(task_id)})
 
     def delete(self, task_id, force_complete=False):
         """Delete a download task."""

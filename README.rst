@@ -126,6 +126,34 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
         print("Space used:        " + str(api.share.share_size(share_uuid, human_readable=True)))
         print("Recycle Bin Enabled: " + str(api.share.share_recycle_bin(share_uuid)))
         print("--")
+
+
+Download Station usage
+--------------------------
+
+.. code-block:: python
+
+    from synology_dsm import SynologyDSM
+
+    api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")
+
+    if "SYNO.DownloadStation.Info" in api.apis:
+
+        api.download_station.get_info()
+        api.download_station.get_config()
+
+        # The download list will be updated after each of the following functions:
+        # You should have the right on the (default) directory that the download will be saved, or you will get a 403 or 406 error
+        api.download_station.create("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
+        api.download_station.pause("dbid_1")
+        # Like the other function, you can eather pass a str or a list
+        api.download_station.resume(["dbid_1", "dbid_2"])
+        api.download_station.delete("dbid_3")
+
+        # Manual update
+        api.download_station.update()
+
+
 Surveillance Station usage
 --------------------------
 

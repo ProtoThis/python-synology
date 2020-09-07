@@ -45,7 +45,8 @@ from .api_data.dsm_6 import (
     DSM_6_SURVEILLANCE_STATION_CAMERA_LIST,
     DSM_6_SURVEILLANCE_STATION_HOME_MODE_GET_INFO,
     DSM_6_SURVEILLANCE_STATION_HOME_MODE_SWITCH,
-    DSM_6_DOWNLOAD_STATION_INFO,
+    DSM_6_DOWNLOAD_STATION_INFO_INFO,
+    DSM_6_DOWNLOAD_STATION_INFO_CONFIG,
     DSM_6_DOWNLOAD_STATION_TASK_LIST,
 )
 from .api_data.dsm_5 import (
@@ -217,7 +218,9 @@ class SynologyDSMMock(SynologyDSM):
 
             if SynoDownloadStation.TASK_API_KEY in url:
                 if "GetInfo" in url:
-                    return DSM_6_DOWNLOAD_STATION_INFO
+                    return DSM_6_DOWNLOAD_STATION_INFO_INFO
+                if "GetConfig" in url:
+                    return DSM_6_DOWNLOAD_STATION_INFO_CONFIG
                 if "List" in url:
                     return DSM_6_DOWNLOAD_STATION_TASK_LIST
 

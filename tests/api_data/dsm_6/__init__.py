@@ -13,7 +13,10 @@ from .core.const_6_core_security import (
     DSM_6_CORE_SECURITY,
     DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE,
 )
-from .download_station.const_6_download_station_info import DSM_6_DOWNLOAD_STATION_INFO
+from .download_station.const_6_download_station_info import (
+    DSM_6_DOWNLOAD_STATION_INFO_INFO,
+    DSM_6_DOWNLOAD_STATION_INFO_CONFIG,
+)
 from .download_station.const_6_download_station_task import (
     DSM_6_DOWNLOAD_STATION_TASK_LIST,
 )

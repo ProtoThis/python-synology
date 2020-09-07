@@ -704,6 +704,7 @@ class TestSynologyDSM(TestCase):
         assert not self.api.download_station.get_all_tasks()
 
         assert self.api.download_station.get_info()
+        assert self.api.download_station.get_config()
         self.api.download_station.update()
         assert self.api.download_station.get_all_tasks()
         assert len(self.api.download_station.get_all_tasks()) == 8

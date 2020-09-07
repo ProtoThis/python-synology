@@ -185,11 +185,9 @@ class SynologyDSM(object):
         """Handles API GET request."""
         return self._request("GET", api, method, params, **kwargs)
 
-    def post(self, api, method, params=None, data=None, json=None, **kwargs):
+    def post(self, api, method, params=None, **kwargs):
         """Handles API POST request."""
-        return self._request(
-            "POST", api, method, params, data=data, json=json, **kwargs
-        )
+        return self._request("POST", api, method, params, **kwargs)
 
     def _request(
         self, request_method, api, method, params=None, retry_once=True, **kwargs
@@ -229,20 +227,6 @@ class SynologyDSM(object):
 
         url = self._build_url(api)
 
-        # If the request method is POST and the API is SynoCoreShare the params
-        # to the request body. Used to support the weird Syno use of POST
-        # to choose what fields to return. See ./api/core/share.py
-        # for an example.
-        if request_method == "POST" and api == SynoCoreShare.API_KEY:
-            body = {}
-            body.update(params)
-            body.update(kwargs.pop("data"))
-            body["mimeType"] = "application/json"
-            # Request data via POST (excluding FileStation file uploads)
-            self._debuglog("POST BODY: " + str(body))
-
-            kwargs["data"] = body
-
         # Request data
         response = self._execute_request(request_method, url, params, **kwargs)
         self._debuglog("Request Method: " + request_method)
@@ -281,6 +265,13 @@ class SynologyDSM(object):
                     url, params=encoded_params, timeout=self._timeout, **kwargs
                 )
             elif method == "POST":
+                data = {}
+                data.update(params)
+                data.update(kwargs.pop("data", {}))
+                data["mimeType"] = "application/json"
+                kwargs["data"] = data
+                self._debuglog("POST data: " + str(data))
+
                 response = self._session.post(
                     url, params=params, timeout=self._timeout, **kwargs
                 )

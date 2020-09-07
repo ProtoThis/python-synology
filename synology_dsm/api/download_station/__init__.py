@@ -34,6 +34,10 @@ class SynoDownloadStation(object):
         """Return general informations about the Download Station instance."""
         return self._dsm.get(self.INFO_API_KEY, "GetInfo")
 
+    def get_config(self):
+        """Return configuration about the Download Station instance."""
+        return self._dsm.get(self.INFO_API_KEY, "GetConfig")
+
     # Downloads
     def get_all_tasks(self):
         """Return a list of tasks."""
@@ -43,26 +47,49 @@ class SynoDownloadStation(object):
         """Return task matching task_id."""
         return self._tasks_by_id[task_id]
 
-    def create(self, uri, unzip_password=None):
+    def create(self, uri, unzip_password=None, destination=None):
         """Create a new task (uri accepts HTTP/FTP/magnet/ED2K links)."""
-        return self._dsm.post(
+        res = self._dsm.post(
             self.TASK_API_KEY,
-            "create",
-            {"uri": ",".join(uri), "unzip_password": unzip_password},
+            "Create",
+            {
+                "uri": ",".join(uri) if isinstance(uri, list) else uri,
+                "unzip_password": unzip_password,
+                "destination": destination,
+            },
         )
+        self.update()
+        return res
 
     def pause(self, task_id):
         """Pause a download task."""
-        return self._dsm.get(self.TASK_API_KEY, "pause", {"id": ",".join(task_id)})
+        res = self._dsm.get(
+            self.TASK_API_KEY,
+            "Pause",
+            {"id": ",".join(task_id) if isinstance(task_id, list) else task_id},
+        )
+        self.update()
+        return res
 
     def resume(self, task_id):
         """Resume a paused download task."""
-        return self._dsm.get(self.TASK_API_KEY, "resume", {"id": ",".join(task_id)})
+        res = self._dsm.get(
+            self.TASK_API_KEY,
+            "Resume",
+            {"id": ",".join(task_id) if isinstance(task_id, list) else task_id},
+        )
+        self.update()
+        return res
 
     def delete(self, task_id, force_complete=False):
         """Delete a download task."""
-        return self._dsm.get(
+        res = self._dsm.get(
             self.TASK_API_KEY,
-            "delete",
-            {"id": ",".join(task_id), "force_complete": force_complete},
+            "Delete",
+            {
+                "id": ",".join(task_id) if isinstance(task_id, list) else task_id,
+                "force_complete": force_complete,
+            },
         )
+        self.update()
+        return res

@@ -703,8 +703,9 @@ class TestSynologyDSM(TestCase):
         assert self.api.download_station
         assert not self.api.download_station.get_all_tasks()
 
-        assert self.api.download_station.get_info()
-        assert self.api.download_station.get_config()
+        assert self.api.download_station.get_info()["data"]["version"]
+        assert self.api.download_station.get_config()["data"]["default_destination"]
+        assert self.api.download_station.get_stat()["data"]["speed_download"]
         self.api.download_station.update()
         assert self.api.download_station.get_all_tasks()
         assert len(self.api.download_station.get_all_tasks()) == 8

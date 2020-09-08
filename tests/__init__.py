@@ -47,6 +47,7 @@ from .api_data.dsm_6 import (
     DSM_6_SURVEILLANCE_STATION_HOME_MODE_SWITCH,
     DSM_6_DOWNLOAD_STATION_INFO_INFO,
     DSM_6_DOWNLOAD_STATION_INFO_CONFIG,
+    DSM_6_DOWNLOAD_STATION_STAT_INFO,
     DSM_6_DOWNLOAD_STATION_TASK_LIST,
 )
 from .api_data.dsm_5 import (
@@ -216,11 +217,15 @@ class SynologyDSMMock(SynologyDSM):
             if SynoDSMNetwork.API_KEY in url:
                 return API_SWITCHER[self.dsm_version]["DSM_NETWORK"]
 
-            if SynoDownloadStation.TASK_API_KEY in url:
+            if SynoDownloadStation.INFO_API_KEY in url:
                 if "GetInfo" in url:
                     return DSM_6_DOWNLOAD_STATION_INFO_INFO
                 if "GetConfig" in url:
                     return DSM_6_DOWNLOAD_STATION_INFO_CONFIG
+            if SynoDownloadStation.STAT_API_KEY in url:
+                if "GetInfo" in url:
+                    return DSM_6_DOWNLOAD_STATION_STAT_INFO
+            if SynoDownloadStation.TASK_API_KEY in url:
                 if "List" in url:
                     return DSM_6_DOWNLOAD_STATION_TASK_LIST
 

@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 from codecs import open
 
 REPO_URL = "https://github.com/ProtoThis/python-synology"
-VERSION = "0.8.2"
+VERSION = "0.9.0"
 
 with open("requirements.txt") as f:
     required = f.read().splitlines()

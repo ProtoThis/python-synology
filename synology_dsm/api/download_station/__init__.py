@@ -7,6 +7,7 @@ class SynoDownloadStation(object):
 
     API_KEY = "SYNO.DownloadStation.*"
     INFO_API_KEY = "SYNO.DownloadStation.Info"
+    STAT_API_KEY = "SYNO.DownloadStation.Statistic"
     TASK_API_KEY = "SYNO.DownloadStation.Task"
 
     def __init__(self, dsm):
@@ -37,6 +38,10 @@ class SynoDownloadStation(object):
     def get_config(self):
         """Return configuration about the Download Station instance."""
         return self._dsm.get(self.INFO_API_KEY, "GetConfig")
+
+    def get_stat(self):
+        """Return statistic about the Download Station instance."""
+        return self._dsm.get(self.STAT_API_KEY, "GetInfo")
 
     # Downloads
     def get_all_tasks(self):

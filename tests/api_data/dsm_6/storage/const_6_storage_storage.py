@@ -1978,7 +1978,10 @@ DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL = {
         "env": {
             "batchtask": {"max_task": 64, "remain_task": 64},
             "bay_number": "4",
-            "data_scrubbing": {"sche_enabled": "0", "sche_status": "disabled",},
+            "data_scrubbing": {
+                "sche_enabled": "0",
+                "sche_status": "disabled",
+            },
             "ebox": [],
             "fs_acting": False,
             "isSyncSysPartition": False,
@@ -1992,8 +1995,15 @@ DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL = {
             "ram_size": 4,
             "ram_size_required": 32,
             "showpooltab": False,
-            "status": {"system_crashed": False, "system_need_repair": False,},
-            "support": {"ebox": True, "raid_cross": True, "sysdef": True,},
+            "status": {
+                "system_crashed": False,
+                "system_need_repair": False,
+            },
+            "support": {
+                "ebox": True,
+                "raid_cross": True,
+                "sysdef": True,
+            },
             "support_fit_fs_limit": True,
             "unique_key": UNIQUE_KEY,
             "volume_full_critical": 0.1,
@@ -2039,9 +2049,21 @@ DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL = {
                     {
                         "designedDiskCount": 3,
                         "devices": [
-                            {"id": "sdc", "slot": 2, "status": "normal",},
-                            {"id": "sdb", "slot": 1, "status": "normal",},
-                            {"id": "sda", "slot": 0, "status": "normal",},
+                            {
+                                "id": "sdc",
+                                "slot": 2,
+                                "status": "normal",
+                            },
+                            {
+                                "id": "sdb",
+                                "slot": 1,
+                                "status": "normal",
+                            },
+                            {
+                                "id": "sda",
+                                "slot": 0,
+                                "status": "normal",
+                            },
                         ],
                         "hasParity": True,
                         "minDevSize": "4000681164800",
@@ -2052,7 +2074,10 @@ DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL = {
                     }
                 ],
                 "scrubbingStatus": "no_action",
-                "size": {"total": "7991698522112", "used": "7991698522112",},
+                "size": {
+                    "total": "7991698522112",
+                    "used": "7991698522112",
+                },
                 "space_path": "/dev/md2",
                 "ssd_trim": {"support": "not support"},
                 "status": "normal",
@@ -2067,9 +2092,21 @@ DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL = {
                         }
                     },
                     "flashcache": {
-                        "apply": {"can_do": True, "errCode": 0, "stopService": True,},
-                        "remove": {"can_do": True, "errCode": 0, "stopService": False,},
-                        "resize": {"can_do": True, "errCode": 0, "stopService": False,},
+                        "apply": {
+                            "can_do": True,
+                            "errCode": 0,
+                            "stopService": True,
+                        },
+                        "remove": {
+                            "can_do": True,
+                            "errCode": 0,
+                            "stopService": False,
+                        },
+                        "resize": {
+                            "can_do": True,
+                            "errCode": 0,
+                            "stopService": False,
+                        },
                     },
                     "snapshot": {
                         "resize": {
@@ -2141,9 +2178,21 @@ DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL = {
                         }
                     },
                     "flashcache": {
-                        "apply": {"can_do": True, "errCode": 0, "stopService": True,},
-                        "remove": {"can_do": True, "errCode": 0, "stopService": False,},
-                        "resize": {"can_do": True, "errCode": 0, "stopService": False,},
+                        "apply": {
+                            "can_do": True,
+                            "errCode": 0,
+                            "stopService": True,
+                        },
+                        "remove": {
+                            "can_do": True,
+                            "errCode": 0,
+                            "stopService": False,
+                        },
+                        "resize": {
+                            "can_do": True,
+                            "errCode": 0,
+                            "stopService": False,
+                        },
                     },
                     "snapshot": {
                         "resize": {

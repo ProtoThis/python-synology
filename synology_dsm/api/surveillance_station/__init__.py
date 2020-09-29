@@ -37,12 +37,12 @@ class SynoSurveillanceStation:
                 )["data"]
             )
 
-        live_view_data = self._dsm.get(
+        live_view_datas = self._dsm.get(
             self.CAMERA_API_KEY,
             "GetLiveViewPath",
             {"idList": ",".join(str(k) for k in self._cameras_by_id)},
         )["data"]
-        for live_view_data in live_view_data:
+        for live_view_data in live_view_datas:
             self._cameras_by_id[live_view_data["id"]].live_view.update(live_view_data)
 
     # Global

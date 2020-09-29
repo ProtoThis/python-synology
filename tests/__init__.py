@@ -1,7 +1,8 @@
 """Library tests."""
+from json import JSONDecodeError
 from urllib.parse import urlencode
+
 from requests.exceptions import ConnectionError as ConnError, RequestException, SSLError
-from simplejson.errors import JSONDecodeError
 
 from synology_dsm import SynologyDSM
 from synology_dsm.exceptions import SynologyDSMRequestException
@@ -155,7 +156,7 @@ class SynologyDSMMock(SynologyDSM):
 
         if VALID_PORT not in url and "https" not in url:
             raise SynologyDSMRequestException(
-                JSONDecodeError("Expecting value", "<html>document</html>", 0, None)
+                JSONDecodeError("Expecting value", "<html>document</html>", 0)
             )
 
         if VALID_PORT not in url:

@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 """Shared Folders data."""
 from synology_dsm.helpers import SynoFormatHelper
 
 
-class SynoCoreShare(object):
+class SynoCoreShare:
     """Class containing Share data."""
 
     API_KEY = "SYNO.Core.Share"

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """DSM 5 SYNO.DSM.Info data."""
 
 DSM_5_DSM_INFORMATION_DS410J = {

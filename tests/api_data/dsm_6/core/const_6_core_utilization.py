@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """DSM 6 SYNO.Core.System.Utilization data."""
 
 DSM_6_CORE_UTILIZATION_ERROR_1055 = {

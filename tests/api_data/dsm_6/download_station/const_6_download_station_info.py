@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """DSM 6 SYNO.DownloadStation.Info data."""
 
 DSM_6_DOWNLOAD_STATION_INFO_INFO = {

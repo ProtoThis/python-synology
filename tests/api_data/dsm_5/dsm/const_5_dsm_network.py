@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """DSM 5 SYNO.DSM.Network data."""
 
 DSM_5_DSM_NETWORK = {

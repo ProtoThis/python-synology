@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
 """DSM Storage data."""
-from __future__ import division
 
 from synology_dsm.helpers import SynoFormatHelper
 
 
-class SynoStorage(object):
+class SynoStorage:
     """Class containing Storage data."""
 
     API_KEY = "SYNO.Storage.CGI.Storage"

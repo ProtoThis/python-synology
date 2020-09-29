@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """DSM 5 SYNO.Storage.CGI.Storage data."""
 from tests.const import UNIQUE_KEY
 

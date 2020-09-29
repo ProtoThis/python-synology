@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 """Helpers."""
 
 
-class SynoFormatHelper(object):
+class SynoFormatHelper:
     """Class containing various formatting functions."""
 
     @staticmethod

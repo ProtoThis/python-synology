@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 """Class to interact with Synology DSM."""
 import socket
+from urllib.parse import quote
+
 import urllib3
-import six
 from requests import Session
 from requests.exceptions import RequestException
 from simplejson.errors import JSONDecodeError
@@ -29,13 +29,9 @@ from .api.storage.storage import SynoStorage
 from .api.surveillance_station import SynoSurveillanceStation
 from .const import API_AUTH, API_INFO
 
-if six.PY2:
-    from future.moves.urllib.parse import quote
-else:
-    from urllib.parse import quote  # pylint: disable=import-error,no-name-in-module
 
 
-class SynologyDSM(object):
+class SynologyDSM:
     """Class containing the main Synology DSM functions."""
 
     DSM_5_WEIRD_URL_API = [
@@ -257,12 +253,8 @@ class SynologyDSM(object):
         # Execute Request
         try:
             if method == "GET":
-                if six.PY2:
-                    items = params.iteritems()
-                else:
-                    items = params.items()
                 encoded_params = "&".join(
-                    "%s=%s" % (key, quote(str(value))) for key, value in items
+                    "%s=%s" % (key, quote(str(value))) for key, value in params.items()
                 )
                 response = self._session.get(
                     url, params=encoded_params, timeout=self._timeout, **kwargs

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """DSM 6 SYNO.Core.SecurityScan.Status data."""
 
 DSM_6_CORE_SECURITY = {

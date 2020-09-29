@@ -2,7 +2,7 @@
 from .task import SynoDownloadTask
 
 
-class SynoDownloadStation(object):
+class SynoDownloadStation:
     """An implementation of a Synology DownloadStation."""
 
     API_KEY = "SYNO.DownloadStation.*"

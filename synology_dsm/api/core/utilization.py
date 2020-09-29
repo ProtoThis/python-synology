@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 """DSM Utilization data."""
 from synology_dsm.helpers import SynoFormatHelper
 
 
-class SynoCoreUtilization(object):
+class SynoCoreUtilization:
     """Class containing Utilization data."""
 
     API_KEY = "SYNO.Core.System.Utilization"

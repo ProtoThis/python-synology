@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """DSM 6 SYNO.DownloadStation.Task data."""
 
 DSM_6_DOWNLOAD_STATION_TASK_LIST = {

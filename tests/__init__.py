@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 """Library tests."""
-import six
+from urllib.parse import urlencode
 from requests.exceptions import ConnectionError as ConnError, RequestException, SSLError
 from simplejson.errors import JSONDecodeError
 
@@ -92,11 +91,6 @@ API_SWITCHER = {
     },
 }
 
-
-if six.PY2:
-    from future.moves.urllib.parse import urlencode
-else:
-    from urllib.parse import urlencode  # pylint: disable=import-error,no-name-in-module
 
 VALID_HOST = "nas.mywebsite.me"
 VALID_PORT = "443"

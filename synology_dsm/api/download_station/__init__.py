@@ -21,6 +21,7 @@ class SynoDownloadStation(object):
 
     def update(self):
         """Update tasks from API."""
+        self._tasks_by_id = {}
         list_data = self._dsm.get(
             self.TASK_API_KEY, "List", {"additional": ",".join(self.additionals)}
         )["data"]

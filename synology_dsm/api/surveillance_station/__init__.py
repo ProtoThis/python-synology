@@ -22,6 +22,7 @@ class SynoSurveillanceStation(object):
 
     def update(self):
         """Update cameras and motion settings with latest from API."""
+        self._cameras_by_id = {}
         list_data = self._dsm.get(self.CAMERA_API_KEY, "List", max_version=7)["data"]
         for camera_data in list_data["cameras"]:
             if camera_data["id"] in self._cameras_by_id:

@@ -23,7 +23,7 @@ class SynologyDSMException(Exception):
             reason = "Unknown"
         
         error_message={"api": api, "code": code, "reason": reason, "details": details}
-        super(SynologyDSMException, self).__init__(error_message)
+        super().__init__(error_message)
 
 # Request
 class SynologyDSMRequestException(SynologyDSMException):
@@ -34,18 +34,18 @@ class SynologyDSMRequestException(SynologyDSMException):
         if hasattr(exception.args[0], "reason"):
             ex_reason = exception.args[0].reason
         message = "%s = %s" % (ex_class, ex_reason)
-        super(SynologyDSMRequestException, self).__init__(None, -1, message)
+        super().__init__(None, -1, message)
 
 # API
 class SynologyDSMAPINotExistsException(SynologyDSMException):
     """API not exists exception."""
     def __init__(self, api):
-        super(SynologyDSMAPINotExistsException, self).__init__(api, -2, "API %s does not exists" % api)
+        super().__init__(api, -2, "API %s does not exists" % api)
 
 class SynologyDSMAPIErrorException(SynologyDSMException):
     """API returns an error exception."""
     def __init__(self, api, code, details):
-        super(SynologyDSMAPIErrorException, self).__init__(api, code, details)
+        super().__init__(api, code, details)
 
 # Login
 class SynologyDSMLoginFailedException(SynologyDSMException):
@@ -57,32 +57,32 @@ class SynologyDSMLoginInvalidException(SynologyDSMLoginFailedException):
     """Invalid password & not admin account exception."""
     def __init__(self, username):
         message = "Invalid password or not admin account: %s" % username
-        super(SynologyDSMLoginInvalidException, self).__init__(API_AUTH, 400, message)
+        super().__init__(API_AUTH, 400, message)
 
 
 class SynologyDSMLoginDisabledAccountException(SynologyDSMLoginFailedException):
     """Guest & disabled account exception."""
     def __init__(self, username):
         message = "Guest or disabled account: %s" % username
-        super(SynologyDSMLoginDisabledAccountException, self).__init__(API_AUTH, 401, message)
+        super().__init__(API_AUTH, 401, message)
 
 
 class SynologyDSMLoginPermissionDeniedException(SynologyDSMLoginFailedException):
     """No access to login exception."""
     def __init__(self, username):
         message = "Permission denied for account: %s" % username
-        super(SynologyDSMLoginPermissionDeniedException, self).__init__(API_AUTH, 402, message)
+        super().__init__(API_AUTH, 402, message)
 
 
 class SynologyDSMLogin2SARequiredException(SynologyDSMLoginFailedException):
     """2SA required to login exception."""
     def __init__(self, username):
         message = "Two-step authentication required for account: %s" % username
-        super(SynologyDSMLogin2SARequiredException, self).__init__(API_AUTH, 403, message)
+        super().__init__(API_AUTH, 403, message)
 
 
 class SynologyDSMLogin2SAFailedException(SynologyDSMLoginFailedException):
     """2SA code failed exception."""
     def __init__(self):
         message = "Two-step authentication failed, retry with a new pass code"
-        super(SynologyDSMLogin2SAFailedException, self).__init__(API_AUTH, 404, message)
+        super().__init__(API_AUTH, 404, message)

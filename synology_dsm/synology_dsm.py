@@ -1,11 +1,11 @@
 """Class to interact with Synology DSM."""
-import socket
+from json import JSONDecodeError
 from urllib.parse import quote
+import socket
 
 import urllib3
 from requests import Session
 from requests.exceptions import RequestException
-from simplejson.errors import JSONDecodeError
 
 from .exceptions import (
     SynologyDSMAPIErrorException,
@@ -289,7 +289,7 @@ class SynologyDSM:
             raise RequestException(response)
 
         except (RequestException, JSONDecodeError) as exp:
-            raise SynologyDSMRequestException(exp)
+            raise SynologyDSMRequestException(exp) from exp
 
     def update(self, with_information=False, with_network=False):
         """Updates the various instanced modules."""

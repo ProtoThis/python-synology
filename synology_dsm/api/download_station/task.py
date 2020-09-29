@@ -1,7 +1,7 @@
 """DownloadStation task."""
 
 
-class SynoDownloadTask(object):
+class SynoDownloadTask:
     """An representation of a Synology DownloadStation task."""
 
     def __init__(self, data):

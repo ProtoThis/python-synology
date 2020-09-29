@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 """DSM Network data."""
 
 
-class SynoDSMNetwork(object):
+class SynoDSMNetwork:
     """Class containing Network data."""
 
     API_KEY = "SYNO.DSM.Network"

@@ -5,7 +5,7 @@ from .camera import SynoCamera
 from .const import MOTION_DETECTION_BY_SURVEILLANCE, MOTION_DETECTION_DISABLED
 
 
-class SynoSurveillanceStation(object):
+class SynoSurveillanceStation:
     """An implementation of a Synology SurveillanceStation."""
 
     API_KEY = "SYNO.SurveillanceStation.*"

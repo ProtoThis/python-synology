@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 """DSM Information data."""
 
 
-class SynoDSMInformation(object):
+class SynoDSMInformation:
     """Class containing Information data."""
 
     API_KEY = "SYNO.DSM.Info"

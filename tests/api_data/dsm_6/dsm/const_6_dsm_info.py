@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """DSM 6 SYNO.DSM.Info data."""
 
 DSM_6_DSM_INFORMATION_DS213_PLUS = {

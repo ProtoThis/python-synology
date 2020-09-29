@@ -30,7 +30,6 @@ from .api.surveillance_station import SynoSurveillanceStation
 from .const import API_AUTH, API_INFO
 
 
-
 class SynologyDSM:
     """Class containing the main Synology DSM functions."""
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"""Synology DSM setup."""
 
 # NOTE(ProtoThis) Guidelines for Major.Minor.Micro
 # - Major means an API contract change

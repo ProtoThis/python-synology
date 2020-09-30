@@ -81,9 +81,9 @@ class SynologyDSM:
             # disable SSL warnings due to the auto-genenerated cert
             urllib3.disable_warnings()
 
-            self._base_url = "https://%s:%s" % (dsm_ip, dsm_port)
+            self._base_url = f"https://{dsm_ip}:{dsm_port}"
         else:
-            self._base_url = "http://%s:%s" % (dsm_ip, dsm_port)
+            self._base_url = f"http://{dsm_ip}:{dsm_port}"
 
     def _debuglog(self, message):
         """Outputs message if debug mode is enabled."""
@@ -102,12 +102,9 @@ class SynologyDSM:
     def _build_url(self, api):
         if self._is_weird_api_url(api):
             if api == SynoStorage.API_KEY:
-                return (
-                    "%s/webman/modules/StorageManager/storagehandler.cgi?"
-                    % self._base_url
-                )
+                return f"{self._base_url}/webman/modules/StorageManager/storagehandler.cgi?"
 
-        return "%s/webapi/%s?" % (self._base_url, self.apis[api]["path"])
+        return f"{self._base_url}/webapi/{self.apis[api]['path']}?"
 
     def discover_apis(self):
         """Retreives available API infos from the NAS."""
@@ -253,7 +250,7 @@ class SynologyDSM:
         try:
             if method == "GET":
                 encoded_params = "&".join(
-                    "%s=%s" % (key, quote(str(value))) for key, value in params.items()
+                    f"{key}={quote(str(value))}" for key, value in params.items()
                 )
                 response = self._session.get(
                     url, params=encoded_params, timeout=self._timeout, **kwargs

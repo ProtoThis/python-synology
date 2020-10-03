@@ -142,6 +142,8 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
         print("Failure accessing the API")
     except SynologyDSMRequestException:
         print("Failure completing the request")
+    except SynologyDSMLoginFailedException:
+        print("Invalid credentials given")
 
 Download Station usage
 --------------------------

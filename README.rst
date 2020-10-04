@@ -190,6 +190,22 @@ Surveillance Station usage
     surveillance.set_home_mode(True)
 
 
+System usage
+--------------------------
+
+.. code-block:: python
+
+    from synology_dsm import SynologyDSM
+
+    api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")
+    system = api.system
+
+    # Reboot NAS
+    system.reboot()
+
+    # Shutdown NAS
+    system.shutdown()
+
 
 Credits / Special Thanks
 ========================

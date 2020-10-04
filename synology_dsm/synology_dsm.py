@@ -21,6 +21,7 @@ from .exceptions import (
 
 from .api.core.security import SynoCoreSecurity
 from .api.core.utilization import SynoCoreUtilization
+from .api.core.upgrade import SynoCoreUpgrade
 from .api.core.share import SynoCoreShare
 from .api.core.system import SynoCoreSystem
 from .api.download_station import SynoDownloadStation
@@ -81,6 +82,7 @@ class SynologyDSM(object):
         self._share = None
         self._surveillance = None
         self._system = None
+        self._upgrade = None
 
         # Build variables
         if use_https:
@@ -330,6 +332,9 @@ class SynologyDSM(object):
         if self._system:
             self._system.update()
 
+        if self._upgrade:
+            self._upgrade.update()
+
     def reset(self, api):
         """Reset an API to avoid fetching in on update."""
         if isinstance(api, str):
@@ -358,6 +363,9 @@ class SynologyDSM(object):
                 return True
             if api == SynoCoreSystem.API_KEY:
                 self._system = None
+                return True
+            if api == SynoCoreUpgrade.API_BASE_KEY:
+                self._upgrade = None
                 return True
         if isinstance(api, SynoDownloadStation):
             self._download = None
@@ -417,6 +425,13 @@ class SynologyDSM(object):
         if not self._utilisation:
             self._utilisation = SynoCoreUtilization(self)
         return self._utilisation
+
+    @property
+    def upgrade(self):
+        """Gets NAS upgrade informations."""
+        if not self._upgrade:
+            self._upgrade = SynoCoreUpgrade(self)
+        return self._upgrade
 
     @property
     def storage(self):

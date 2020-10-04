@@ -207,6 +207,20 @@ System usage
     system.shutdown()
 
 
+Upgrade usage
+--------------------------
+
+.. code-block:: python
+
+    from synology_dsm import SynologyDSM
+
+    api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")
+    upgrade = api.upgrade
+
+    # check if DSM update is available
+    if upgrade.update_available:
+        do something ...
+
 Credits / Special Thanks
 ========================
 - https://github.com/florianeinfalt

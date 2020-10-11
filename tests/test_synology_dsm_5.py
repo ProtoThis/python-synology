@@ -1,27 +1,24 @@
 """Synology DSM tests."""
 from unittest import TestCase
 
-from synology_dsm.exceptions import (
-    SynologyDSMRequestException,
-    SynologyDSMAPINotExistsException,
-    SynologyDSMAPIErrorException,
-    SynologyDSMLoginInvalidException,
-    SynologyDSMLogin2SARequiredException,
-    SynologyDSMLogin2SAFailedException,
-)
-from synology_dsm.const import API_AUTH, API_INFO
-
-from . import (
-    SynologyDSMMock,
-    VALID_HOST,
-    VALID_PORT,
-    VALID_SSL,
-    VALID_OTP,
-    VALID_PASSWORD,
-    VALID_USER,
-    VALID_USER_2SA,
-)
-from .const import SESSION_ID, DEVICE_TOKEN
+from . import SynologyDSMMock
+from . import VALID_HOST
+from . import VALID_OTP
+from . import VALID_PASSWORD
+from . import VALID_PORT
+from . import VALID_SSL
+from . import VALID_USER
+from . import VALID_USER_2SA
+from .const import DEVICE_TOKEN
+from .const import SESSION_ID
+from synology_dsm.const import API_AUTH
+from synology_dsm.const import API_INFO
+from synology_dsm.exceptions import SynologyDSMAPIErrorException
+from synology_dsm.exceptions import SynologyDSMAPINotExistsException
+from synology_dsm.exceptions import SynologyDSMLogin2SAFailedException
+from synology_dsm.exceptions import SynologyDSMLogin2SARequiredException
+from synology_dsm.exceptions import SynologyDSMLoginInvalidException
+from synology_dsm.exceptions import SynologyDSMRequestException
 
 # pylint: disable=no-self-use,protected-access,anomalous-backslash-in-string
 class TestSynologyDSM(TestCase):

@@ -2,7 +2,8 @@
 import urllib
 
 from .camera import SynoCamera
-from .const import MOTION_DETECTION_BY_SURVEILLANCE, MOTION_DETECTION_DISABLED
+from .const import MOTION_DETECTION_BY_SURVEILLANCE
+from .const import MOTION_DETECTION_DISABLED
 
 
 class SynoSurveillanceStation:

@@ -1,5 +1,4 @@
 """Test constants."""
-
 # API test data are localized in
 # `tests/api_data/dsm_[dsm_major_version]`
 # Data constant names should be like :

@@ -1,5 +1,4 @@
 """DSM Storage data."""
-
 from synology_dsm.helpers import SynoFormatHelper
 
 

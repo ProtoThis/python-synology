@@ -1,33 +1,31 @@
 """Class to interact with Synology DSM."""
+import socket
 from json import JSONDecodeError
 from urllib.parse import quote
-import socket
 
 import urllib3
 from requests import Session
 from requests.exceptions import RequestException
 
-from .exceptions import (
-    SynologyDSMAPIErrorException,
-    SynologyDSMAPINotExistsException,
-    SynologyDSMRequestException,
-    SynologyDSMLoginFailedException,
-    SynologyDSMLoginInvalidException,
-    SynologyDSMLoginDisabledAccountException,
-    SynologyDSMLoginPermissionDeniedException,
-    SynologyDSMLogin2SARequiredException,
-    SynologyDSMLogin2SAFailedException,
-)
-
 from .api.core.security import SynoCoreSecurity
-from .api.core.utilization import SynoCoreUtilization
 from .api.core.share import SynoCoreShare
+from .api.core.utilization import SynoCoreUtilization
 from .api.download_station import SynoDownloadStation
 from .api.dsm.information import SynoDSMInformation
 from .api.dsm.network import SynoDSMNetwork
 from .api.storage.storage import SynoStorage
 from .api.surveillance_station import SynoSurveillanceStation
-from .const import API_AUTH, API_INFO
+from .const import API_AUTH
+from .const import API_INFO
+from .exceptions import SynologyDSMAPIErrorException
+from .exceptions import SynologyDSMAPINotExistsException
+from .exceptions import SynologyDSMLogin2SAFailedException
+from .exceptions import SynologyDSMLogin2SARequiredException
+from .exceptions import SynologyDSMLoginDisabledAccountException
+from .exceptions import SynologyDSMLoginFailedException
+from .exceptions import SynologyDSMLoginInvalidException
+from .exceptions import SynologyDSMLoginPermissionDeniedException
+from .exceptions import SynologyDSMRequestException
 
 
 class SynologyDSM:

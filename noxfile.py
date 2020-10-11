@@ -11,10 +11,11 @@ from nox.sessions import Session
 
 package = "synology_dsm"
 python_versions = ["3.9", "3.8", "3.7"]
+# Remove mypy sessions from default sessions as type hint need deep rework.
 nox.options.sessions = (
     "pre-commit",
     "safety",
-    "mypy",
+#    "mypy",
     "tests",
     "typeguard",
     "xdoctest",

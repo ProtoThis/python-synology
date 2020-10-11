@@ -1,52 +1,12 @@
-# Python
-*.py[cod]
-
-# C extensions
-*.so
-
-# Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-.eggs
-parts
-bin
-var
-sdist
-develop-eggs
-.installed.cfg
-lib
-lib64
-pip-wheel-metadata
-
-# Logs
-*.log
-pip-log.txt
-
-# Unit test / coverage reports
-.coverage
-.tox
-coverage.xml
-nosetests.xml
-htmlcov/
-test-reports/
-test-results.xml
-test-output.xml
-
-# Translations
-*.mo
-
-# Mac OS X
-.DS_Store
-.AppleDouble
-.LSOverride
-Icon
-
-# Windows Explorer
-desktop.ini
-
+.mypy_cache/
+/.coverage
+/.nox/
+/.python-version
+/.pytype/
+/dist/
+/docs/_build/
+/src/*.egg-info/
+__pycache__/
 # Visual Studio Code
 .vscode/*
 !.vscode/cSpell.json

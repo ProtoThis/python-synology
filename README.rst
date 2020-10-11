@@ -1,43 +1,70 @@
-===========================
 Python API for Synology DSM
 ===========================
 
-.. image:: https://travis-ci.org/ProtoThis/python-synology.svg?branch=master
-    :target: https://travis-ci.org/ProtoThis/python-synology
+|PyPI| |Python Version| |Downloads| |License|
 
-.. image:: https://img.shields.io/pypi/v/python-synology.svg
-    :alt: Library version
-    :target: https://pypi.org/project/python-synology
+|Read the Docs| |Tests| |Codecov|
 
-.. image:: https://img.shields.io/pypi/pyversions/python-synology.svg
-    :alt: Supported versions
-    :target: https://pypi.org/project/python-synology
+|pre-commit| |Black|
 
-.. image:: https://pepy.tech/badge/python-synology
+.. |PyPI| image:: https://img.shields.io/pypi/v/python-synology.svg
+   :target: https://pypi.org/project/python-synology
+   :alt: PyPI
+.. |Python Version| image:: https://img.shields.io/pypi/pyversions/python-synology
+   :target: https://pypi.org/project/python-synology
+   :alt: Python Version
+.. |License| image:: https://img.shields.io/pypi/l/python-synology
+   :target: https://opensource.org/licenses/MIT
+   :alt: License
+.. |Read the Docs| image:: https://img.shields.io/readthedocs/python-synology/latest.svg?label=Read%20the%20Docs
+   :target: https://python-synology.readthedocs.io/
+   :alt: Read the documentation at https://python-synology.readthedocs.io/
+.. |Tests| image:: https://github.com/ProtoThis/python-synology/workflows/Tests/badge.svg
+   :target: https://github.com/ProtoThis/python-synology/actions?workflow=Tests
+   :alt: Tests
+.. |Codecov| image:: https://codecov.io/gh/ProtoThis/python-synology/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/ProtoThis/python-synology
+   :alt: Codecov
+.. |pre-commit| image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+   :target: https://github.com/pre-commit/pre-commit
+   :alt: pre-commit
+.. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+   :alt: Black
+.. |Downloads| image:: https://pepy.tech/badge/python-synology
     :alt: Downloads
     :target: https://pypi.org/project/python-synology
 
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :alt: Formated with Black
-    :target: https://github.com/psf/black
+
+Features
+--------
+
+Python API for communication with Synology DSM
+
+
+Requirements
+------------
+
+* TODO
 
 
 Installation
-============
+------------
 
-.. code-block:: bash
+You can install *Python API for Synology DSM* via pip_ from PyPI_:
 
-    [sudo] pip install python-synology
+.. code:: console
+
+   $ pip install python-synology
 
 
 Usage
-=====
+-----
 
 You can import the module as `synology_dsm`.
 
-
 Constructor
------------
+^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -58,7 +85,7 @@ Default ``timeout`` is 10 seconds.
 
 
 Login
-------
+^^^^^
 
 The library automatically login at first request, but you better use the ``login()`` function separately to authenticate.
 
@@ -70,7 +97,7 @@ Store the ``device_token`` property so that you do not need to reconnect with pa
 
 
 Code exemple
-------------
+^^^^^^^^^^^^
 
 Every API has an ``update()`` function that is needed to get the first data, then the data is cached and updated at the next ``update()`` call.
 
@@ -129,7 +156,7 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
 
 
 Download Station usage
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -155,7 +182,7 @@ Download Station usage
 
 
 Surveillance Station usage
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -191,8 +218,30 @@ Surveillance Station usage
 
 
 
+Contributing
+------------
+
+Contributions are very welcome.
+To learn more, see the `Contributor Guide`_.
+
+
+License
+-------
+
+Distributed under the terms of the MIT_ license,
+*Python API for Synology DSM* is free and open source software.
+
+
+Issues
+------
+
+If you encounter any problems,
+please `file an issue`_ along with a detailed description.
+
+
 Credits / Special Thanks
-========================
+------------------------
+
 - https://github.com/florianeinfalt
 - https://github.com/tchellomello
 - https://github.com/Quentame   (Multiple API addition & tests)
@@ -204,9 +253,10 @@ Credits / Special Thanks
 
 Found Synology API "documentation" on this repo : https://github.com/kwent/syno/tree/master/definitions
 
+This project was generated from `@cjolowicz`_'s `Hypermodern Python Cookiecutter`_ template.
 
 Official references
-===================
+-------------------
 
 - `Calendar API documentation (2015-2019) <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/Calendar/2.4/enu/Synology_Calendar_API_Guide_enu.pdf>`_
 
@@ -217,3 +267,14 @@ Official references
 - `Surveillance Station API documentation (2012-2020) <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/SurveillanceStation/All/enu/Surveillance_Station_Web_API.pdf>`_
 
 - `Virtual Machine Manager API documentation (2015-2019) <https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/Virtualization/All/enu/Synology_Virtual_Machine_Manager_API_Guide.pdf>`_
+
+
+.. _@cjolowicz: https://github.com/cjolowicz
+.. _Cookiecutter: https://github.com/audreyr/cookiecutter
+.. _MIT: http://opensource.org/licenses/MIT
+.. _PyPI: https://pypi.org/
+.. _Hypermodern Python Cookiecutter: https://github.com/cjolowicz/cookiecutter-hypermodern-python
+.. _file an issue: https://github.com/ProtoThis/hypermodern-python-test/issues
+.. _pip: https://pip.pypa.io/
+.. github-only
+.. _Contributor Guide: CONTRIBUTING.rst

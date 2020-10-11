@@ -11,4 +11,4 @@
    contributing
    Code of Conduct <codeofconduct>
    License <license>
-   Changelog <https://github.com/ProtoThis/hypermodern-python-test/releases>
+   Changelog <https://github.com/ProtoThis/python-synology/releases>

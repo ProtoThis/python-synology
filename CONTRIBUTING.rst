@@ -13,9 +13,9 @@ Here is a list of important resources for contributors:
 - `Code of Conduct`_
 
 .. _MIT license: https://opensource.org/licenses/MIT
-.. _Source Code: https://github.com/ProtoThis/hypermodern-python-test
-.. _Documentation: https://hypermodern-python-test.readthedocs.io/
-.. _Issue Tracker: https://github.com/ProtoThis/hypermodern-python-test/issues
+.. _Source Code: https://github.com/ProtoThis/python-synology
+.. _Documentation: https://python-synology.readthedocs.io/
+.. _Issue Tracker: https://github.com/ProtoThis/python-synology/issues
 
 How to report a bug
 -------------------
@@ -55,13 +55,11 @@ Install the package with development requirements:
 
    $ poetry install
 
-You can now run an interactive Python session,
-or the command-line interface:
+You can now run an interactive Python session:
 
 .. code:: console
 
    $ poetry run python
-   $ poetry run hypermodern-python-test
 
 .. _Poetry: https://python-poetry.org/
 .. _Nox: https://nox.thea.codes/

@@ -22,6 +22,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
 ]
 keywords=["synology-dsm", "synology"]
+packages = [
+    { include = "synology_dsm", from = "src" },
+]
 
 [tool.poetry.urls]
 Changelog = "https://github.com/ProtoThis/python-synology/releases"

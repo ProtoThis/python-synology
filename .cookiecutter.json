@@ -1,0 +1,10 @@
+{
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Ferry van Zeelst",
+  "email": "unknown",
+  "friendly_name": "Python API for Synology DSM",
+  "github_user": "ProtoThis",
+  "package_name": "synology_dsm",
+  "project_name": "python-synology",
+  "version": "0.9.0"
+}

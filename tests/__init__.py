@@ -30,7 +30,9 @@ from .api_data.dsm_6 import DSM_6_DOWNLOAD_STATION_STAT_INFO
 from .api_data.dsm_6 import DSM_6_DOWNLOAD_STATION_TASK_LIST
 from .api_data.dsm_6 import DSM_6_DSM_INFORMATION
 from .api_data.dsm_6 import DSM_6_DSM_NETWORK
-from .api_data.dsm_6 import DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION
+from .api_data.dsm_6 import (
+    DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION,
+)
 from .api_data.dsm_6 import DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL
 from .api_data.dsm_6 import DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS
 from .api_data.dsm_6 import DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL

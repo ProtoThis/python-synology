@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 """Library tests."""
-import six
+from json import JSONDecodeError
+from urllib.parse import urlencode
+
 from requests.exceptions import ConnectionError as ConnError, RequestException, SSLError
-from simplejson.errors import JSONDecodeError
 
 from synology_dsm import SynologyDSM
 from synology_dsm.exceptions import SynologyDSMRequestException
@@ -71,7 +71,9 @@ API_SWITCHER = {
         "DSM_INFORMATION": DSM_5_DSM_INFORMATION,
         "DSM_NETWORK": DSM_5_DSM_NETWORK,
         "CORE_UTILIZATION": DSM_5_CORE_UTILIZATION,
-        "STORAGE_STORAGE": {"RAID": DSM_5_STORAGE_STORAGE_DS410J_RAID5_4DISKS_1VOL,},
+        "STORAGE_STORAGE": {
+            "RAID": DSM_5_STORAGE_STORAGE_DS410J_RAID5_4DISKS_1VOL,
+        },
     },
     6: {
         "API_INFO": DSM_6_API_INFO,
@@ -92,11 +94,6 @@ API_SWITCHER = {
     },
 }
 
-
-if six.PY2:
-    from future.moves.urllib.parse import urlencode
-else:
-    from urllib.parse import urlencode  # pylint: disable=import-error,no-name-in-module
 
 VALID_HOST = "nas.mywebsite.me"
 VALID_PORT = "443"
@@ -161,7 +158,7 @@ class SynologyDSMMock(SynologyDSM):
 
         if VALID_PORT not in url and "https" not in url:
             raise SynologyDSMRequestException(
-                JSONDecodeError("Expecting value", "<html>document</html>", 0, None)
+                JSONDecodeError("Expecting value", "<html>document</html>", 0)
             )
 
         if VALID_PORT not in url:

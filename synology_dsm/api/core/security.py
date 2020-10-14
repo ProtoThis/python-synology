@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 """DSM Security data."""
 
 
-class SynoCoreSecurity(object):
+class SynoCoreSecurity:
     """Class containing Security data."""
 
     API_KEY = "SYNO.Core.SecurityScan.Status"

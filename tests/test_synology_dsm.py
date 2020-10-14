@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Synology DSM tests."""
 from unittest import TestCase
 import pytest

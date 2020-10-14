@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
 """Class to interact with Synology DSM."""
+from json import JSONDecodeError
+from urllib.parse import quote
 import socket
+
 import urllib3
-import six
 from requests import Session
 from requests.exceptions import RequestException
-from simplejson.errors import JSONDecodeError
 
 from .exceptions import (
     SynologyDSMAPIErrorException,
@@ -29,13 +29,8 @@ from .api.storage.storage import SynoStorage
 from .api.surveillance_station import SynoSurveillanceStation
 from .const import API_AUTH, API_INFO
 
-if six.PY2:
-    from future.moves.urllib.parse import quote
-else:
-    from urllib.parse import quote  # pylint: disable=import-error,no-name-in-module
 
-
-class SynologyDSM(object):
+class SynologyDSM:
     """Class containing the main Synology DSM functions."""
 
     DSM_5_WEIRD_URL_API = [
@@ -44,14 +39,14 @@ class SynologyDSM(object):
 
     def __init__(
         self,
-        dsm_ip,
-        dsm_port,
-        username,
-        password,
-        use_https=False,
-        timeout=None,
-        device_token=None,
-        debugmode=False,
+        dsm_ip: str,
+        dsm_port: int,
+        username: str,
+        password: str,
+        use_https: bool = False,
+        timeout: int = None,
+        device_token: str = None,
+        debugmode: bool = False,
     ):
         self.username = username
         self._password = password
@@ -86,16 +81,16 @@ class SynologyDSM(object):
             # disable SSL warnings due to the auto-genenerated cert
             urllib3.disable_warnings()
 
-            self._base_url = "https://%s:%s" % (dsm_ip, dsm_port)
+            self._base_url = f"https://{dsm_ip}:{dsm_port}"
         else:
-            self._base_url = "http://%s:%s" % (dsm_ip, dsm_port)
+            self._base_url = f"http://{dsm_ip}:{dsm_port}"
 
-    def _debuglog(self, message):
+    def _debuglog(self, message: str):
         """Outputs message if debug mode is enabled."""
         if self._debugmode:
             print("DEBUG: " + message)
 
-    def _is_weird_api_url(self, api):
+    def _is_weird_api_url(self, api: str) -> bool:
         """Returns True if the API URL is not common (nas_base_url/webapi/path?params) [Only handles DSM 5 for now]."""
         return (
             api in self.DSM_5_WEIRD_URL_API
@@ -104,15 +99,12 @@ class SynologyDSM(object):
             and int(self._information.version) < 7321  # < DSM 6
         )
 
-    def _build_url(self, api):
+    def _build_url(self, api: str) -> str:
         if self._is_weird_api_url(api):
             if api == SynoStorage.API_KEY:
-                return (
-                    "%s/webman/modules/StorageManager/storagehandler.cgi?"
-                    % self._base_url
-                )
+                return f"{self._base_url}/webman/modules/StorageManager/storagehandler.cgi?"
 
-        return "%s/webapi/%s?" % (self._base_url, self.apis[api]["path"])
+        return f"{self._base_url}/webapi/{self.apis[api]['path']}?"
 
     def discover_apis(self):
         """Retreives available API infos from the NAS."""
@@ -125,7 +117,7 @@ class SynologyDSM(object):
         """Gets available API infos from the NAS."""
         return self._apis
 
-    def login(self, otp_code=None):
+    def login(self, otp_code: str = None):
         """Create a logged session."""
         # First reset the session
         self._debuglog("Creating new session")
@@ -180,20 +172,26 @@ class SynologyDSM(object):
         return True
 
     @property
-    def device_token(self):
+    def device_token(self) -> str:
         """Gets the device token to remember the 2SA access was granted on this device."""
         return self._device_token
 
-    def get(self, api, method, params=None, **kwargs):
+    def get(self, api: str, method: str, params: dict = None, **kwargs):
         """Handles API GET request."""
         return self._request("GET", api, method, params, **kwargs)
 
-    def post(self, api, method, params=None, **kwargs):
+    def post(self, api: str, method: str, params: dict = None, **kwargs):
         """Handles API POST request."""
         return self._request("POST", api, method, params, **kwargs)
 
     def _request(
-        self, request_method, api, method, params=None, retry_once=True, **kwargs
+        self,
+        request_method: str,
+        api: str,
+        method: str,
+        params: dict = None,
+        retry_once: bool = True,
+        **kwargs
     ):
         """Handles API request."""
         # Discover existing APIs
@@ -252,17 +250,13 @@ class SynologyDSM(object):
 
         return response
 
-    def _execute_request(self, method, url, params, **kwargs):
+    def _execute_request(self, method: str, url: str, params: dict, **kwargs):
         """Function to execute and handle a request."""
         # Execute Request
         try:
             if method == "GET":
-                if six.PY2:
-                    items = params.iteritems()
-                else:
-                    items = params.items()
                 encoded_params = "&".join(
-                    "%s=%s" % (key, quote(str(value))) for key, value in items
+                    f"{key}={quote(str(value))}" for key, value in params.items()
                 )
                 response = self._session.get(
                     url, params=encoded_params, timeout=self._timeout, **kwargs
@@ -300,9 +294,9 @@ class SynologyDSM(object):
             raise RequestException(response)
 
         except (RequestException, JSONDecodeError) as exp:
-            raise SynologyDSMRequestException(exp)
+            raise SynologyDSMRequestException(exp) from exp
 
-    def update(self, with_information=False, with_network=False):
+    def update(self, with_information: bool = False, with_network: bool = False):
         """Updates the various instanced modules."""
         if self._download:
             self._download.update()
@@ -328,7 +322,7 @@ class SynologyDSM(object):
         if self._surveillance:
             self._surveillance.update()
 
-    def reset(self, api):
+    def reset(self, api: any) -> bool:
         """Reset an API to avoid fetching in on update."""
         if isinstance(api, str):
             if api in ("information", SynoDSMInformation.API_KEY):
@@ -376,56 +370,56 @@ class SynologyDSM(object):
         return False
 
     @property
-    def download_station(self):
+    def download_station(self) -> SynoDownloadStation:
         """Gets NAS DownloadStation."""
         if not self._download:
             self._download = SynoDownloadStation(self)
         return self._download
 
     @property
-    def information(self):
+    def information(self) -> SynoDSMInformation:
         """Gets NAS informations."""
         if not self._information:
             self._information = SynoDSMInformation(self)
         return self._information
 
     @property
-    def network(self):
+    def network(self) -> SynoDSMNetwork:
         """Gets NAS network informations."""
         if not self._network:
             self._network = SynoDSMNetwork(self)
         return self._network
 
     @property
-    def security(self):
+    def security(self) -> SynoCoreSecurity:
         """Gets NAS security informations."""
         if not self._security:
             self._security = SynoCoreSecurity(self)
         return self._security
 
     @property
-    def utilisation(self):
+    def utilisation(self) -> SynoCoreUtilization:
         """Gets NAS utilisation informations."""
         if not self._utilisation:
             self._utilisation = SynoCoreUtilization(self)
         return self._utilisation
 
     @property
-    def storage(self):
+    def storage(self) -> SynoStorage:
         """Gets NAS storage informations."""
         if not self._storage:
             self._storage = SynoStorage(self)
         return self._storage
 
     @property
-    def share(self):
+    def share(self) -> SynoCoreShare:
         """Gets NAS shares information."""
         if not self._share:
             self._share = SynoCoreShare(self)
         return self._share
 
     @property
-    def surveillance_station(self):
+    def surveillance_station(self) -> SynoSurveillanceStation:
         """Gets NAS SurveillanceStation."""
         if not self._surveillance:
             self._surveillance = SynoSurveillanceStation(self)

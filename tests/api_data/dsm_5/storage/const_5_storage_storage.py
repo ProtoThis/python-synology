@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """DSM 5 SYNO.Storage.CGI.Storage data."""
 from tests.const import UNIQUE_KEY
 
@@ -253,10 +252,18 @@ DSM_5_STORAGE_STORAGE_DS410J_RAID5_4DISKS_1VOL = {
             "vol_path": "/volume1",
             "vspace_can_do": {
                 "drbd": {
-                    "resize": {"can_do": False, "errCode": 53504, "stopService": False,}
+                    "resize": {
+                        "can_do": False,
+                        "errCode": 53504,
+                        "stopService": False,
+                    }
                 },
                 "flashcache": {
-                    "apply": {"can_do": False, "errCode": 53504, "stopService": False,},
+                    "apply": {
+                        "can_do": False,
+                        "errCode": 53504,
+                        "stopService": False,
+                    },
                     "remove": {
                         "can_do": False,
                         "errCode": 53504,

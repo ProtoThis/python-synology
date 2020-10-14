@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test constants."""
 
 # API test data are localized in

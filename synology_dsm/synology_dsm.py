@@ -156,9 +156,12 @@ class SynologyDSM(object):
                 401: SynologyDSMLoginDisabledAccountException(self.username),
                 402: SynologyDSMLoginPermissionDeniedException(self.username),
                 403: SynologyDSMLogin2SARequiredException(self.username),
-                404: SynologyDSMLogin2SAFailedException,
+                404: SynologyDSMLogin2SAFailedException(),
             }
-            raise switcher.get(result["error"]["code"], SynologyDSMLoginFailedException)
+            raise switcher.get(
+                result["error"]["code"],
+                SynologyDSMLoginFailedException(result["error"]["code"], self.username),
+            )
 
         # Parse result if valid
         self._session_id = result["data"]["sid"]

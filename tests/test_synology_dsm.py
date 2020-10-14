@@ -12,6 +12,7 @@ from synology_dsm.exceptions import (
     SynologyDSMLoginInvalidException,
     SynologyDSMLogin2SARequiredException,
     SynologyDSMLogin2SAFailedException,
+    SynologyDSMLoginFailedException,
 )
 from synology_dsm.const import API_AUTH, API_INFO
 
@@ -24,6 +25,7 @@ from . import (
     VALID_PASSWORD,
     VALID_USER,
     VALID_USER_2SA,
+    USER_MAX_TRY,
 )
 from .const import SESSION_ID, DEVICE_TOKEN, SYNO_TOKEN
 
@@ -221,6 +223,20 @@ class TestSynologyDSM(TestCase):
         assert api._session_id is None
         assert api._syno_token is None
         assert api._device_token is None
+
+    def test_login_basic_failed(self):
+        """Test basic failed login."""
+        api = SynologyDSMMock(
+            VALID_HOST, VALID_PORT, USER_MAX_TRY, VALID_PASSWORD, VALID_SSL
+        )
+
+        with pytest.raises(SynologyDSMLoginFailedException) as error:
+            api.login()
+        error_value = error.value.args[0]
+        assert error_value["api"] == "SYNO.API.Auth"
+        assert error_value["code"] == 407
+        assert error_value["reason"] == "Max Tries (if auto blocking is set to true)"
+        assert error_value["details"] == USER_MAX_TRY
 
     def test_request_timeout(self):
         """Test request timeout."""

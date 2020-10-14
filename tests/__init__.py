@@ -19,6 +19,7 @@ from synology_dsm.const import API_AUTH, API_INFO
 from .const import (
     ERROR_INSUFFICIENT_USER_PRIVILEGE,
     ERROR_AUTH_INVALID_CREDENTIALS,
+    ERROR_AUTH_MAX_TRIES,
     ERROR_AUTH_OTP_AUTHENTICATE_FAILED,
     DEVICE_TOKEN,
 )
@@ -104,6 +105,8 @@ VALID_USER = "valid_user"
 VALID_USER_2SA = "valid_user_2sa"
 VALID_PASSWORD = "valid_password"
 VALID_OTP = "123456"
+
+USER_MAX_TRY = "user_max"
 
 
 class SynologyDSMMock(SynologyDSM):
@@ -191,6 +194,9 @@ class SynologyDSMMock(SynologyDSM):
 
             if VALID_USER in url and VALID_PASSWORD in url:
                 return API_SWITCHER[self.dsm_version]["AUTH_LOGIN"]
+
+            if USER_MAX_TRY in url:
+                return ERROR_AUTH_MAX_TRIES
 
             return ERROR_AUTH_INVALID_CREDENTIALS
 

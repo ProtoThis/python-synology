@@ -51,39 +51,40 @@ class SynologyDSMAPIErrorException(SynologyDSMException):
 # Login
 class SynologyDSMLoginFailedException(SynologyDSMException):
     """Failed to login exception."""
-    pass
+    def __init__(self, code, details=None):
+        super(SynologyDSMLoginFailedException, self).__init__(API_AUTH, code, details)
 
 
 class SynologyDSMLoginInvalidException(SynologyDSMLoginFailedException):
     """Invalid password & not admin account exception."""
     def __init__(self, username):
         message = "Invalid password or not admin account: %s" % username
-        super(SynologyDSMLoginInvalidException, self).__init__(API_AUTH, 400, message)
+        super(SynologyDSMLoginInvalidException, self).__init__(400, message)
 
 
 class SynologyDSMLoginDisabledAccountException(SynologyDSMLoginFailedException):
     """Guest & disabled account exception."""
     def __init__(self, username):
         message = "Guest or disabled account: %s" % username
-        super(SynologyDSMLoginDisabledAccountException, self).__init__(API_AUTH, 401, message)
+        super(SynologyDSMLoginDisabledAccountException, self).__init__(401, message)
 
 
 class SynologyDSMLoginPermissionDeniedException(SynologyDSMLoginFailedException):
     """No access to login exception."""
     def __init__(self, username):
         message = "Permission denied for account: %s" % username
-        super(SynologyDSMLoginPermissionDeniedException, self).__init__(API_AUTH, 402, message)
+        super(SynologyDSMLoginPermissionDeniedException, self).__init__(402, message)
 
 
 class SynologyDSMLogin2SARequiredException(SynologyDSMLoginFailedException):
     """2SA required to login exception."""
     def __init__(self, username):
         message = "Two-step authentication required for account: %s" % username
-        super(SynologyDSMLogin2SARequiredException, self).__init__(API_AUTH, 403, message)
+        super(SynologyDSMLogin2SARequiredException, self).__init__(403, message)
 
 
 class SynologyDSMLogin2SAFailedException(SynologyDSMLoginFailedException):
     """2SA code failed exception."""
     def __init__(self):
         message = "Two-step authentication failed, retry with a new pass code"
-        super(SynologyDSMLogin2SAFailedException, self).__init__(API_AUTH, 404, message)
+        super(SynologyDSMLogin2SAFailedException, self).__init__(404, message)

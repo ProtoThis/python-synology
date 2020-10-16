@@ -210,28 +210,28 @@ System usage
     system.update()
 
     # Get CPU information
-    system.cpu_clock_speed()
-    system.cpu_cores()
-    system.cpu_family()
-    system.cpu_series()
+    system.cpu_clock_speed
+    system.cpu_cores
+    system.cpu_family
+    system.cpu_series
 
     # Get NTP settings
-    system.enabled_ntp()
-    system.ntp_server()
+    system.enabled_ntp
+    system.ntp_server
 
     # Get system information
-    system.firmware_ver()
-    system.model()
-    system.ram_size()
-    system.serial()
-    system.sys_temp()
-    system.time()
-    system.time_zone()
-    system.time_zone_desc()
-    system.up_time()
+    system.firmware_ver
+    system.model
+    system.ram_size
+    system.serial
+    system.sys_temp
+    system.time
+    system.time_zone
+    system.time_zone_desc
+    system.up_time
 
     # Get list of all connected USB devices
-    system.usb_dev()
+    system.usb_dev
 
 
 Upgrade usage

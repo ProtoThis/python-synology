@@ -335,7 +335,7 @@ class SynologyDSM(object):
         if self._upgrade:
             self._upgrade.update()
 
-    def reset(self, api):
+    def reset(self, api: any) -> bool:
         """Reset an API to avoid fetching in on update."""
         if isinstance(api, str):
             if api in ("information", SynoDSMInformation.API_KEY):
@@ -436,7 +436,7 @@ class SynologyDSM(object):
         return self._storage
 
     @property
-    def surveillance_station(self):
+    def surveillance_station(self) -> SynoSurveillanceStation:
         """Gets NAS SurveillanceStation."""
         if not self._surveillance:
             self._surveillance = SynoSurveillanceStation(self)
@@ -457,7 +457,7 @@ class SynologyDSM(object):
         return self._upgrade
 
     @property
-    def utilisation(self):
+    def utilisation(self) -> SynoCoreUtilization:
         """Gets NAS utilisation informations."""
         if not self._utilisation:
             self._utilisation = SynoCoreUtilization(self)

@@ -21,6 +21,4 @@ class SynoCoreUpgrade(object):
     @property
     def update_available(self):
         """Gets all Upgrade info."""
-        if self._data.get("update", None):
-            return bool(self._data["update"]["available"])
-        return None
+        return self._data["update"].get("available")

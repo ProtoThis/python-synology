@@ -373,6 +373,9 @@ class SynologyDSM:
         if isinstance(api, SynoCoreSystem):
             self._system = None
             return True
+        if isinstance(api, SynoCoreUpgrade):
+            self._utilisation = None
+            return True
         if isinstance(api, SynoCoreUtilization):
             self._utilisation = None
             return True

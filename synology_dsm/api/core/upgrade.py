@@ -5,8 +5,8 @@
 class SynoCoreUpgrade(object):
     """Class containing upgrade data and actions."""
 
-    API_BASE_KEY = "SYNO.Core.Upgrade"
-    API_SERVER_KEY = API_BASE_KEY + ".Server"
+    API_KEY = "SYNO.Core.Upgrade"
+    API_SERVER_KEY = API_KEY + ".Server"
 
     def __init__(self, dsm):
         self._dsm = dsm

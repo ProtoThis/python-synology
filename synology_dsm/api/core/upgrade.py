@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 """DSM Upgrade data and actions."""
 
 
-class SynoCoreUpgrade(object):
+class SynoCoreUpgrade:
     """Class containing upgrade data and actions."""
 
     API_KEY = "SYNO.Core.Upgrade"

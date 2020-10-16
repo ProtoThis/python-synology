@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """DSM 6 SYNO.Core.System data."""
 
 DSM_6_CORE_SYSTEM = {

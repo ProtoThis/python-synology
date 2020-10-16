@@ -349,7 +349,7 @@ class SynologyDSM:
             if api == SynoCoreSystem.API_KEY:
                 self._system = None
                 return True
-            if api == SynoCoreUpgrade.API_BASE_KEY:
+            if api == SynoCoreUpgrade.API_KEY:
                 self._upgrade = None
                 return True
             if api == SynoCoreUtilization.API_KEY:

@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 """DSM System data and actions."""
 
 
-class SynoCoreSystem(object):
+class SynoCoreSystem:
     """Class containing System data and actions."""
 
     API_KEY = "SYNO.Core.System"

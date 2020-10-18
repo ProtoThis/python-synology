@@ -15,7 +15,7 @@ class SynoCoreUpgrade:
         """Updates Upgrade data."""
         raw_data = self._dsm.get(self.API_SERVER_KEY, "check")
         if raw_data:
-            self._data.update(raw_data["data"])
+            self._data = raw_data["data"]
 
     @property
     def update_available(self):

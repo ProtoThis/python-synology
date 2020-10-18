@@ -20,8 +20,10 @@ from .exceptions import (
 )
 
 from .api.core.security import SynoCoreSecurity
-from .api.core.utilization import SynoCoreUtilization
 from .api.core.share import SynoCoreShare
+from .api.core.system import SynoCoreSystem
+from .api.core.upgrade import SynoCoreUpgrade
+from .api.core.utilization import SynoCoreUtilization
 from .api.download_station import SynoDownloadStation
 from .api.dsm.information import SynoDSMInformation
 from .api.dsm.network import SynoDSMNetwork
@@ -70,10 +72,12 @@ class SynologyDSM:
         self._information = None
         self._network = None
         self._security = None
-        self._utilisation = None
-        self._storage = None
         self._share = None
+        self._storage = None
         self._surveillance = None
+        self._system = None
+        self._utilisation = None
+        self._upgrade = None
 
         # Build variables
         if use_https:
@@ -322,6 +326,12 @@ class SynologyDSM:
         if self._surveillance:
             self._surveillance.update()
 
+        if self._system:
+            self._system.update()
+
+        if self._upgrade:
+            self._upgrade.update()
+
     def reset(self, api: any) -> bool:
         """Reset an API to avoid fetching in on update."""
         if isinstance(api, str):
@@ -330,17 +340,23 @@ class SynologyDSM:
             if hasattr(self, "_" + api):
                 setattr(self, "_" + api, None)
                 return True
-            if api == SynoDownloadStation.API_KEY:
-                self._download = None
-                return True
             if api == SynoCoreSecurity.API_KEY:
                 self._security = None
                 return True
             if api == SynoCoreShare.API_KEY:
                 self._share = None
                 return True
+            if api == SynoCoreSystem.API_KEY:
+                self._system = None
+                return True
+            if api == SynoCoreUpgrade.API_KEY:
+                self._upgrade = None
+                return True
             if api == SynoCoreUtilization.API_KEY:
                 self._utilisation = None
+                return True
+            if api == SynoDownloadStation.API_KEY:
+                self._download = None
                 return True
             if api == SynoStorage.API_KEY:
                 self._storage = None
@@ -348,22 +364,27 @@ class SynologyDSM:
             if api == SynoSurveillanceStation.API_KEY:
                 self._surveillance = None
                 return True
-        if isinstance(api, SynoDownloadStation):
-            self._download = None
-            return True
         if isinstance(api, SynoCoreSecurity):
             self._security = None
             return True
         if isinstance(api, SynoCoreShare):
             self._share = None
             return True
+        if isinstance(api, SynoCoreSystem):
+            self._system = None
+            return True
+        if isinstance(api, SynoCoreUpgrade):
+            self._utilisation = None
+            return True
         if isinstance(api, SynoCoreUtilization):
             self._utilisation = None
+            return True
+        if isinstance(api, SynoDownloadStation):
+            self._download = None
             return True
         if isinstance(api, SynoStorage):
             self._storage = None
             return True
-
         if isinstance(api, SynoSurveillanceStation):
             self._surveillance = None
             return True
@@ -398,11 +419,11 @@ class SynologyDSM:
         return self._security
 
     @property
-    def utilisation(self) -> SynoCoreUtilization:
-        """Gets NAS utilisation informations."""
-        if not self._utilisation:
-            self._utilisation = SynoCoreUtilization(self)
-        return self._utilisation
+    def share(self) -> SynoCoreShare:
+        """Gets NAS shares information."""
+        if not self._share:
+            self._share = SynoCoreShare(self)
+        return self._share
 
     @property
     def storage(self) -> SynoStorage:
@@ -412,15 +433,29 @@ class SynologyDSM:
         return self._storage
 
     @property
-    def share(self) -> SynoCoreShare:
-        """Gets NAS shares information."""
-        if not self._share:
-            self._share = SynoCoreShare(self)
-        return self._share
-
-    @property
     def surveillance_station(self) -> SynoSurveillanceStation:
         """Gets NAS SurveillanceStation."""
         if not self._surveillance:
             self._surveillance = SynoSurveillanceStation(self)
         return self._surveillance
+
+    @property
+    def system(self) -> SynoCoreSystem:
+        """Gets NAS system information."""
+        if not self._system:
+            self._system = SynoCoreSystem(self)
+        return self._system
+
+    @property
+    def upgrade(self) -> SynoCoreUpgrade:
+        """Gets NAS upgrade informations."""
+        if not self._upgrade:
+            self._upgrade = SynoCoreUpgrade(self)
+        return self._upgrade
+
+    @property
+    def utilisation(self) -> SynoCoreUtilization:
+        """Gets NAS utilisation informations."""
+        if not self._utilisation:
+            self._utilisation = SynoCoreUtilization(self)
+        return self._utilisation

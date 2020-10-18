@@ -190,6 +190,66 @@ Surveillance Station usage
     surveillance.set_home_mode(True)
 
 
+System usage
+--------------------------
+
+.. code-block:: python
+
+    from synology_dsm import SynologyDSM
+
+    api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")
+    system = api.system
+
+    # Reboot NAS
+    system.reboot()
+
+    # Shutdown NAS
+    system.shutdown()
+
+    # Manual update system information
+    system.update()
+
+    # Get CPU information
+    system.cpu_clock_speed
+    system.cpu_cores
+    system.cpu_family
+    system.cpu_series
+
+    # Get NTP settings
+    system.enabled_ntp
+    system.ntp_server
+
+    # Get system information
+    system.firmware_ver
+    system.model
+    system.ram_size
+    system.serial
+    system.sys_temp
+    system.time
+    system.time_zone
+    system.time_zone_desc
+    system.up_time
+
+    # Get list of all connected USB devices
+    system.usb_dev
+
+
+Upgrade usage
+--------------------------
+
+.. code-block:: python
+
+    from synology_dsm import SynologyDSM
+
+    api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")
+    upgrade = api.upgrade
+
+    # Manual update upgrade information
+    upgrade.update()
+
+    # check if DSM update is available
+    if upgrade.update_available:
+        do something ...
 
 Credits / Special Thanks
 ========================

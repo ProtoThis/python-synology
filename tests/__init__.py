@@ -98,6 +98,7 @@ API_SWITCHER = {
 VALID_HOST = "nas.mywebsite.me"
 VALID_PORT = "443"
 VALID_SSL = True
+VALID_SSL_VALIDATION = True
 VALID_USER = "valid_user"
 VALID_USER_2SA = "valid_user_2sa"
 VALID_PASSWORD = "valid_password"
@@ -118,6 +119,7 @@ class SynologyDSMMock(SynologyDSM):
         username,
         password,
         use_https=False,
+        ssl_validation=False,
         timeout=None,
         device_token=None,
         debugmode=False,
@@ -129,6 +131,7 @@ class SynologyDSMMock(SynologyDSM):
             username,
             password,
             use_https,
+            ssl_validation,
             timeout,
             device_token,
             debugmode,

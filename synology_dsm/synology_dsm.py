@@ -419,7 +419,7 @@ class SynologyDSM:
         return self._security
 
     @property
-    def share(self):
+    def share(self) -> SynoCoreShare:
         """Gets NAS shares information."""
         if not self._share:
             self._share = SynoCoreShare(self)
@@ -440,14 +440,14 @@ class SynologyDSM:
         return self._surveillance
 
     @property
-    def system(self):
+    def system(self) -> SynoCoreSystem:
         """Gets NAS system information."""
         if not self._system:
             self._system = SynoCoreSystem(self)
         return self._system
 
     @property
-    def upgrade(self):
+    def upgrade(self) -> SynoCoreUpgrade:
         """Gets NAS upgrade informations."""
         if not self._upgrade:
             self._upgrade = SynoCoreUpgrade(self)

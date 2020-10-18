@@ -37,6 +37,9 @@ class SynoSurveillanceStation:
                 )["data"]
             )
 
+        if not self._cameras_by_id:
+            return
+
         live_view_datas = self._dsm.get(
             self.CAMERA_API_KEY,
             "GetLiveViewPath",

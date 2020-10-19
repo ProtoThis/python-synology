@@ -47,7 +47,7 @@ Constructor
         username,
         password,
         use_https=False,
-        ssl_validation=False,
+        verify_ssl=False,
         timeout=None,
         device_token=None,
         debugmode=False,

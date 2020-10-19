@@ -16,7 +16,7 @@ install:
   - python setup.py install
   - python setup.py sdist
 before_script:
-  - pylint synology_dsm tests
+  - pylint src tests
   - black --check --fast .
 script:
   - py.test

@@ -46,7 +46,7 @@ class SynologyDSM:
         username: str,
         password: str,
         use_https: bool = False,
-        ssl_validation: bool = False,
+        verify_ssl: bool = False,
         timeout: int = None,
         device_token: str = None,
         debugmode: bool = False,
@@ -56,11 +56,11 @@ class SynologyDSM:
         self._timeout = timeout or 10
         self._debugmode = debugmode
         self._use_https = use_https
-        self._ssl_validation = ssl_validation
+        self._verify = verify_ssl & use_https
 
         # Session
         self._session = Session()
-        self._session.verify = ssl_validation & use_https
+        self._session.verify = self._verify
 
         # Login
         self._session_id = None
@@ -129,7 +129,7 @@ class SynologyDSM:
         # First reset the session
         self._debuglog("Creating new session")
         self._session = Session()
-        self._session.verify = self._ssl_validation & self._use_https
+        self._session.verify = self._verify
 
         params = {
             "account": self.username,

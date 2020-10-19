@@ -20,7 +20,7 @@ from . import (
     VALID_HOST,
     VALID_PORT,
     VALID_SSL,
-    VALID_SSL_VALIDATION,
+    VALID_SSL_VERIFICATION,
     VALID_OTP,
     VALID_PASSWORD,
     VALID_USER,
@@ -39,7 +39,7 @@ class TestSynologyDSM(TestCase):
 
     def setUp(self):
         self.api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_SSL_VALIDATION
+            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_SSL_VERIFICATION
         )
 
     def test_init(self):
@@ -54,7 +54,7 @@ class TestSynologyDSM(TestCase):
         """Test failed connection."""
         # No internet
         api = SynologyDSMMock(
-            "no_internet", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_SSL_VALIDATION
+            "no_internet", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_SSL_VERIFICATION
         )
         with pytest.raises(SynologyDSMRequestException) as error:
             api.login()
@@ -71,7 +71,7 @@ class TestSynologyDSM(TestCase):
         assert not api._session_id
 
         # Wrong host
-        api = SynologyDSMMock("host", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_SSL_VALIDATION)
+        api = SynologyDSMMock("host", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_SSL_VERIFICATION)
         with pytest.raises(SynologyDSMRequestException) as error:
             api.login()
         error_value = error.value.args[0]
@@ -87,7 +87,7 @@ class TestSynologyDSM(TestCase):
         assert not api._session_id
 
         # Wrong port
-        api = SynologyDSMMock(VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_SSL_VALIDATION)
+        api = SynologyDSMMock(VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_SSL_VERIFICATION)
         with pytest.raises(SynologyDSMRequestException) as error:
             api.login()
         error_value = error.value.args[0]
@@ -103,7 +103,7 @@ class TestSynologyDSM(TestCase):
         assert not api._session_id
 
         # Wrong SSL
-        api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, False, VALID_SSL_VALIDATION)
+        api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, False, VALID_SSL_VERIFICATION)
         with pytest.raises(SynologyDSMRequestException) as error:
             api.login()
         error_value = error.value.args[0]
@@ -124,7 +124,7 @@ class TestSynologyDSM(TestCase):
 
     def test_login_failed(self):
         """Test failed login."""
-        api = SynologyDSMMock(VALID_HOST, VALID_PORT, "user", VALID_PASSWORD, VALID_SSL, VALID_SSL_VALIDATION)
+        api = SynologyDSMMock(VALID_HOST, VALID_PORT, "user", VALID_PASSWORD, VALID_SSL, VALID_SSL_VERIFICATION)
         with pytest.raises(SynologyDSMLoginInvalidException) as error:
             api.login()
         error_value = error.value.args[0]
@@ -136,7 +136,7 @@ class TestSynologyDSM(TestCase):
         assert api.apis.get(API_AUTH)
         assert not api._session_id
 
-        api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, "pass", VALID_SSL, VALID_SSL_VALIDATION)
+        api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, "pass", VALID_SSL, VALID_SSL_VERIFICATION)
         with pytest.raises(SynologyDSMLoginInvalidException) as error:
             api.login()
         error_value = error.value.args[0]
@@ -154,7 +154,7 @@ class TestSynologyDSM(TestCase):
     def test_login_2sa(self):
         """Test login with 2SA."""
         api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL, VALID_SSL_VALIDATION
+            VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL, VALID_SSL_VERIFICATION
         )
 
         with pytest.raises(SynologyDSMLogin2SARequiredException) as error:
@@ -183,7 +183,7 @@ class TestSynologyDSM(TestCase):
             VALID_USER_2SA,
             VALID_PASSWORD,
             VALID_SSL,
-            VALID_SSL_VALIDATION,
+            VALID_SSL_VERIFICATION,
             device_token=DEVICE_TOKEN,
         )
         assert api.login()
@@ -196,7 +196,7 @@ class TestSynologyDSM(TestCase):
     def test_login_2sa_failed(self):
         """Test failed login with 2SA."""
         api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL, VALID_SSL_VALIDATION
+            VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL, VALID_SSL_VERIFICATION
         )
 
         with pytest.raises(SynologyDSMLogin2SARequiredException) as error:
@@ -228,7 +228,7 @@ class TestSynologyDSM(TestCase):
     def test_login_basic_failed(self):
         """Test basic failed login."""
         api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, USER_MAX_TRY, VALID_PASSWORD, VALID_SSL, VALID_SSL_VALIDATION
+            VALID_HOST, VALID_PORT, USER_MAX_TRY, VALID_PASSWORD, VALID_SSL, VALID_SSL_VERIFICATION
         )
 
         with pytest.raises(SynologyDSMLoginFailedException) as error:
@@ -242,7 +242,7 @@ class TestSynologyDSM(TestCase):
     def test_request_timeout(self):
         """Test request timeout."""
         api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_SSL_VALIDATION, timeout=2
+            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_SSL_VERIFICATION, timeout=2
         )
         assert api._timeout == 2
 

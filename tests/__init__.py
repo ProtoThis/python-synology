@@ -137,6 +137,7 @@ class SynologyDSMMock(SynologyDSM):
             debugmode,
         )
 
+        self.verify_ssl = verify_ssl
         self.dsm_version = 6  # 5 or 6
         self.disks_redundancy = "RAID"  # RAID or SHR[number][_EXPANSION]
         self.error = False
@@ -173,6 +174,9 @@ class SynologyDSMMock(SynologyDSM):
 
         if "https" not in url:
             raise SynologyDSMRequestException(RequestException("Bad request"))
+
+        if not self.verify_ssl:
+            raise SynologyDSMRequestException(SSLError(f"hostname '192.168.0.35' doesn't match '{VALID_HOST}'"))
 
         if API_INFO in url:
             if self.with_surveillance:

@@ -176,7 +176,9 @@ class SynologyDSMMock(SynologyDSM):
             raise SynologyDSMRequestException(RequestException("Bad request"))
 
         if not self.verify_ssl:
-            raise SynologyDSMRequestException(SSLError(f"hostname '192.168.0.35' doesn't match '{VALID_HOST}'"))
+            raise SynologyDSMRequestException(
+                SSLError(f"hostname '192.168.0.35' doesn't match '{VALID_HOST}'")
+            )
 
         if API_INFO in url:
             if self.with_surveillance:

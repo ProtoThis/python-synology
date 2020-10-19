@@ -156,7 +156,10 @@ class TestSynologyDSM(TestCase):
         assert not error_value["api"]
         assert error_value["code"] == -1
         assert error_value["reason"] == "Unknown"
-        assert error_value["details"] == f"SSLError = hostname '192.168.0.35' doesn't match '{VALID_HOST}'"
+        assert (
+            error_value["details"]
+            == f"SSLError = hostname '192.168.0.35' doesn't match '{VALID_HOST}'"
+        )
 
         assert not api.apis.get(API_AUTH)
         assert not api._session_id

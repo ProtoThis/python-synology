@@ -16,7 +16,7 @@ from . import (
     VALID_HOST,
     VALID_PORT,
     VALID_SSL,
-    VALID_SSL_VERIFY,
+    VALID_VERIFY_SSL,
     VALID_OTP,
     VALID_PASSWORD,
     VALID_USER,
@@ -37,7 +37,7 @@ class TestSynologyDSM(TestCase):
             VALID_USER,
             VALID_PASSWORD,
             VALID_SSL,
-            VALID_SSL_VERIFY,
+            VALID_VERIFY_SSL,
         )
         self.api.dsm_version = 5
 
@@ -56,7 +56,7 @@ class TestSynologyDSM(TestCase):
             VALID_USER,
             VALID_PASSWORD,
             VALID_SSL,
-            VALID_SSL_VERIFY,
+            VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
@@ -70,7 +70,7 @@ class TestSynologyDSM(TestCase):
             VALID_USER,
             VALID_PASSWORD,
             VALID_SSL,
-            VALID_SSL_VERIFY,
+            VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
@@ -79,7 +79,7 @@ class TestSynologyDSM(TestCase):
         assert not api._session_id
 
         api = SynologyDSMMock(
-            VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_SSL_VERIFY
+            VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_VERIFY_SSL
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
@@ -93,7 +93,7 @@ class TestSynologyDSM(TestCase):
             VALID_USER,
             VALID_PASSWORD,
             False,
-            VALID_SSL_VERIFY,
+            VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
@@ -116,7 +116,7 @@ class TestSynologyDSM(TestCase):
             "user",
             VALID_PASSWORD,
             VALID_SSL,
-            VALID_SSL_VERIFY,
+            VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLoginInvalidException):
@@ -130,7 +130,7 @@ class TestSynologyDSM(TestCase):
             VALID_USER,
             "pass",
             VALID_SSL,
-            VALID_SSL_VERIFY,
+            VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLoginInvalidException):
@@ -146,7 +146,7 @@ class TestSynologyDSM(TestCase):
             VALID_USER_2SA,
             VALID_PASSWORD,
             VALID_SSL,
-            VALID_SSL_VERIFY,
+            VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLogin2SARequiredException):
@@ -166,7 +166,7 @@ class TestSynologyDSM(TestCase):
             VALID_USER_2SA,
             VALID_PASSWORD,
             VALID_SSL,
-            VALID_SSL_VERIFY,
+            VALID_VERIFY_SSL,
             device_token=DEVICE_TOKEN,
         )
         api.dsm_version = 5
@@ -185,7 +185,7 @@ class TestSynologyDSM(TestCase):
             VALID_USER_2SA,
             VALID_PASSWORD,
             VALID_SSL,
-            VALID_SSL_VERIFY,
+            VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLogin2SARequiredException):

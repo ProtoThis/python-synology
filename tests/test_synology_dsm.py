@@ -19,7 +19,7 @@ from . import (
     SynologyDSMMock,
     VALID_HOST,
     VALID_PORT,
-    VALID_SSL,
+    VALID_HTTPS,
     VALID_VERIFY_SSL,
     VALID_OTP,
     VALID_PASSWORD,
@@ -43,7 +43,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
 
@@ -63,7 +63,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
         with pytest.raises(SynologyDSMRequestException) as error:
@@ -86,7 +86,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
         with pytest.raises(SynologyDSMRequestException) as error:
@@ -105,7 +105,7 @@ class TestSynologyDSM(TestCase):
 
         # Wrong port
         api = SynologyDSMMock(
-            VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_VERIFY_SSL
+            VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_HTTPS, VALID_VERIFY_SSL
         )
         with pytest.raises(SynologyDSMRequestException) as error:
             api.login()
@@ -155,7 +155,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             "user",
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
         with pytest.raises(SynologyDSMLoginInvalidException) as error:
@@ -174,7 +174,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER,
             "pass",
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
         with pytest.raises(SynologyDSMLoginInvalidException) as error:
@@ -198,7 +198,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER_2SA,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
 
@@ -227,7 +227,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER_2SA,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
             device_token=DEVICE_TOKEN,
         )
@@ -245,7 +245,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER_2SA,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
 
@@ -282,7 +282,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             USER_MAX_TRY,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
 
@@ -301,7 +301,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
             timeout=2,
         )

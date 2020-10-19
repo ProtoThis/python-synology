@@ -15,7 +15,7 @@ from . import (
     SynologyDSMMock,
     VALID_HOST,
     VALID_PORT,
-    VALID_SSL,
+    VALID_HTTPS,
     VALID_VERIFY_SSL,
     VALID_OTP,
     VALID_PASSWORD,
@@ -36,7 +36,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
         self.api.dsm_version = 5
@@ -55,7 +55,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
@@ -69,7 +69,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
@@ -79,7 +79,7 @@ class TestSynologyDSM(TestCase):
         assert not api._session_id
 
         api = SynologyDSMMock(
-            VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL, VALID_VERIFY_SSL
+            VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_HTTPS, VALID_VERIFY_SSL
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
@@ -115,7 +115,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             "user",
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
@@ -129,7 +129,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER,
             "pass",
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
@@ -145,7 +145,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER_2SA,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
@@ -165,7 +165,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER_2SA,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
             device_token=DEVICE_TOKEN,
         )
@@ -184,7 +184,7 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER_2SA,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
             VALID_VERIFY_SSL,
         )
         api.dsm_version = 5

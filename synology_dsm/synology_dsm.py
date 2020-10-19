@@ -55,7 +55,6 @@ class SynologyDSM:
         self._password = password
         self._timeout = timeout or 10
         self._debugmode = debugmode
-        self._use_https = use_https
         self._verify = verify_ssl & use_https
 
         # Session

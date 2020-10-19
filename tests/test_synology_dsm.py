@@ -514,6 +514,70 @@ class TestSynologyDSM(TestCase):
         assert self.api.security.status_by_check["update"] == "outOfDate"
         assert self.api.security.status_by_check["userInfo"] == "safe"
 
+    def test_shares(self):
+        """Test shares."""
+        assert self.api.share
+        self.api.share.update()
+        assert self.api.share.shares
+        for share_uuid in self.api.share.shares_uuids:
+            assert self.api.share.share_name(share_uuid)
+            assert self.api.share.share_path(share_uuid)
+            assert self.api.share.share_recycle_bin(share_uuid) is not None
+            assert self.api.share.share_size(share_uuid) is not None
+            assert self.api.share.share_size(share_uuid, human_readable=True)
+
+        assert (
+            self.api.share.share_name("2ee6c06a-8766-48b5-013d-63b18652a393")
+            == "test_share"
+        )
+        assert (
+            self.api.share.share_path("2ee6c06a-8766-48b5-013d-63b18652a393")
+            == "/volume1"
+        )
+        assert (
+            self.api.share.share_recycle_bin("2ee6c06a-8766-48b5-013d-63b18652a393")
+            is True
+        )
+        assert (
+            self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393")
+            == 3.790251876432216e19
+        )
+        assert (
+            self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393", True)
+            == "32.9Eb"
+        )
+
+    def test_system(self):
+        """Test system."""
+        assert self.api.system
+        self.api.system.update()
+        assert self.api.system.cpu_clock_speed
+        assert self.api.system.cpu_cores
+        assert self.api.system.cpu_family
+        assert self.api.system.cpu_series
+        assert self.api.system.firmware_ver
+        assert self.api.system.model
+        assert self.api.system.ram_size
+        assert self.api.system.serial
+        assert self.api.system.sys_temp
+        assert self.api.system.time
+        assert self.api.system.time_zone
+        assert self.api.system.time_zone_desc
+        assert self.api.system.up_time
+        for usb_dev in self.api.system.usb_dev:
+            assert usb_dev.get("cls")
+            assert usb_dev.get("pid")
+            assert usb_dev.get("producer")
+            assert usb_dev.get("product")
+            assert usb_dev.get("rev")
+            assert usb_dev.get("vid")
+
+    def test_upgrade(self):
+        """Test upgrade."""
+        assert self.api.upgrade
+        self.api.upgrade.update()
+        assert self.api.upgrade.update_available is False
+
     def test_utilisation(self):
         """Test utilisation."""
         assert self.api.utilisation
@@ -849,36 +913,3 @@ class TestSynologyDSM(TestCase):
         assert self.api.surveillance_station.get_home_mode_status()
         assert self.api.surveillance_station.set_home_mode(False)
         assert self.api.surveillance_station.set_home_mode(True)
-
-    def test_shares(self):
-        """Test shares."""
-        assert self.api.share
-        self.api.share.update()
-        assert self.api.share.shares
-        for share_uuid in self.api.share.shares_uuids:
-            assert self.api.share.share_name(share_uuid)
-            assert self.api.share.share_path(share_uuid)
-            assert self.api.share.share_recycle_bin(share_uuid) is not None
-            assert self.api.share.share_size(share_uuid) is not None
-            assert self.api.share.share_size(share_uuid, human_readable=True)
-
-        assert (
-            self.api.share.share_name("2ee6c06a-8766-48b5-013d-63b18652a393")
-            == "test_share"
-        )
-        assert (
-            self.api.share.share_path("2ee6c06a-8766-48b5-013d-63b18652a393")
-            == "/volume1"
-        )
-        assert (
-            self.api.share.share_recycle_bin("2ee6c06a-8766-48b5-013d-63b18652a393")
-            is True
-        )
-        assert (
-            self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393")
-            == 3.790251876432216e19
-        )
-        assert (
-            self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393", True)
-            == "32.9Eb"
-        )

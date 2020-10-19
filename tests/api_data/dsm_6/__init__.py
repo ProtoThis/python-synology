@@ -13,6 +13,11 @@ from .core.const_6_core_security import (
     DSM_6_CORE_SECURITY,
     DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE,
 )
+from .core.const_6_core_system import (
+    DSM_6_CORE_SYSTEM_DS918_PLUS,
+    DSM_6_CORE_SYSTEM_DS218_PLAY,
+)
+from .core.const_6_core_upgrade import DSM_6_CORE_UPGRADE
 from .download_station.const_6_download_station_info import (
     DSM_6_DOWNLOAD_STATION_INFO_INFO,
     DSM_6_DOWNLOAD_STATION_INFO_CONFIG,

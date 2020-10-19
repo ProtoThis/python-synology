@@ -7,12 +7,14 @@ from requests.exceptions import ConnectionError as ConnError, RequestException, 
 from synology_dsm import SynologyDSM
 from synology_dsm.exceptions import SynologyDSMRequestException
 from synology_dsm.api.core.security import SynoCoreSecurity
+from synology_dsm.api.core.share import SynoCoreShare
+from synology_dsm.api.core.system import SynoCoreSystem
 from synology_dsm.api.core.utilization import SynoCoreUtilization
+from synology_dsm.api.core.upgrade import SynoCoreUpgrade
 from synology_dsm.api.dsm.information import SynoDSMInformation
 from synology_dsm.api.dsm.network import SynoDSMNetwork
 from synology_dsm.api.download_station import SynoDownloadStation
 from synology_dsm.api.storage.storage import SynoStorage
-from synology_dsm.api.core.share import SynoCoreShare
 from synology_dsm.api.surveillance_station import SynoSurveillanceStation
 from synology_dsm.const import API_AUTH, API_INFO
 
@@ -34,6 +36,8 @@ from .api_data.dsm_6 import (
     DSM_6_CORE_UTILIZATION_ERROR_1055,
     DSM_6_CORE_SECURITY,
     DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE,
+    DSM_6_CORE_SYSTEM_DS918_PLUS,
+    DSM_6_CORE_UPGRADE,
     DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
     DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
     DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL,
@@ -83,8 +87,10 @@ API_SWITCHER = {
         "DSM_INFORMATION": DSM_6_DSM_INFORMATION,
         "DSM_NETWORK": DSM_6_DSM_NETWORK,
         "CORE_SECURITY": DSM_6_CORE_SECURITY,
-        "CORE_UTILIZATION": DSM_6_CORE_UTILIZATION,
         "CORE_SHARE": DSM_6_CORE_SHARE,
+        "CORE_SYSTEM": DSM_6_CORE_SYSTEM_DS918_PLUS,
+        "CORE_UTILIZATION": DSM_6_CORE_UTILIZATION,
+        "CORE_UPGRADE": DSM_6_CORE_UPGRADE,
         "STORAGE_STORAGE": {
             "RAID": DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
             "SHR1": DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
@@ -97,7 +103,8 @@ API_SWITCHER = {
 
 VALID_HOST = "nas.mywebsite.me"
 VALID_PORT = "443"
-VALID_SSL = True
+VALID_HTTPS = True
+VALID_VERIFY_SSL = True
 VALID_USER = "valid_user"
 VALID_USER_2SA = "valid_user_2sa"
 VALID_PASSWORD = "valid_password"
@@ -118,6 +125,7 @@ class SynologyDSMMock(SynologyDSM):
         username,
         password,
         use_https=False,
+        verify_ssl=False,
         timeout=None,
         device_token=None,
         debugmode=False,
@@ -129,11 +137,13 @@ class SynologyDSMMock(SynologyDSM):
             username,
             password,
             use_https,
+            verify_ssl,
             timeout,
             device_token,
             debugmode,
         )
 
+        self.verify_ssl = verify_ssl
         self.dsm_version = 6  # 5 or 6
         self.disks_redundancy = "RAID"  # RAID or SHR[number][_EXPANSION]
         self.error = False
@@ -170,6 +180,11 @@ class SynologyDSMMock(SynologyDSM):
 
         if "https" not in url:
             raise SynologyDSMRequestException(RequestException("Bad request"))
+
+        if not self.verify_ssl:
+            raise SynologyDSMRequestException(
+                SSLError(f"hostname '192.168.0.35' doesn't match '{VALID_HOST}'")
+            )
 
         if API_INFO in url:
             if self.with_surveillance:
@@ -209,10 +224,15 @@ class SynologyDSMMock(SynologyDSM):
             if SynoCoreShare.API_KEY in url:
                 return API_SWITCHER[self.dsm_version]["CORE_SHARE"]
 
-            if SynoCoreUtilization.API_KEY in url:
-                if self.error:
-                    return DSM_6_CORE_UTILIZATION_ERROR_1055
-                return API_SWITCHER[self.dsm_version]["CORE_UTILIZATION"]
+            if SynoCoreSystem.API_KEY in url:
+                if SynoCoreUtilization.API_KEY in url:
+                    if self.error:
+                        return DSM_6_CORE_UTILIZATION_ERROR_1055
+                    return API_SWITCHER[self.dsm_version]["CORE_UTILIZATION"]
+                return API_SWITCHER[self.dsm_version]["CORE_SYSTEM"]
+
+            if SynoCoreUpgrade.API_KEY in url:
+                return API_SWITCHER[self.dsm_version]["CORE_UPGRADE"]
 
             if SynoDSMInformation.API_KEY in url:
                 return API_SWITCHER[self.dsm_version]["DSM_INFORMATION"]

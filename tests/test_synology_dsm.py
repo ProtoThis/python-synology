@@ -19,7 +19,8 @@ from . import (
     SynologyDSMMock,
     VALID_HOST,
     VALID_PORT,
-    VALID_SSL,
+    VALID_HTTPS,
+    VALID_VERIFY_SSL,
     VALID_OTP,
     VALID_PASSWORD,
     VALID_USER,
@@ -38,7 +39,12 @@ class TestSynologyDSM(TestCase):
 
     def setUp(self):
         self.api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
         )
 
     def test_init(self):
@@ -53,7 +59,12 @@ class TestSynologyDSM(TestCase):
         """Test failed connection."""
         # No internet
         api = SynologyDSMMock(
-            "no_internet", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
+            "no_internet",
+            VALID_PORT,
+            VALID_USER,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
         )
         with pytest.raises(SynologyDSMRequestException) as error:
             api.login()
@@ -70,7 +81,14 @@ class TestSynologyDSM(TestCase):
         assert not api._session_id
 
         # Wrong host
-        api = SynologyDSMMock("host", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL)
+        api = SynologyDSMMock(
+            "host",
+            VALID_PORT,
+            VALID_USER,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
+        )
         with pytest.raises(SynologyDSMRequestException) as error:
             api.login()
         error_value = error.value.args[0]
@@ -86,7 +104,9 @@ class TestSynologyDSM(TestCase):
         assert not api._session_id
 
         # Wrong port
-        api = SynologyDSMMock(VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL)
+        api = SynologyDSMMock(
+            VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_HTTPS, VALID_VERIFY_SSL
+        )
         with pytest.raises(SynologyDSMRequestException) as error:
             api.login()
         error_value = error.value.args[0]
@@ -101,8 +121,15 @@ class TestSynologyDSM(TestCase):
         assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
-        # Wrong SSL
-        api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, False)
+        # Wrong HTTPS
+        api = SynologyDSMMock(
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER,
+            VALID_PASSWORD,
+            False,
+            VALID_VERIFY_SSL,
+        )
         with pytest.raises(SynologyDSMRequestException) as error:
             api.login()
         error_value = error.value.args[0]
@@ -110,6 +137,29 @@ class TestSynologyDSM(TestCase):
         assert error_value["code"] == -1
         assert error_value["reason"] == "Unknown"
         assert error_value["details"] == "RequestException = Bad request"
+
+        assert not api.apis.get(API_AUTH)
+        assert not api._session_id
+
+        # Wrong SSL
+        api = SynologyDSMMock(
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            False,
+        )
+        with pytest.raises(SynologyDSMRequestException) as error:
+            api.login()
+        error_value = error.value.args[0]
+        assert not error_value["api"]
+        assert error_value["code"] == -1
+        assert error_value["reason"] == "Unknown"
+        assert (
+            error_value["details"]
+            == f"SSLError = hostname '192.168.0.35' doesn't match '{VALID_HOST}'"
+        )
 
         assert not api.apis.get(API_AUTH)
         assert not api._session_id
@@ -123,7 +173,14 @@ class TestSynologyDSM(TestCase):
 
     def test_login_failed(self):
         """Test failed login."""
-        api = SynologyDSMMock(VALID_HOST, VALID_PORT, "user", VALID_PASSWORD, VALID_SSL)
+        api = SynologyDSMMock(
+            VALID_HOST,
+            VALID_PORT,
+            "user",
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
+        )
         with pytest.raises(SynologyDSMLoginInvalidException) as error:
             api.login()
         error_value = error.value.args[0]
@@ -135,7 +192,14 @@ class TestSynologyDSM(TestCase):
         assert api.apis.get(API_AUTH)
         assert not api._session_id
 
-        api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, "pass", VALID_SSL)
+        api = SynologyDSMMock(
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER,
+            "pass",
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
+        )
         with pytest.raises(SynologyDSMLoginInvalidException) as error:
             api.login()
         error_value = error.value.args[0]
@@ -153,7 +217,12 @@ class TestSynologyDSM(TestCase):
     def test_login_2sa(self):
         """Test login with 2SA."""
         api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER_2SA,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
         )
 
         with pytest.raises(SynologyDSMLogin2SARequiredException) as error:
@@ -181,7 +250,8 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER_2SA,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
             device_token=DEVICE_TOKEN,
         )
         assert api.login()
@@ -194,7 +264,12 @@ class TestSynologyDSM(TestCase):
     def test_login_2sa_failed(self):
         """Test failed login with 2SA."""
         api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER_2SA,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
         )
 
         with pytest.raises(SynologyDSMLogin2SARequiredException) as error:
@@ -226,7 +301,12 @@ class TestSynologyDSM(TestCase):
     def test_login_basic_failed(self):
         """Test basic failed login."""
         api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, USER_MAX_TRY, VALID_PASSWORD, VALID_SSL
+            VALID_HOST,
+            VALID_PORT,
+            USER_MAX_TRY,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
         )
 
         with pytest.raises(SynologyDSMLoginFailedException) as error:
@@ -240,7 +320,13 @@ class TestSynologyDSM(TestCase):
     def test_request_timeout(self):
         """Test request timeout."""
         api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL, timeout=2
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
+            timeout=2,
         )
         assert api._timeout == 2
 
@@ -427,6 +513,70 @@ class TestSynologyDSM(TestCase):
         assert self.api.security.status_by_check["systemCheck"] == "safe"
         assert self.api.security.status_by_check["update"] == "outOfDate"
         assert self.api.security.status_by_check["userInfo"] == "safe"
+
+    def test_shares(self):
+        """Test shares."""
+        assert self.api.share
+        self.api.share.update()
+        assert self.api.share.shares
+        for share_uuid in self.api.share.shares_uuids:
+            assert self.api.share.share_name(share_uuid)
+            assert self.api.share.share_path(share_uuid)
+            assert self.api.share.share_recycle_bin(share_uuid) is not None
+            assert self.api.share.share_size(share_uuid) is not None
+            assert self.api.share.share_size(share_uuid, human_readable=True)
+
+        assert (
+            self.api.share.share_name("2ee6c06a-8766-48b5-013d-63b18652a393")
+            == "test_share"
+        )
+        assert (
+            self.api.share.share_path("2ee6c06a-8766-48b5-013d-63b18652a393")
+            == "/volume1"
+        )
+        assert (
+            self.api.share.share_recycle_bin("2ee6c06a-8766-48b5-013d-63b18652a393")
+            is True
+        )
+        assert (
+            self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393")
+            == 3.790251876432216e19
+        )
+        assert (
+            self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393", True)
+            == "32.9Eb"
+        )
+
+    def test_system(self):
+        """Test system."""
+        assert self.api.system
+        self.api.system.update()
+        assert self.api.system.cpu_clock_speed
+        assert self.api.system.cpu_cores
+        assert self.api.system.cpu_family
+        assert self.api.system.cpu_series
+        assert self.api.system.firmware_ver
+        assert self.api.system.model
+        assert self.api.system.ram_size
+        assert self.api.system.serial
+        assert self.api.system.sys_temp
+        assert self.api.system.time
+        assert self.api.system.time_zone
+        assert self.api.system.time_zone_desc
+        assert self.api.system.up_time
+        for usb_dev in self.api.system.usb_dev:
+            assert usb_dev.get("cls")
+            assert usb_dev.get("pid")
+            assert usb_dev.get("producer")
+            assert usb_dev.get("product")
+            assert usb_dev.get("rev")
+            assert usb_dev.get("vid")
+
+    def test_upgrade(self):
+        """Test upgrade."""
+        assert self.api.upgrade
+        self.api.upgrade.update()
+        assert self.api.upgrade.update_available is False
 
     def test_utilisation(self):
         """Test utilisation."""
@@ -763,36 +913,3 @@ class TestSynologyDSM(TestCase):
         assert self.api.surveillance_station.get_home_mode_status()
         assert self.api.surveillance_station.set_home_mode(False)
         assert self.api.surveillance_station.set_home_mode(True)
-
-    def test_shares(self):
-        """Test shares."""
-        assert self.api.share
-        self.api.share.update()
-        assert self.api.share.shares
-        for share_uuid in self.api.share.shares_uuids:
-            assert self.api.share.share_name(share_uuid)
-            assert self.api.share.share_path(share_uuid)
-            assert self.api.share.share_recycle_bin(share_uuid) is not None
-            assert self.api.share.share_size(share_uuid) is not None
-            assert self.api.share.share_size(share_uuid, human_readable=True)
-
-        assert (
-            self.api.share.share_name("2ee6c06a-8766-48b5-013d-63b18652a393")
-            == "test_share"
-        )
-        assert (
-            self.api.share.share_path("2ee6c06a-8766-48b5-013d-63b18652a393")
-            == "/volume1"
-        )
-        assert (
-            self.api.share.share_recycle_bin("2ee6c06a-8766-48b5-013d-63b18652a393")
-            is True
-        )
-        assert (
-            self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393")
-            == 3.790251876432216e19
-        )
-        assert (
-            self.api.share.share_size("2ee6c06a-8766-48b5-013d-63b18652a393", True)
-            == "32.9Eb"
-        )

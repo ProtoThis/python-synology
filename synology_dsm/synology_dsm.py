@@ -46,6 +46,7 @@ class SynologyDSM:
         username: str,
         password: str,
         use_https: bool = False,
+        verify_ssl: bool = False,
         timeout: int = None,
         device_token: str = None,
         debugmode: bool = False,
@@ -54,10 +55,11 @@ class SynologyDSM:
         self._password = password
         self._timeout = timeout or 10
         self._debugmode = debugmode
+        self._verify = verify_ssl & use_https
 
         # Session
         self._session = Session()
-        self._session.verify = False
+        self._session.verify = self._verify
 
         # Login
         self._session_id = None
@@ -81,9 +83,10 @@ class SynologyDSM:
 
         # Build variables
         if use_https:
-            # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
-            # disable SSL warnings due to the auto-genenerated cert
-            urllib3.disable_warnings()
+            if not verify_ssl:
+                # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+                # disable SSL warnings due to the auto-genenerated cert
+                urllib3.disable_warnings()
 
             self._base_url = f"https://{dsm_ip}:{dsm_port}"
         else:
@@ -126,7 +129,7 @@ class SynologyDSM:
         # First reset the session
         self._debuglog("Creating new session")
         self._session = Session()
-        self._session.verify = False
+        self._session.verify = self._verify
 
         params = {
             "account": self.username,

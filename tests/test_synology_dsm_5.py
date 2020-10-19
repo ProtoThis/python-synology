@@ -15,7 +15,8 @@ from . import (
     SynologyDSMMock,
     VALID_HOST,
     VALID_PORT,
-    VALID_SSL,
+    VALID_HTTPS,
+    VALID_VERIFY_SSL,
     VALID_OTP,
     VALID_PASSWORD,
     VALID_USER,
@@ -31,7 +32,12 @@ class TestSynologyDSM(TestCase):
 
     def setUp(self):
         self.api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
         )
         self.api.dsm_version = 5
 
@@ -45,7 +51,12 @@ class TestSynologyDSM(TestCase):
     def test_connection_failed(self):
         """Test failed connection."""
         api = SynologyDSMMock(
-            "no_internet", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL
+            "no_internet",
+            VALID_PORT,
+            VALID_USER,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
@@ -53,21 +64,37 @@ class TestSynologyDSM(TestCase):
         assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
-        api = SynologyDSMMock("host", VALID_PORT, VALID_USER, VALID_PASSWORD, VALID_SSL)
+        api = SynologyDSMMock(
+            "host",
+            VALID_PORT,
+            VALID_USER,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
+        )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
         assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
-        api = SynologyDSMMock(VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_SSL)
+        api = SynologyDSMMock(
+            VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_HTTPS, VALID_VERIFY_SSL
+        )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
         assert not api.apis.get(API_AUTH)
         assert not api._session_id
 
-        api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, VALID_PASSWORD, False)
+        api = SynologyDSMMock(
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER,
+            VALID_PASSWORD,
+            False,
+            VALID_VERIFY_SSL,
+        )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMRequestException):
             assert not api.login()
@@ -83,14 +110,28 @@ class TestSynologyDSM(TestCase):
 
     def test_login_failed(self):
         """Test failed login."""
-        api = SynologyDSMMock(VALID_HOST, VALID_PORT, "user", VALID_PASSWORD, VALID_SSL)
+        api = SynologyDSMMock(
+            VALID_HOST,
+            VALID_PORT,
+            "user",
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
+        )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLoginInvalidException):
             assert not api.login()
         assert api.apis.get(API_AUTH)
         assert not api._session_id
 
-        api = SynologyDSMMock(VALID_HOST, VALID_PORT, VALID_USER, "pass", VALID_SSL)
+        api = SynologyDSMMock(
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER,
+            "pass",
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
+        )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLoginInvalidException):
             assert not api.login()
@@ -100,7 +141,12 @@ class TestSynologyDSM(TestCase):
     def test_login_2sa(self):
         """Test login with 2SA."""
         api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER_2SA,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLogin2SARequiredException):
@@ -119,7 +165,8 @@ class TestSynologyDSM(TestCase):
             VALID_PORT,
             VALID_USER_2SA,
             VALID_PASSWORD,
-            VALID_SSL,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
             device_token=DEVICE_TOKEN,
         )
         api.dsm_version = 5
@@ -133,7 +180,12 @@ class TestSynologyDSM(TestCase):
     def test_login_2sa_failed(self):
         """Test failed login with 2SA."""
         api = SynologyDSMMock(
-            VALID_HOST, VALID_PORT, VALID_USER_2SA, VALID_PASSWORD, VALID_SSL
+            VALID_HOST,
+            VALID_PORT,
+            VALID_USER_2SA,
+            VALID_PASSWORD,
+            VALID_HTTPS,
+            VALID_VERIFY_SSL,
         )
         api.dsm_version = 5
         with self.assertRaises(SynologyDSMLogin2SARequiredException):

@@ -1,5 +1,4 @@
 """Library constants."""
-
 # APIs
 API_INFO = "SYNO.API.Info"
 API_AUTH = "SYNO.API.Auth"

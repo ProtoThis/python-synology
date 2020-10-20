@@ -21,3 +21,5 @@ DSM_6_AUTH_LOGIN_2SA_OTP = {
     },
     "success": True,
 }
+
+DSM_6_AUTH_LOGOUT = {"success": True}

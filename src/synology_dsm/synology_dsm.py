@@ -124,7 +124,7 @@ class SynologyDSM:
         """Gets available API infos from the NAS."""
         return self._apis
 
-    def login(self, otp_code: str = None):
+    def login(self, otp_code: str = None) -> bool:
         """Create a logged session."""
         # First reset the session
         self._debuglog("Creating new session")
@@ -176,7 +176,13 @@ class SynologyDSM:
             self._information = SynoDSMInformation(self)
             self._information.update()
 
-        return True
+        return result["success"]
+
+    def logout(self) -> bool:
+        """Log out of the session."""
+        result = self.get(API_AUTH, "logout")
+        self._session = None
+        return result["success"]
 
     @property
     def device_token(self) -> str:

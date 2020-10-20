@@ -1,3 +1,17 @@
+# From cookiecutter-hypermodern-python
+.mypy_cache/
+/.coverage
+/.nox/
+/.python-version
+/.pytype/
+/dist/
+/docs/_build/
+/src/*.egg-info/
+__pycache__/
+
+# Following are kept for not anoying current developers. Could be remove in
+# a future package release.
+
 # Python
 *.py[cod]
 

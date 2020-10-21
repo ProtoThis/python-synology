@@ -21,7 +21,7 @@ from synology_dsm.exceptions import SynologyDSMLogin2SARequiredException
 from synology_dsm.exceptions import SynologyDSMLoginInvalidException
 from synology_dsm.exceptions import SynologyDSMRequestException
 
-# pylint: disable=no-self-use,protected-access,anomalous-backslash-in-string
+
 class TestSynologyDSM(TestCase):
     """SynologyDSM test cases."""
 

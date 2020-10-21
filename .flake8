@@ -1,0 +1,12 @@
+[flake8]
+select = B,B9,C,DAR,E,F,N,RST,S,W
+# Some tests have been added to the ignore list to avoid reworking too much
+# the code in this PR: D107, D403, B950, E266, C901, F401, E302.
+# The error will be processed in a dedicated PR.
+# targeted ignore list is:
+# ignore = E203,E501,RST201,RST203,RST301,W503
+ignore = E203,E501,RST201,RST203,RST301,W503, D107, D403, B950, E266, C901, F401, E302
+max-line-length = 80
+max-complexity = 10
+docstring-convention = google
+per-file-ignores = tests/*:S101

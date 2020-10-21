@@ -16,7 +16,9 @@ class SynoCoreSystem:
         if raw_data:
             self._data = raw_data["data"]
 
-    ### get information
+    #
+    # get information
+    #
     @property
     def cpu_clock_speed(self):
         """Gets System CPU clock speed."""
@@ -97,7 +99,9 @@ class SynoCoreSystem:
         """Gets System connected usb devices."""
         return self._data.get("usb_dev", [])
 
-    ### do system actions
+    #
+    # do system actions
+    #
     def shutdown(self):
         """Shutdown NAS."""
         res = self._dsm.get(

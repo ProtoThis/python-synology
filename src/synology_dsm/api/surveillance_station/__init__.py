@@ -1,6 +1,4 @@
 """Synology SurveillanceStation API wrapper."""
-import urllib
-
 from .camera import SynoCamera
 from .const import MOTION_DETECTION_BY_SURVEILLANCE
 from .const import MOTION_DETECTION_DISABLED

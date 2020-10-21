@@ -9,3 +9,14 @@ from .dsm.const_5_dsm_network import DSM_5_DSM_NETWORK
 from .storage.const_5_storage_storage import (
     DSM_5_STORAGE_STORAGE_DS410J_RAID5_4DISKS_1VOL,
 )
+
+__all__ = [
+    "DSM_5_AUTH_LOGIN",
+    "DSM_5_AUTH_LOGIN_2SA",
+    "DSM_5_AUTH_LOGIN_2SA_OTP",
+    "DSM_5_API_INFO",
+    "DSM_5_CORE_UTILIZATION",
+    "DSM_5_DSM_INFORMATION",
+    "DSM_5_DSM_NETWORK",
+    "DSM_5_STORAGE_STORAGE_DS410J_RAID5_4DISKS_1VOL",
+]

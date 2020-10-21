@@ -39,12 +39,18 @@ class SynoCoreSecurity:
 
     @property
     def progress(self):
-        """Gets the scan progress (100 if finished)."""
+        """Gets the scan progress.
+
+        Returns: 100 if finished
+        """
         return self._data.get("sysProgress")
 
     @property
     def status(self):
-        """Gets the last scan status (safe, danger, info, outOfDate, risk, warning)."""
+        """Gets the last scan status.
+
+        Possible values: safe, danger, info, outOfDate, risk, warning.
+        """
         return self._data.get("sysStatus")
 
     @property

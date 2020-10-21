@@ -62,7 +62,7 @@ class SynoSurveillanceStation:
         return self._cameras_by_id[camera_id]
 
     def get_camera_live_view_path(self, camera_id, video_format=None):
-        """Return camera live view path matching camera_id
+        """Return camera live view path matching camera_id.
 
         Possible values: video_format: mjpeg_http | multicast | mxpeg_http |
             rtsp_http | rtsp.
@@ -135,11 +135,11 @@ class SynoSurveillanceStation:
 
     # Home mode
     def get_home_mode_status(self):
-        """Get the state of Home Mode"""
+        """Get the state of Home Mode."""
         return self._dsm.get(self.HOME_MODE_API_KEY, "GetInfo")["data"]["on"]
 
     def set_home_mode(self, state):
-        """Set the state of Home Mode (state: bool)"""
+        """Set the state of Home Mode (state: bool)."""
         return self._dsm.get(
             self.HOME_MODE_API_KEY, "Switch", {"on": str(state).lower()}
         )["success"]

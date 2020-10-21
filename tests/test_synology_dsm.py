@@ -28,8 +28,6 @@ from synology_dsm.exceptions import SynologyDSMLoginFailedException
 from synology_dsm.exceptions import SynologyDSMLoginInvalidException
 from synology_dsm.exceptions import SynologyDSMRequestException
 
-# pylint: disable=no-self-use,protected-access
-
 
 class TestSynologyDSM(TestCase):
     """SynologyDSM test cases."""

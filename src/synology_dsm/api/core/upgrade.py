@@ -8,6 +8,7 @@ class SynoCoreUpgrade:
     API_SERVER_KEY = API_KEY + ".Server"
 
     def __init__(self, dsm):
+        """Constructor method."""
         self._dsm = dsm
         self._data = {}
 

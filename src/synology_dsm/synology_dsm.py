@@ -49,6 +49,7 @@ class SynologyDSM:
         device_token: str = None,
         debugmode: bool = False,
     ):
+        """Constructor method."""
         self.username = username
         self._password = password
         self._timeout = timeout or 10

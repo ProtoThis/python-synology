@@ -8,6 +8,7 @@ class SynoCoreUtilization:
     API_KEY = "SYNO.Core.System.Utilization"
 
     def __init__(self, dsm):
+        """Constructor method."""
         self._dsm = dsm
         self._data = {}
 

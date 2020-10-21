@@ -8,6 +8,7 @@ class SynoStorage:
     API_KEY = "SYNO.Storage.CGI.Storage"
 
     def __init__(self, dsm):
+        """Constructor method."""
         self._dsm = dsm
         self._data = {}
 

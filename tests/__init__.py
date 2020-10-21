@@ -128,6 +128,7 @@ class SynologyDSMMock(SynologyDSM):
         device_token=None,
         debugmode=False,
     ):
+        """Constructor method."""
         SynologyDSM.__init__(
             self,
             dsm_ip,

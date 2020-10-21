@@ -21,6 +21,7 @@ class SynoCoreShare:
     }
 
     def __init__(self, dsm):
+        """Constructor method."""
         self._dsm = dsm
         self._data = {}
 

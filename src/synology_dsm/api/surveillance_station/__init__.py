@@ -64,7 +64,11 @@ class SynoSurveillanceStation:
         return self._cameras_by_id[camera_id]
 
     def get_camera_live_view_path(self, camera_id, video_format=None):
-        """Return camera live view path matching camera_id (video_format: mjpeg_http | multicast | mxpeg_http | rtsp_http | rtsp)."""
+        """Return camera live view path matching camera_id
+
+        Possible values: video_format: mjpeg_http | multicast | mxpeg_http |
+            rtsp_http | rtsp.
+        """
         if video_format:
             return getattr(self._cameras_by_id[camera_id].live_view, video_format)
         return self._cameras_by_id[camera_id].live_view
@@ -100,7 +104,10 @@ class SynoSurveillanceStation:
         )
 
     def download_snapshot(self, snapshot_id, snapshot_size):
-        """Download snapshot image binary for a givent snapshot_id (snapshot_size: SNAPSHOT_SIZE_ICON | SNAPSHOT_SIZE_FULL)."""
+        """Download snapshot image binary for a givent snapshot_id.
+
+        (snapshot_size: SNAPSHOT_SIZE_ICON | SNAPSHOT_SIZE_FULL).
+        """
         return self._dsm.get(
             self.SNAPSHOT_API_KEY,
             "LoadSnapshot",

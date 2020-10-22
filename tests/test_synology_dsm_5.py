@@ -28,6 +28,7 @@ class TestSynologyDSM(TestCase):
     api = None
 
     def setUp(self):
+        """Context initialisation called for all tests."""
         self.api = SynologyDSMMock(
             VALID_HOST,
             VALID_PORT,

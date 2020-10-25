@@ -25,17 +25,17 @@ class SynoCoreUtilization:
 
     @property
     def cpu_other_load(self):
-        """'Other' percentage of the total CPU load."""  # noqa: D403
+        """Other percentage of the total CPU load."""
         return self.cpu.get("other_load")
 
     @property
     def cpu_user_load(self):
-        """'User' percentage of the total CPU load."""  # noqa: D403
+        """User percentage of the total CPU load."""
         return self.cpu.get("user_load")
 
     @property
     def cpu_system_load(self):
-        """'System' percentage of the total CPU load."""  # noqa: D403
+        """System percentage of the total CPU load."""
         return self.cpu.get("system_load")
 
     @property

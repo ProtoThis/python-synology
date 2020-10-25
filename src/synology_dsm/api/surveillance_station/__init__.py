@@ -1,6 +1,4 @@
 """Synology SurveillanceStation API wrapper."""
-import urllib
-
 from .camera import SynoCamera
 from .const import MOTION_DETECTION_BY_SURVEILLANCE
 from .const import MOTION_DETECTION_DISABLED
@@ -64,7 +62,12 @@ class SynoSurveillanceStation:
         return self._cameras_by_id[camera_id]
 
     def get_camera_live_view_path(self, camera_id, video_format=None):
-        """Return camera live view path matching camera_id (video_format: mjpeg_http | multicast | mxpeg_http | rtsp_http | rtsp)."""
+        """Return camera live view path matching camera_id.
+
+        Args:
+            camera_id: ID of the camera we want to get the live view path.
+            video_format: mjpeg_http | multicast | mxpeg_http |  rtsp_http | rtsp.
+        """
         if video_format:
             return getattr(self._cameras_by_id[camera_id].live_view, video_format)
         return self._cameras_by_id[camera_id].live_view
@@ -100,7 +103,12 @@ class SynoSurveillanceStation:
         )
 
     def download_snapshot(self, snapshot_id, snapshot_size):
-        """Download snapshot image binary for a givent snapshot_id (snapshot_size: SNAPSHOT_SIZE_ICON | SNAPSHOT_SIZE_FULL)."""
+        """Download snapshot image binary for a givent snapshot_id.
+
+        Args:
+            snapshot_id: ID of the snapshot we want to download.
+            snapshot_size: SNAPSHOT_SIZE_ICON | SNAPSHOT_SIZE_FULL.
+        """
         return self._dsm.get(
             self.SNAPSHOT_API_KEY,
             "LoadSnapshot",
@@ -130,11 +138,11 @@ class SynoSurveillanceStation:
 
     # Home mode
     def get_home_mode_status(self):
-        """Get the state of Home Mode"""
+        """Get the state of Home Mode."""
         return self._dsm.get(self.HOME_MODE_API_KEY, "GetInfo")["data"]["on"]
 
     def set_home_mode(self, state):
-        """Set the state of Home Mode (state: bool)"""
+        """Set the state of Home Mode (state: bool)."""
         return self._dsm.get(
             self.HOME_MODE_API_KEY, "Switch", {"on": str(state).lower()}
         )["success"]

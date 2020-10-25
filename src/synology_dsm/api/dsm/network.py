@@ -7,6 +7,7 @@ class SynoDSMNetwork:
     API_KEY = "SYNO.DSM.Network"
 
     def __init__(self, dsm):
+        """Constructor method."""
         self._dsm = dsm
         self._data = {}
 
@@ -45,7 +46,7 @@ class SynoDSMNetwork:
 
     @property
     def macs(self):
-        """MACs of the NAS."""
+        """MACs of the NAS."""  # noqa: D403
         macs = []
         for interface in self.interfaces:
             macs.append(interface["mac"])

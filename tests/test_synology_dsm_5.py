@@ -21,13 +21,14 @@ from synology_dsm.exceptions import SynologyDSMLogin2SARequiredException
 from synology_dsm.exceptions import SynologyDSMLoginInvalidException
 from synology_dsm.exceptions import SynologyDSMRequestException
 
-# pylint: disable=no-self-use,protected-access,anomalous-backslash-in-string
+
 class TestSynologyDSM(TestCase):
     """SynologyDSM test cases."""
 
     api = None
 
     def setUp(self):
+        """Context initialisation called for all tests."""
         self.api = SynologyDSMMock(
             VALID_HOST,
             VALID_PORT,

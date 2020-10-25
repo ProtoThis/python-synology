@@ -93,7 +93,7 @@ API_SWITCHER = {
             "RAID": DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
             "SHR1": DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,
             "SHR2": DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL,
-            "SHR2_EXPANSION": DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION,
+            "SHR2_EXPANSION": DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION,  # noqa: B950
         },
     },
 }
@@ -128,6 +128,7 @@ class SynologyDSMMock(SynologyDSM):
         device_token=None,
         debugmode=False,
     ):
+        """Constructor method."""
         SynologyDSM.__init__(
             self,
             dsm_ip,
@@ -153,14 +154,18 @@ class SynologyDSMMock(SynologyDSM):
         if "no_internet" in url:
             raise SynologyDSMRequestException(
                 ConnError(
-                    "<urllib3.connection.VerifiedHTTPSConnection object at 0x106c1f250>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known"
+                    "<urllib3.connection.VerifiedHTTPSConnection object at "
+                    "0x106c1f250>: Failed to establish a new connection: "
+                    "[Errno 8] nodename nor servname provided, or not known"
                 )
             )
 
         if VALID_HOST not in url:
             raise SynologyDSMRequestException(
                 ConnError(
-                    "<urllib3.connection.HTTPConnection object at 0x10d6f8090>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known"
+                    "<urllib3.connection.HTTPConnection object at 0x10d6f8090>:"
+                    " Failed to establish a new connection: [Errno 8] nodename "
+                    "nor servname provided, or not known"
                 )
             )
 

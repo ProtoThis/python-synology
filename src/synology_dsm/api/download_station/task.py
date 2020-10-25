@@ -39,7 +39,11 @@ class SynoDownloadTask:
 
     @property
     def status(self):
-        """Return status of the task (waiting, downloading, paused, finishing, finished, hash_checking, seeding, filehosting_waiting, extracting, error)."""
+        """Return status of the task.
+
+        Possible values: waiting, downloading, paused, finishing, finished,
+            hash_checking, seeding, filehosting_waiting, extracting, error
+        """
         return self._data["status"]
 
     @property

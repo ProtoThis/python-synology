@@ -7,7 +7,7 @@ class SynoFormatHelper:
     @staticmethod
     def bytes_to_readable(num):
         """Converts bytes to a human readable format."""
-        if num < 512:  # pylint: disable=no-else-return
+        if num < 512:
             return "0 Kb"
         elif num < 1024:
             return "1 Kb"

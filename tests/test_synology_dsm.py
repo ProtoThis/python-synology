@@ -28,8 +28,6 @@ from synology_dsm.exceptions import SynologyDSMLoginFailedException
 from synology_dsm.exceptions import SynologyDSMLoginInvalidException
 from synology_dsm.exceptions import SynologyDSMRequestException
 
-# pylint: disable=no-self-use,protected-access
-
 
 class TestSynologyDSM(TestCase):
     """SynologyDSM test cases."""
@@ -37,6 +35,7 @@ class TestSynologyDSM(TestCase):
     api = None
 
     def setUp(self):
+        """Context initialisation called for all tests."""
         self.api = SynologyDSMMock(
             VALID_HOST,
             VALID_PORT,
@@ -112,9 +111,9 @@ class TestSynologyDSM(TestCase):
         assert not error_value["api"]
         assert error_value["code"] == -1
         assert error_value["reason"] == "Unknown"
-        assert (
-            error_value["details"]
-            == "SSLError = [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1076)"
+        assert error_value["details"] == (
+            "SSLError = [SSL: WRONG_VERSION_NUMBER] "
+            "wrong version number (_ssl.c:1076)"
         )
 
         assert not api.apis.get(API_AUTH)
@@ -380,9 +379,9 @@ class TestSynologyDSM(TestCase):
         error_value = error.value.args[0]
         assert error_value["api"] == "SYNO.FileStation.Upload"
         assert error_value["code"] == 1805
-        assert (
-            error_value["reason"]
-            == "Can’t overwrite or skip the existed file, if no overwrite parameter is given"
+        assert error_value["reason"] == (
+            "Can’t overwrite or skip the existed file, if no overwrite"
+            " parameter is given"
         )
         assert not error_value["details"]
 

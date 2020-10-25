@@ -49,6 +49,7 @@ class SynologyDSM:
         device_token: str = None,
         debugmode: bool = False,
     ):
+        """Constructor method."""
         self.username = username
         self._password = password
         self._timeout = timeout or 10
@@ -82,7 +83,7 @@ class SynologyDSM:
         # Build variables
         if use_https:
             if not verify_ssl:
-                # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+                # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings  # noqa: B950
                 # disable SSL warnings due to the auto-genenerated cert
                 urllib3.disable_warnings()
 
@@ -96,7 +97,11 @@ class SynologyDSM:
             print("DEBUG: " + message)
 
     def _is_weird_api_url(self, api: str) -> bool:
-        """Returns True if the API URL is not common (nas_base_url/webapi/path?params) [Only handles DSM 5 for now]."""
+        """Returns True if the API URL is not common.
+
+        Common template is nas_base_url/webapi/path?params
+        Only handles DSM 5 for now.
+        """
         return (
             api in self.DSM_5_WEIRD_URL_API
             and self._information
@@ -107,7 +112,10 @@ class SynologyDSM:
     def _build_url(self, api: str) -> str:
         if self._is_weird_api_url(api):
             if api == SynoStorage.API_KEY:
-                return f"{self._base_url}/webman/modules/StorageManager/storagehandler.cgi?"
+                return (
+                    f"{self._base_url}/webman/modules/StorageManager/"
+                    f"storagehandler.cgi?"
+                )
 
         return f"{self._base_url}/webapi/{self.apis[api]['path']}?"
 
@@ -166,7 +174,8 @@ class SynologyDSM:
             # Not available on API version < 3
             self._syno_token = result["data"]["synotoken"]
         if result["data"].get("did"):
-            # Not available on API version < 6 && device token is given once per device_name
+            # Not available on API version < 6 && device token is given once
+            # per device_name
             self._device_token = result["data"]["did"]
         self._debuglog("Authentication successful, token: " + str(self._session_id))
 
@@ -184,7 +193,10 @@ class SynologyDSM:
 
     @property
     def device_token(self) -> str:
-        """Gets the device token to remember the 2SA access was granted on this device."""
+        """Gets the device token.
+
+        Used to remember the 2SA access was granted on this device.
+        """
         return self._device_token
 
     def get(self, api: str, method: str, params: dict = None, **kwargs):
@@ -250,7 +262,8 @@ class SynologyDSM:
         if isinstance(response, dict) and response.get("error") and api != API_AUTH:
             self._debuglog("Session error: " + str(response["error"]["code"]))
             if response["error"]["code"] == 119 and retry_once:
-                # Session ID not valid, see https://github.com/aerialls/synology-srm/pull/3
+                # Session ID not valid
+                # see https://github.com/aerialls/synology-srm/pull/3
                 self._session_id = None
                 self._syno_token = None
                 self._device_token = None

@@ -7,6 +7,7 @@ class SynoDSMInformation:
     API_KEY = "SYNO.DSM.Info"
 
     def __init__(self, dsm):
+        """Constructor methods."""
         self._dsm = dsm
         self._data = {}
 

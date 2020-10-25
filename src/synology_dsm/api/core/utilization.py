@@ -8,6 +8,7 @@ class SynoCoreUtilization:
     API_KEY = "SYNO.Core.System.Utilization"
 
     def __init__(self, dsm):
+        """Constructor method."""
         self._dsm = dsm
         self._data = {}
 
@@ -24,17 +25,17 @@ class SynoCoreUtilization:
 
     @property
     def cpu_other_load(self):
-        """'Other' percentage of the total CPU load."""
+        """Other percentage of the total CPU load."""
         return self.cpu.get("other_load")
 
     @property
     def cpu_user_load(self):
-        """'User' percentage of the total CPU load."""
+        """User percentage of the total CPU load."""
         return self.cpu.get("user_load")
 
     @property
     def cpu_system_load(self):
-        """'System' percentage of the total CPU load."""
+        """System percentage of the total CPU load."""
         return self.cpu.get("system_load")
 
     @property

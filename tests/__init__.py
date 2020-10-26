@@ -23,7 +23,6 @@ from .api_data.dsm_6 import DSM_6_CORE_SECURITY
 from .api_data.dsm_6 import DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE
 from .api_data.dsm_6 import DSM_6_CORE_SHARE
 from .api_data.dsm_6 import DSM_6_CORE_SYSTEM_DS918_PLUS
-from .api_data.dsm_6 import DSM_6_CORE_UPGRADE_FALSE
 from .api_data.dsm_6 import DSM_6_CORE_UPGRADE_TRUE
 from .api_data.dsm_6 import DSM_6_CORE_UTILIZATION
 from .api_data.dsm_6 import DSM_6_CORE_UTILIZATION_ERROR_1055

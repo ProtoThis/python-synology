@@ -252,6 +252,16 @@ Upgrade usage
     if upgrade.update_available:
         do something ...
 
+    # get available version string (return None if no update available)
+    upgrade.available_version
+
+    # get need of reboot (return None if no update available)
+    upgrade.reboot_needed
+
+    # get need of service restarts (return None if no update available)
+    upgrade.service_restarts
+
+
 Credits / Special Thanks
 ========================
 - https://github.com/florianeinfalt

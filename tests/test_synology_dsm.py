@@ -574,7 +574,10 @@ class TestSynologyDSM(TestCase):
         """Test upgrade."""
         assert self.api.upgrade
         self.api.upgrade.update()
-        assert self.api.upgrade.update_available is False
+        assert self.api.upgrade.update_available
+        assert self.api.upgrade.available_version == "DSM 6.2.3-25426 Update 2"
+        assert self.api.upgrade.reboot_needed == "now"
+        assert self.api.upgrade.service_restarts == "some"
 
     def test_utilisation(self):
         """Test utilisation."""

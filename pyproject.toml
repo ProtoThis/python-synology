@@ -55,7 +55,7 @@ darglint = "^1.5.5"
 reorder-python-imports = "^2.3.5"
 pre-commit-hooks = "^3.3.0"
 sphinx-rtd-theme = "^0.5.0"
-Pygments = "^2.7.1"
+Pygments = "^2.7.2"
 
 [tool.poetry.scripts]
 python-synology = "synology_dsm.__main__:main"

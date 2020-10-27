@@ -23,7 +23,7 @@ from .api_data.dsm_6 import DSM_6_CORE_SECURITY
 from .api_data.dsm_6 import DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE
 from .api_data.dsm_6 import DSM_6_CORE_SHARE
 from .api_data.dsm_6 import DSM_6_CORE_SYSTEM_DS918_PLUS
-from .api_data.dsm_6 import DSM_6_CORE_UPGRADE
+from .api_data.dsm_6 import DSM_6_CORE_UPGRADE_TRUE
 from .api_data.dsm_6 import DSM_6_CORE_UTILIZATION
 from .api_data.dsm_6 import DSM_6_CORE_UTILIZATION_ERROR_1055
 from .api_data.dsm_6 import DSM_6_DOWNLOAD_STATION_INFO_CONFIG
@@ -88,7 +88,7 @@ API_SWITCHER = {
         "CORE_SHARE": DSM_6_CORE_SHARE,
         "CORE_SYSTEM": DSM_6_CORE_SYSTEM_DS918_PLUS,
         "CORE_UTILIZATION": DSM_6_CORE_UTILIZATION,
-        "CORE_UPGRADE": DSM_6_CORE_UPGRADE,
+        "CORE_UPGRADE": DSM_6_CORE_UPGRADE_TRUE,
         "STORAGE_STORAGE": {
             "RAID": DSM_6_STORAGE_STORAGE_DS918_PLUS_RAID5_3DISKS_1VOL,
             "SHR1": DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS,

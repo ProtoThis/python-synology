@@ -8,7 +8,8 @@ from .core.const_6_core_security import DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE
 from .core.const_6_core_share import DSM_6_CORE_SHARE
 from .core.const_6_core_system import DSM_6_CORE_SYSTEM_DS218_PLAY
 from .core.const_6_core_system import DSM_6_CORE_SYSTEM_DS918_PLUS
-from .core.const_6_core_upgrade import DSM_6_CORE_UPGRADE
+from .core.const_6_core_upgrade import DSM_6_CORE_UPGRADE_FALSE
+from .core.const_6_core_upgrade import DSM_6_CORE_UPGRADE_TRUE
 from .core.const_6_core_utilization import DSM_6_CORE_UTILIZATION
 from .core.const_6_core_utilization import DSM_6_CORE_UTILIZATION_ERROR_1055
 from .download_station.const_6_download_station_info import (
@@ -69,7 +70,8 @@ __all__ = [
     "DSM_6_CORE_SHARE",
     "DSM_6_CORE_SYSTEM_DS218_PLAY",
     "DSM_6_CORE_SYSTEM_DS918_PLUS",
-    "DSM_6_CORE_UPGRADE",
+    "DSM_6_CORE_UPGRADE_FALSE",
+    "DSM_6_CORE_UPGRADE_TRUE",
     "DSM_6_CORE_UTILIZATION",
     "DSM_6_CORE_UTILIZATION_ERROR_1055",
     "DSM_6_DOWNLOAD_STATION_INFO_CONFIG",

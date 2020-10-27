@@ -20,5 +20,20 @@ class SynoCoreUpgrade:
 
     @property
     def update_available(self):
-        """Gets all Upgrade info."""
+        """Gets available update info."""
         return self._data["update"].get("available")
+
+    @property
+    def available_version(self):
+        """Gets available verion info."""
+        return self._data["update"].get("version")
+
+    @property
+    def reboot_needed(self):
+        """Gets info if reboot is needed."""
+        return self._data["update"].get("reboot")
+
+    @property
+    def service_restarts(self):
+        """Gets info if services are restarted."""
+        return self._data["update"].get("restart")

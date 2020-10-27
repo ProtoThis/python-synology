@@ -15,9 +15,9 @@ DSM_6_CORE_UPGRADE_TRUE = {
                 "micro": 3, 
                 "minor": 2, 
                 "nano": 2, 
-                "os_name": "DSM" 
+                "os_name": "DSM",
                 }
             }
         }, 
-    "success": True
+    "success": True,
 }

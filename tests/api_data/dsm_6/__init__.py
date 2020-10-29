@@ -25,7 +25,7 @@ from .download_station.const_6_download_station_task import (
     DSM_6_DOWNLOAD_STATION_TASK_LIST,
 )
 from .dsm.const_6_dsm_info import DSM_6_DSM_INFORMATION
-from .dsm.const_6_dsm_network import DSM_6_DSM_NETWORK
+from .dsm.const_6_dsm_network import DSM_6_DSM_NETWORK_2LAN_1PPPOE
 from .storage.const_6_storage_storage import (
     DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION,
 )
@@ -79,7 +79,7 @@ __all__ = [
     "DSM_6_DOWNLOAD_STATION_STAT_INFO",
     "DSM_6_DOWNLOAD_STATION_TASK_LIST",
     "DSM_6_DSM_INFORMATION",
-    "DSM_6_DSM_NETWORK",
+    "DSM_6_DSM_NETWORK_2LAN_1PPPOE",
     "DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION",
     "DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL",
     "DSM_6_STORAGE_STORAGE_DS213_PLUS_SHR1_2DISKS_2VOLS",

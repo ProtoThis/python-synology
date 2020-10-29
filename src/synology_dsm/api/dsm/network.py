@@ -49,7 +49,8 @@ class SynoDSMNetwork:
         """MACs of the NAS."""  # noqa: D403
         macs = []
         for interface in self.interfaces:
-            macs.append(interface["mac"])
+            if interface.get("mac"):
+                macs.append(interface["mac"])
         return macs
 
     @property

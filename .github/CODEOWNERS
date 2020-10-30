@@ -1,6 +1,8 @@
 @Quentame
 
 .github/* @oncleben31
+.darglint @oncleben31
+.flake8 @oncleben31
 
 */surveillance_station/* @shenxn
 src/synology_dsm/api/core/share.py @Gestas

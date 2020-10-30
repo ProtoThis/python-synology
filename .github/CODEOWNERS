@@ -1,0 +1,11 @@
+@Quentame
+
+.github/* @oncleben31
+
+*/surveillance_station/* @shenxn
+src/synology_dsm/api/core/share.py @Gestas
+src/synology_dsm/api/core/system.py @mib1185
+src/synology_dsm/api/core/upgrade.py @mib1185
+tests/api_data/dsm_6/core/const_6_core_share.py @Gestas
+tests/api_data/dsm_6/core/const_6_core_system.py @mib1185
+tests/api_data/dsm_6/core/const_6_core_upgrade.py @mib1185

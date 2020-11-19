@@ -2,20 +2,20 @@
 Python API for Synology DSM
 ===========================
 
-.. image:: https://travis-ci.org/ProtoThis/python-synology.svg?branch=master
-    :target: https://travis-ci.org/ProtoThis/python-synology
+.. image:: https://travis-ci.org/hacf-fr/synologydsm-api.svg?branch=master
+    :target: https://travis-ci.org/hacf-fr/synologydsm-api
 
-.. image:: https://img.shields.io/pypi/v/python-synology.svg
+.. image:: https://img.shields.io/pypi/v/synologydsm-api.svg
     :alt: Library version
-    :target: https://pypi.org/project/python-synology
+    :target: https://pypi.org/project/synologydsm-api
 
-.. image:: https://img.shields.io/pypi/pyversions/python-synology.svg
+.. image:: https://img.shields.io/pypi/pyversions/synologydsm-api.svg
     :alt: Supported versions
-    :target: https://pypi.org/project/python-synology
+    :target: https://pypi.org/project/synologydsm-api
 
-.. image:: https://pepy.tech/badge/python-synology
+.. image:: https://pepy.tech/badge/synologydsm-api
     :alt: Downloads
-    :target: https://pypi.org/project/python-synology
+    :target: https://pypi.org/project/synologydsm-api
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :alt: Formated with Black
@@ -27,7 +27,7 @@ Installation
 
 .. code-block:: bash
 
-    [sudo] pip install python-synology
+    [sudo] pip install synologydsm-api
 
 
 Usage

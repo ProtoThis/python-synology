@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "python-synology"
+name = "synologydsm-api"
 version = "1.0.0"
 description = "Python API for communication with Synology DSM"
 authors = ["Quentin POLLET (Quentame)", "FG van Zeelst (ProtoThis)"]
 license = "MIT"
 readme = "README.rst"
-homepage = "https://github.com/ProtoThis/python-synology"
-repository = "https://github.com/ProtoThis/python-synology"
-documentation = "https://python-synology.readthedocs.io"
+homepage = "https://github.com/hacf-fr/synologydsm-api"
+repository = "https://github.com/hacf-fr/synologydsm-api"
+documentation = "https://synologydsm-api.readthedocs.io"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -27,7 +27,7 @@ packages = [
 ]
 
 [tool.poetry.urls]
-Changelog = "https://github.com/ProtoThis/python-synology/releases"
+Changelog = "https://github.com/hacf-fr/synologydsm-api/releases"
 
 [tool.poetry.dependencies]
 python = "^3.7.0"
@@ -58,7 +58,7 @@ sphinx-rtd-theme = "^0.5.0"
 Pygments = "^2.7.2"
 
 [tool.poetry.scripts]
-python-synology = "synology_dsm.__main__:main"
+synologydsm-api = "synology_dsm.__main__:main"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]

@@ -1,5 +1,5 @@
 # Publish the library
-# https://pypi.org/project/python-synology
+# https://pypi.org/project/synologydsm-api
 # Publish documentation here: https://packaging.python.org/tutorials/packaging-projects/
 
 ./scripts/common.sh

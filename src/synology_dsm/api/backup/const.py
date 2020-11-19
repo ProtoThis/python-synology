@@ -1,0 +1,13 @@
+"""Synology HyperBackup API constants."""
+
+PROP_DATA_ENCRYPTION = "data_enc"
+PROP_DATA_TYPE = "data_type"
+PROP_NAME = "name"
+PROP_SOURCE = "source"
+PROP_STATE = "state"
+PROP_STATUS = "status"
+PROP_TARGET_ID = "target_id"
+PROP_TARGET_TYPE = "target_type"
+PROP_TASKID = "task_id"
+PROP_TRANSFER_TYPE = "transfer_type"
+PROP_TYPE = "type"

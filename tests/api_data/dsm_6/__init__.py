@@ -1,4 +1,6 @@
 """DSM 6 datas."""
+from .backup.const_6_backup_task import DSM_6_BACKUP_TASK_GETS
+from .backup.const_6_backup_task import DSM_6_BACKUP_TASK_LIST
 from .const_6_api_auth import DSM_6_AUTH_LOGIN
 from .const_6_api_auth import DSM_6_AUTH_LOGIN_2SA
 from .const_6_api_auth import DSM_6_AUTH_LOGIN_2SA_OTP
@@ -65,6 +67,8 @@ __all__ = [
     "DSM_6_AUTH_LOGIN_2SA",
     "DSM_6_AUTH_LOGIN_2SA_OTP",
     "DSM_6_API_INFO",
+    "DSM_6_BACKUP_TASK_LIST",
+    "DSM_6_BACKUP_TASK_GETS",
     "DSM_6_CORE_SECURITY",
     "DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE",
     "DSM_6_CORE_SHARE",

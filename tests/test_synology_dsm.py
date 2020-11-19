@@ -914,3 +914,14 @@ class TestSynologyDSM(TestCase):
         assert self.api.surveillance_station.get_home_mode_status()
         assert self.api.surveillance_station.set_home_mode(False)
         assert self.api.surveillance_station.set_home_mode(True)
+
+    def test_hyper_backup(self):
+        """Test HyperBackup."""
+        assert self.api.backup
+        assert not self.api.backup.get_all_tasks()
+
+        self.api.backup.update()
+        assert self.api.backup.get_all_tasks()
+        assert self.api.backup.get_task(1)
+        assert self.api.backup.get_task(2)
+        assert self.api.backup.get_task(3)

@@ -64,6 +64,12 @@ DSM_6_API_INFO = {
             "path": "entry.cgi",
             "requestFormat": "JSON",
         },
+        "SYNO.Backup.Task": {
+            "maxVersion": 2,
+            "minVersion": 1,
+            "path": "entry.cgi",
+            "requestFormat": "JSON",
+        },
         "SYNO.Core.ACL": {
             "maxVersion": 1,
             "minVersion": 1,

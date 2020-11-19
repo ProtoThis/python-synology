@@ -19,6 +19,8 @@ from .api_data.dsm_6 import DSM_6_API_INFO_SURVEILLANCE_STATION
 from .api_data.dsm_6 import DSM_6_AUTH_LOGIN
 from .api_data.dsm_6 import DSM_6_AUTH_LOGIN_2SA
 from .api_data.dsm_6 import DSM_6_AUTH_LOGIN_2SA_OTP
+from .api_data.dsm_6 import DSM_6_BACKUP_TASK_GETS
+from .api_data.dsm_6 import DSM_6_BACKUP_TASK_LIST
 from .api_data.dsm_6 import DSM_6_CORE_SECURITY
 from .api_data.dsm_6 import DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE
 from .api_data.dsm_6 import DSM_6_CORE_SHARE
@@ -50,6 +52,7 @@ from .const import ERROR_AUTH_MAX_TRIES
 from .const import ERROR_AUTH_OTP_AUTHENTICATE_FAILED
 from .const import ERROR_INSUFFICIENT_USER_PRIVILEGE
 from synology_dsm import SynologyDSM
+from synology_dsm.api.backup import SynoBackup
 from synology_dsm.api.core.security import SynoCoreSecurity
 from synology_dsm.api.core.share import SynoCoreShare
 from synology_dsm.api.core.system import SynoCoreSystem
@@ -82,6 +85,8 @@ API_SWITCHER = {
         "AUTH_LOGIN": DSM_6_AUTH_LOGIN,
         "AUTH_LOGIN_2SA": DSM_6_AUTH_LOGIN_2SA,
         "AUTH_LOGIN_2SA_OTP": DSM_6_AUTH_LOGIN_2SA_OTP,
+        "BACKUP_TASK_LIST": DSM_6_BACKUP_TASK_LIST,
+        "BACKUP_TASK_GETS": DSM_6_BACKUP_TASK_GETS,
         "DSM_INFORMATION": DSM_6_DSM_INFORMATION,
         "DSM_NETWORK": DSM_6_DSM_NETWORK_2LAN_1PPPOE,
         "CORE_SECURITY": DSM_6_CORE_SECURITY,
@@ -219,6 +224,12 @@ class SynologyDSMMock(SynologyDSM):
             if not self._session_id:
                 return ERROR_INSUFFICIENT_USER_PRIVILEGE
 
+            if SynoBackup.API_KEY_TASK in url:
+                if "list" in url:
+                    return DSM_6_BACKUP_TASK_LIST
+                elif "get" in url:
+                    return DSM_6_BACKUP_TASK_GETS[params["task_id"]]
+
             if SynoCoreSecurity.API_KEY in url:
                 if self.error:
                     return DSM_6_CORE_SECURITY_UPDATE_OUTOFDATE
@@ -248,9 +259,11 @@ class SynologyDSMMock(SynologyDSM):
                     return DSM_6_DOWNLOAD_STATION_INFO_INFO
                 if "GetConfig" in url:
                     return DSM_6_DOWNLOAD_STATION_INFO_CONFIG
+
             if SynoDownloadStation.STAT_API_KEY in url:
                 if "GetInfo" in url:
                     return DSM_6_DOWNLOAD_STATION_STAT_INFO
+
             if SynoDownloadStation.TASK_API_KEY in url:
                 if "List" in url:
                     return DSM_6_DOWNLOAD_STATION_TASK_LIST

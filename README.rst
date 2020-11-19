@@ -129,6 +129,39 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
         print("--")
 
 
+Hyper Backup usage
+--------------------------
+
+.. code-block:: python
+
+    from synology_dsm import SynologyDSM
+
+    api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")
+    backup = api.backup
+    backup.update() # First update is required
+
+    # Returns a list of all defined backup tasks
+    backup_tasks = backup.get_all_tasks()
+
+    # Print details for each backup task
+    for task in backup_tasks:
+        print("---------------------------------------------")
+        print("Name:", task.name)
+        print("Task ID:", task.task_id)
+        print("Encryption enabled:", task.data_enc)
+        print("Data type:", task.data_type)
+        print("Dict of objects to backup:", task.source)
+        print("State:", task.state)
+        print("Status:", task.status)
+        print("Target ID:", task.target_id)
+        print("Target Type:", task.target_type)
+        print("Transfer Type:", task.transfer_type)
+        print("Type:", task.type)
+
+    # Get details about specific backup task by its task_id
+    task = backup.get_task(task_id)
+
+
 Download Station usage
 --------------------------
 

@@ -1,3 +1,9 @@
+==========
+Deprecated
+==========
+Use now: https://github.com/hacf-fr/synologydsm-api
+
+
 ===========================
 Python API for Synology DSM
 ===========================

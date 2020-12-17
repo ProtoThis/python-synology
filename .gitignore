@@ -79,3 +79,7 @@ desktop.ini
 .mr.developer.cfg
 .project
 .pydevproject
+
+
+# Virtual env
+.venv

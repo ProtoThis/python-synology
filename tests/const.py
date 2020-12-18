@@ -6,8 +6,8 @@
 # if data failed, add "_FAILED"
 
 SESSION_ID = "session_id"
-SYNO_TOKEN = "Syñ0_T0k€ñ"
-DEVICE_TOKEN = "Dév!cè_T0k€ñ"
+SYNO_TOKEN = "Syñ0_T0k€ñ"  # noqa: S105
+DEVICE_TOKEN = "Dév!cè_T0k€ñ"  # noqa: S105
 UNIQUE_KEY = "1x2X3x!_UK"
 
 # Common API error code

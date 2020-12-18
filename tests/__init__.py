@@ -105,7 +105,7 @@ VALID_HTTPS = True
 VALID_VERIFY_SSL = True
 VALID_USER = "valid_user"
 VALID_USER_2SA = "valid_user_2sa"
-VALID_PASSWORD = "valid_password"
+VALID_PASSWORD = "valid_password"  # noqa: S105
 VALID_OTP = "123456"
 
 USER_MAX_TRY = "user_max"

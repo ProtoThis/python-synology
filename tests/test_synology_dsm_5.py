@@ -7,83 +7,16 @@ from . import VALID_HTTPS
 from . import VALID_OTP
 from . import VALID_PASSWORD
 from . import VALID_PORT
-from . import VALID_USER
 from . import VALID_USER_2SA
 from . import VALID_VERIFY_SSL
 from .const import DEVICE_TOKEN
 from .const import SESSION_ID
 from synology_dsm.const import API_AUTH
-from synology_dsm.const import API_INFO
-from synology_dsm.exceptions import SynologyDSMAPIErrorException
-from synology_dsm.exceptions import SynologyDSMAPINotExistsException
-from synology_dsm.exceptions import SynologyDSMLogin2SAFailedException
 from synology_dsm.exceptions import SynologyDSMLogin2SARequiredException
-from synology_dsm.exceptions import SynologyDSMLoginInvalidException
-from synology_dsm.exceptions import SynologyDSMRequestException
 
 
-class TestSynologyDSM:
-    """SynologyDSM test cases."""
-
-    def test_init(self, dsm_5):
-        """Test init."""
-        assert dsm_5.username
-        assert dsm_5._base_url
-        assert not dsm_5.apis.get(API_AUTH)
-        assert not dsm_5._session_id
-
-    def test_connection_failed(self):
-        """Test failed connection."""
-        dsm_5 = SynologyDSMMock(
-            "no_internet",
-            VALID_PORT,
-            VALID_USER,
-            VALID_PASSWORD,
-            VALID_HTTPS,
-            VALID_VERIFY_SSL,
-        )
-        dsm_5.dsm_version = 5
-        with pytest.raises(SynologyDSMRequestException):
-            assert not dsm_5.login()
-        assert not dsm_5.apis.get(API_AUTH)
-        assert not dsm_5._session_id
-
-        dsm_5 = SynologyDSMMock(
-            "host",
-            VALID_PORT,
-            VALID_USER,
-            VALID_PASSWORD,
-            VALID_HTTPS,
-            VALID_VERIFY_SSL,
-        )
-        dsm_5.dsm_version = 5
-        with pytest.raises(SynologyDSMRequestException):
-            assert not dsm_5.login()
-        assert not dsm_5.apis.get(API_AUTH)
-        assert not dsm_5._session_id
-
-        dsm_5 = SynologyDSMMock(
-            VALID_HOST, 0, VALID_USER, VALID_PASSWORD, VALID_HTTPS, VALID_VERIFY_SSL
-        )
-        dsm_5.dsm_version = 5
-        with pytest.raises(SynologyDSMRequestException):
-            assert not dsm_5.login()
-        assert not dsm_5.apis.get(API_AUTH)
-        assert not dsm_5._session_id
-
-        dsm_5 = SynologyDSMMock(
-            VALID_HOST,
-            VALID_PORT,
-            VALID_USER,
-            VALID_PASSWORD,
-            False,
-            VALID_VERIFY_SSL,
-        )
-        dsm_5.dsm_version = 5
-        with pytest.raises(SynologyDSMRequestException):
-            assert not dsm_5.login()
-        assert not dsm_5.apis.get(API_AUTH)
-        assert not dsm_5._session_id
+class TestSynologyDSM5:
+    """SynologyDSM 5test cases."""
 
     def test_login(self, dsm_5):
         """Test login."""
@@ -91,36 +24,6 @@ class TestSynologyDSM:
         assert dsm_5.apis.get(API_AUTH)
         assert dsm_5._session_id == SESSION_ID
         assert dsm_5._syno_token is None
-
-    def test_login_failed(self):
-        """Test failed login."""
-        dsm_5 = SynologyDSMMock(
-            VALID_HOST,
-            VALID_PORT,
-            "user",
-            VALID_PASSWORD,
-            VALID_HTTPS,
-            VALID_VERIFY_SSL,
-        )
-        dsm_5.dsm_version = 5
-        with pytest.raises(SynologyDSMLoginInvalidException):
-            assert not dsm_5.login()
-        assert dsm_5.apis.get(API_AUTH)
-        assert not dsm_5._session_id
-
-        dsm_5 = SynologyDSMMock(
-            VALID_HOST,
-            VALID_PORT,
-            VALID_USER,
-            "pass",
-            VALID_HTTPS,
-            VALID_VERIFY_SSL,
-        )
-        dsm_5.dsm_version = 5
-        with pytest.raises(SynologyDSMLoginInvalidException):
-            assert not dsm_5.login()
-        assert dsm_5.apis.get(API_AUTH)
-        assert not dsm_5._session_id
 
     def test_login_2sa(self):
         """Test login with 2SA."""
@@ -161,78 +64,6 @@ class TestSynologyDSM:
         assert dsm_5._device_token == DEVICE_TOKEN
         assert dsm_5.device_token == DEVICE_TOKEN
 
-    def test_login_2sa_failed(self):
-        """Test failed login with 2SA."""
-        dsm_5 = SynologyDSMMock(
-            VALID_HOST,
-            VALID_PORT,
-            VALID_USER_2SA,
-            VALID_PASSWORD,
-            VALID_HTTPS,
-            VALID_VERIFY_SSL,
-        )
-        dsm_5.dsm_version = 5
-        with pytest.raises(SynologyDSMLogin2SARequiredException):
-            dsm_5.login()
-        with pytest.raises(SynologyDSMLogin2SAFailedException):
-            dsm_5.login(888888)
-
-        assert dsm_5._session_id is None
-        assert dsm_5._syno_token is None
-        assert dsm_5._device_token is None
-
-    def test_request_get(self, dsm_5):
-        """Test get request."""
-        assert dsm_5.get(API_INFO, "query")
-        assert dsm_5.get(API_AUTH, "login")
-        assert dsm_5.get("SYNO.DownloadStation2.Task", "list")
-        assert dsm_5.get(API_AUTH, "logout")
-
-    def test_request_get_failed(self, dsm_5):
-        """Test failed get request."""
-        with pytest.raises(SynologyDSMAPINotExistsException):
-            assert dsm_5.get("SYNO.Virtualization.dsm_5.Task.Info", "list")
-
-    def test_request_post(self, dsm_5):
-        """Test post request."""
-        assert dsm_5.post(
-            "SYNO.FileStation.Upload",
-            "upload",
-            params={"dest_folder_path": "/upload/test", "create_parents": True},
-            files={"file": "open('file.txt','rb')"},
-        )
-
-        assert dsm_5.post(
-            "SYNO.DownloadStation2.Task",
-            "create",
-            params={
-                "uri": "ftps://192.0.0.1:21/test/test.zip",
-                "username": "admin",
-                "password": "1234",
-            },
-        )
-
-    def test_request_post_failed(self, dsm_5):
-        """Test failed post request."""
-        with pytest.raises(SynologyDSMAPIErrorException):
-            assert dsm_5.post(
-                "SYNO.FileStation.Upload",
-                "upload",
-                params={"dest_folder_path": "/upload/test", "create_parents": True},
-                files={"file": "open('file_already_exists.txt','rb')"},
-            )
-
-        with pytest.raises(SynologyDSMAPIErrorException):
-            assert dsm_5.post(
-                "SYNO.DownloadStation2.Task",
-                "create",
-                params={
-                    "uri": "ftps://192.0.0.1:21/test/test_not_exists.zip",
-                    "username": "admin",
-                    "password": "1234",
-                },
-            )
-
     def test_information(self, dsm_5):
         """Test information."""
         assert dsm_5.information
@@ -258,50 +89,6 @@ class TestSynologyDSM:
         assert dsm_5.network.interface("eth1") is None
         assert dsm_5.network.macs
         assert dsm_5.network.workgroup
-
-    def test_utilisation(self, dsm_5):
-        """Test utilization."""
-        assert dsm_5.utilisation
-        dsm_5.utilisation.update()
-
-    def test_utilisation_cpu(self, dsm_5):
-        """Test utilization CPU."""
-        dsm_5.utilisation.update()
-        assert dsm_5.utilisation.cpu
-        assert dsm_5.utilisation.cpu_other_load
-        assert dsm_5.utilisation.cpu_user_load
-        assert dsm_5.utilisation.cpu_system_load
-        assert dsm_5.utilisation.cpu_total_load
-        assert dsm_5.utilisation.cpu_1min_load
-        assert dsm_5.utilisation.cpu_5min_load
-        assert dsm_5.utilisation.cpu_15min_load
-
-    def test_utilisation_memory(self, dsm_5):
-        """Test utilization memory."""
-        dsm_5.utilisation.update()
-        assert dsm_5.utilisation.memory
-        assert dsm_5.utilisation.memory_real_usage
-        assert dsm_5.utilisation.memory_size()
-        assert dsm_5.utilisation.memory_size(True)
-        assert dsm_5.utilisation.memory_available_swap()
-        assert dsm_5.utilisation.memory_available_swap(True)
-        assert dsm_5.utilisation.memory_cached()
-        assert dsm_5.utilisation.memory_cached(True)
-        assert dsm_5.utilisation.memory_available_real()
-        assert dsm_5.utilisation.memory_available_real(True)
-        assert dsm_5.utilisation.memory_total_real()
-        assert dsm_5.utilisation.memory_total_real(True)
-        assert dsm_5.utilisation.memory_total_swap()
-        assert dsm_5.utilisation.memory_total_swap(True)
-
-    def test_utilisation_network(self, dsm_5):
-        """Test utilization network."""
-        dsm_5.utilisation.update()
-        assert dsm_5.utilisation.network
-        assert dsm_5.utilisation.network_up()
-        assert dsm_5.utilisation.network_up(True)
-        assert dsm_5.utilisation.network_down()
-        assert dsm_5.utilisation.network_down(True)
 
     def test_storage(self, dsm_5):
         """Test storage roots."""

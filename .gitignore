@@ -83,3 +83,6 @@ desktop.ini
 
 # Virtual env
 .venv
+
+node_modules
+package-lock.json

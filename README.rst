@@ -86,54 +86,71 @@ The ``SynologyDSM`` class can also ``update()`` all APIs at once.
 .. code-block:: python
 
     from synology_dsm import SynologyDSM
+    from synology_dsm.exceptions import (
+        SynologyDSMAPIErrorException,
+        SynologyDSMAPINotExistsException,
+        SynologyDSMRequestException,
+        SynologyDSMLoginFailedException,
+        SynologyDSMLoginInvalidException,
+        SynologyDSMLoginDisabledAccountException,
+        SynologyDSMLoginPermissionDeniedException,
+        SynologyDSMLogin2SARequiredException,
+        SynologyDSMLogin2SAFailedException,
+    )
 
-    print("Creating Valid API")
-    api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")
+    try:
+        print("Creating Valid API")
+        api = SynologyDSM("<IP/DNS>", "<port>", "<username>", "<password>")
 
-    print("=== Information ===")
-    api.information.update()
-    print("Model:           " + str(api.information.model))
-    print("RAM:             " + str(api.information.ram) + " MB")
-    print("Serial number:   " + str(api.information.serial))
-    print("Temperature:     " + str(api.information.temperature) + " °C")
-    print("Temp. warning:   " + str(api.information.temperature_warn))
-    print("Uptime:          " + str(api.information.uptime))
-    print("Full DSM version:" + str(api.information.version_string))
-    print("--")
-
-    print("=== Utilisation ===")
-    api.utilisation.update()
-    print("CPU Load:        " + str(api.utilisation.cpu_total_load) + " %")
-    print("Memory Use:      " + str(api.utilisation.memory_real_usage) + " %")
-    print("Net Up:          " + str(api.utilisation.network_up()))
-    print("Net Down:        " + str(api.utilisation.network_down()))
-    print("--")
-
-    print("=== Storage ===")
-    api.storage.update()
-    for volume_id in api.storage.volumes_ids:
-        print("ID:          " + str(volume_id))
-        print("Status:      " + str(api.storage.volume_status(volume_id)))
-        print("% Used:      " + str(api.storage.volume_percentage_used(volume_id)) + " %")
+        print("=== Information ===")
+        api.information.update()
+        print("Model:           " + str(api.information.model))
+        print("RAM:             " + str(api.information.ram) + " MB")
+        print("Serial number:   " + str(api.information.serial))
+        print("Temperature:     " + str(api.information.temperature) + " °C")
+        print("Temp. warning:   " + str(api.information.temperature_warn))
+        print("Uptime:          " + str(api.information.uptime))
+        print("Full DSM version:" + str(api.information.version_string))
         print("--")
 
-    for disk_id in api.storage.disks_ids:
-        print("ID:          " + str(disk_id))
-        print("Name:        " + str(api.storage.disk_name(disk_id)))
-        print("S-Status:    " + str(api.storage.disk_smart_status(disk_id)))
-        print("Status:      " + str(api.storage.disk_status(disk_id)))
-        print("Temp:        " + str(api.storage.disk_temp(disk_id)))
+        print("=== Utilisation ===")
+        api.utilisation.update()
+        print("CPU Load:        " + str(api.utilisation.cpu_total_load) + " %")
+        print("Memory Use:      " + str(api.utilisation.memory_real_usage) + " %")
+        print("Net Up:          " + str(api.utilisation.network_up()))
+        print("Net Down:        " + str(api.utilisation.network_down()))
         print("--")
 
-    print("=== Shared Folders ===")
-    api.share.update()
-    for share_uuid in api.share.shares_uuids:
-        print("Share name:        " + str(api.share.share_name(share_uuid)))
-        print("Share path:        " + str(api.share.share_path(share_uuid)))
-        print("Space used:        " + str(api.share.share_size(share_uuid, human_readable=True)))
-        print("Recycle Bin Enabled: " + str(api.share.share_recycle_bin(share_uuid)))
-        print("--")
+        print("=== Storage ===")
+        api.storage.update()
+        for volume_id in api.storage.volumes_ids:
+            print("ID:          " + str(volume_id))
+            print("Status:      " + str(api.storage.volume_status(volume_id)))
+            print("% Used:      " + str(api.storage.volume_percentage_used(volume_id)) + " %")
+            print("--")
 
+        for disk_id in api.storage.disks_ids:
+            print("ID:          " + str(disk_id))
+            print("Name:        " + str(api.storage.disk_name(disk_id)))
+            print("S-Status:    " + str(api.storage.disk_smart_status(disk_id)))
+            print("Status:      " + str(api.storage.disk_status(disk_id)))
+            print("Temp:        " + str(api.storage.disk_temp(disk_id)))
+            print("--")
+
+        print("=== Shared Folders ===")
+        api.share.update()
+        for share_uuid in api.share.shares_uuids:
+            print("Share name:        " + str(api.share.share_name(share_uuid)))
+            print("Share path:        " + str(api.share.share_path(share_uuid)))
+            print("Space used:        " + str(api.share.share_size(share_uuid, human_readable=True)))
+            print("Recycle Bin Enabled: " + str(api.share.share_recycle_bin(share_uuid)))
+            print("--")
+    except SynologyDSMAPINotExistsException:
+        print("Failure accessing the API")
+    except SynologyDSMRequestException:
+        print("Failure completing the request")
+    except SynologyDSMLoginFailedException:
+        print("Invalid credentials given")
 
 Download Station usage
 --------------------------

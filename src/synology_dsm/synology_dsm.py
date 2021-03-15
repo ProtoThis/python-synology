@@ -8,6 +8,7 @@ from requests import Session
 from requests.exceptions import RequestException
 
 from .api.core.security import SynoCoreSecurity
+from .api.core.certificate import SynoCoreCertificate
 from .api.core.share import SynoCoreShare
 from .api.core.system import SynoCoreSystem
 from .api.core.upgrade import SynoCoreUpgrade
@@ -73,6 +74,7 @@ class SynologyDSM:
         self._information = None
         self._network = None
         self._security = None
+        self._certificate = None
         self._share = None
         self._storage = None
         self._surveillance = None
@@ -165,7 +167,8 @@ class SynologyDSM:
             }
             raise switcher.get(
                 result["error"]["code"],
-                SynologyDSMLoginFailedException(result["error"]["code"], self.username),
+                SynologyDSMLoginFailedException(
+                    result["error"]["code"], self.username),
             )
 
         # Parse result if valid
@@ -177,7 +180,8 @@ class SynologyDSM:
             # Not available on API version < 6 && device token is given once
             # per device_name
             self._device_token = result["data"]["did"]
-        self._debuglog("Authentication successful, token: " + str(self._session_id))
+        self._debuglog("Authentication successful, token: "
+                       + str(self._session_id))
 
         if not self._information:
             self._information = SynoDSMInformation(self)
@@ -303,7 +307,8 @@ class SynologyDSM:
 
             if response.status_code == 200:
                 # We got a DSM response
-                content_type = response.headers.get("Content-Type", "").split(";")[0]
+                content_type = response.headers.get(
+                    "Content-Type", "").split(";")[0]
 
                 if content_type in [
                     "application/json",
@@ -334,6 +339,9 @@ class SynologyDSM:
         if self._security:
             self._security.update()
 
+        if self._certificate:
+            self._certificate.update()
+
         if self._utilisation:
             self._utilisation.update()
 
@@ -363,6 +371,9 @@ class SynologyDSM:
             if api == SynoCoreSecurity.API_KEY:
                 self._security = None
                 return True
+            if api == SynoCoreCertificate.API_KEY:
+                self._certificate = None
+                return True
             if api == SynoCoreShare.API_KEY:
                 self._share = None
                 return True
@@ -386,6 +397,9 @@ class SynologyDSM:
                 return True
         if isinstance(api, SynoCoreSecurity):
             self._security = None
+            return True
+        if isinstance(api, SynoCoreCertificate):
+            self._certificate = None
             return True
         if isinstance(api, SynoCoreShare):
             self._share = None
@@ -437,6 +451,13 @@ class SynologyDSM:
         if not self._security:
             self._security = SynoCoreSecurity(self)
         return self._security
+
+    @property
+    def certificate(self) -> SynoCoreCertificate:
+        """Gets NAS Certificate informations."""
+        if not self._certificate:
+            self._certificate = SynoCoreCertificate(self)
+        return self._certificate
 
     @property
     def share(self) -> SynoCoreShare:

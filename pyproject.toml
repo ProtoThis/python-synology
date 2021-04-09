@@ -35,7 +35,7 @@ requests = "^2.24.0"
 urllib3 = "^1.25.10"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.2"
+pytest = "^6.2.3"
 coverage = {extras = ["toml"], version = "^5.3"}
 safety = "^1.10.3"
 mypy = "^0.812"

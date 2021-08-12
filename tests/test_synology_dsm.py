@@ -11,7 +11,14 @@ from . import VALID_USER
 from . import VALID_USER_2SA
 from . import VALID_VERIFY_SSL
 from synology_dsm.api.core.security import SynoCoreSecurity
+from synology_dsm.api.core.share import SynoCoreShare
+from synology_dsm.api.core.system import SynoCoreSystem
+from synology_dsm.api.core.upgrade import SynoCoreUpgrade
+from synology_dsm.api.core.utilization import SynoCoreUtilization
+from synology_dsm.api.download_station import SynoDownloadStation
 from synology_dsm.api.dsm.information import SynoDSMInformation
+from synology_dsm.api.storage.storage import SynoStorage
+from synology_dsm.api.surveillance_station import SynoSurveillanceStation
 from synology_dsm.const import API_AUTH
 from synology_dsm.const import API_INFO
 from synology_dsm.exceptions import SynologyDSMAPIErrorException
@@ -351,6 +358,48 @@ class TestSynologyDSM:
         assert dsm.reset("security")
         assert not dsm._security
 
+        assert not dsm._share
+        assert dsm.share
+        assert dsm._share
+        assert dsm.reset("share")
+        assert not dsm._share
+
+        assert not dsm._system
+        assert dsm.system
+        assert dsm._system
+        assert dsm.reset("system")
+        assert not dsm._system
+
+        assert not dsm._upgrade
+        assert dsm.upgrade
+        assert dsm._upgrade
+        assert dsm.reset("upgrade")
+        assert not dsm._upgrade
+
+        assert not dsm._utilisation
+        assert dsm.utilisation
+        assert dsm._utilisation
+        assert dsm.reset("utilisation")
+        assert not dsm._utilisation
+
+        assert not dsm._download
+        assert dsm.download_station
+        assert dsm._download
+        assert dsm.reset("download")
+        assert not dsm._download
+
+        assert not dsm._storage
+        assert dsm.storage
+        assert dsm._storage
+        assert dsm.reset("storage")
+        assert not dsm._storage
+
+        assert not dsm._surveillance
+        assert dsm.surveillance_station
+        assert dsm._surveillance
+        assert dsm.reset("surveillance")
+        assert not dsm._surveillance
+
     def test_reset_str_key(self, dsm):
         """Test reset with string API key."""
         assert not dsm._security
@@ -359,6 +408,48 @@ class TestSynologyDSM:
         assert dsm.reset(SynoCoreSecurity.API_KEY)
         assert not dsm._security
 
+        assert not dsm._share
+        assert dsm.share
+        assert dsm._share
+        assert dsm.reset(SynoCoreShare.API_KEY)
+        assert not dsm._share
+
+        assert not dsm._system
+        assert dsm.system
+        assert dsm._system
+        assert dsm.reset(SynoCoreSystem.API_KEY)
+        assert not dsm._system
+
+        assert not dsm._upgrade
+        assert dsm.upgrade
+        assert dsm._upgrade
+        assert dsm.reset(SynoCoreUpgrade.API_KEY)
+        assert not dsm._upgrade
+
+        assert not dsm._utilisation
+        assert dsm.utilisation
+        assert dsm._utilisation
+        assert dsm.reset(SynoCoreUtilization.API_KEY)
+        assert not dsm._utilisation
+
+        assert not dsm._download
+        assert dsm.download_station
+        assert dsm._download
+        assert dsm.reset(SynoDownloadStation.API_KEY)
+        assert not dsm._download
+
+        assert not dsm._storage
+        assert dsm.storage
+        assert dsm._storage
+        assert dsm.reset(SynoStorage.API_KEY)
+        assert not dsm._storage
+
+        assert not dsm._surveillance
+        assert dsm.surveillance_station
+        assert dsm._surveillance
+        assert dsm.reset(SynoSurveillanceStation.API_KEY)
+        assert not dsm._surveillance
+
     def test_reset_object(self, dsm):
         """Test reset with object."""
         assert not dsm._security
@@ -366,6 +457,48 @@ class TestSynologyDSM:
         assert dsm._security
         assert dsm.reset(dsm.security)
         assert not dsm._security
+
+        assert not dsm._share
+        assert dsm.share
+        assert dsm._share
+        assert dsm.reset(dsm.share)
+        assert not dsm._share
+
+        assert not dsm._system
+        assert dsm.system
+        assert dsm._system
+        assert dsm.reset(dsm.system)
+        assert not dsm._system
+
+        assert not dsm._upgrade
+        assert dsm.upgrade
+        assert dsm._upgrade
+        assert dsm.reset(dsm.upgrade)
+        assert not dsm._upgrade
+
+        assert not dsm._utilisation
+        assert dsm.utilisation
+        assert dsm._utilisation
+        assert dsm.reset(dsm.utilisation)
+        assert not dsm._utilisation
+
+        assert not dsm._download
+        assert dsm.download_station
+        assert dsm._download
+        assert dsm.reset(dsm.download_station)
+        assert not dsm._download
+
+        assert not dsm._storage
+        assert dsm.storage
+        assert dsm._storage
+        assert dsm.reset(dsm.storage)
+        assert not dsm._storage
+
+        assert not dsm._surveillance
+        assert dsm.surveillance_station
+        assert dsm._surveillance
+        assert dsm.reset(dsm.surveillance_station)
+        assert not dsm._surveillance
 
     def test_reset_str_attr_information(self, dsm):
         """Test reset with string information attr (should not be reset)."""

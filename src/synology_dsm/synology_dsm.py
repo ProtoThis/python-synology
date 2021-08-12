@@ -1,4 +1,5 @@
 """Class to interact with Synology DSM."""
+import logging
 import socket
 from json import JSONDecodeError
 from urllib.parse import quote
@@ -28,6 +29,8 @@ from .exceptions import SynologyDSMLoginFailedException
 from .exceptions import SynologyDSMLoginInvalidException
 from .exceptions import SynologyDSMLoginPermissionDeniedException
 from .exceptions import SynologyDSMRequestException
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class SynologyDSM:
@@ -93,6 +96,7 @@ class SynologyDSM:
 
     def _debuglog(self, message: str):
         """Outputs message if debug mode is enabled."""
+        _LOGGER.debug(message)
         if self._debugmode:
             print("DEBUG: " + message)
 
@@ -297,7 +301,15 @@ class SynologyDSM:
                     url, params=params, timeout=self._timeout, **kwargs
                 )
 
-            self._debuglog("Request url: " + response.url)
+            if params["api"] == API_AUTH:  # pragma: no cover
+                self._debuglog(
+                    "Request url: "
+                    + response.url.replace(params["account"], "********").replace(
+                        params["passwd"], "********"
+                    )
+                )
+            else:  # pragma: no cover
+                self._debuglog("Request url: " + response.url)
             self._debuglog("Request status_code: " + str(response.status_code))
             self._debuglog("Request headers: " + str(response.headers))
 

@@ -44,6 +44,11 @@ from .api_data.dsm_6 import DSM_6_SURVEILLANCE_STATION_CAMERA_GET_LIVE_VIEW_PATH
 from .api_data.dsm_6 import DSM_6_SURVEILLANCE_STATION_CAMERA_LIST
 from .api_data.dsm_6 import DSM_6_SURVEILLANCE_STATION_HOME_MODE_GET_INFO
 from .api_data.dsm_6 import DSM_6_SURVEILLANCE_STATION_HOME_MODE_SWITCH
+from .api_data.dsm_7 import DSM_7_API_INFO
+from .api_data.dsm_7 import DSM_7_AUTH_LOGIN
+from .api_data.dsm_7 import DSM_7_AUTH_LOGIN_2SA
+from .api_data.dsm_7 import DSM_7_AUTH_LOGIN_2SA_OTP
+from .api_data.dsm_7 import DSM_7_DSM_INFORMATION
 from .const import DEVICE_TOKEN
 from .const import ERROR_AUTH_INVALID_CREDENTIALS
 from .const import ERROR_AUTH_MAX_TRIES
@@ -95,6 +100,13 @@ API_SWITCHER = {
             "SHR2": DSM_6_STORAGE_STORAGE_DS1819_PLUS_SHR2_8DISKS_1VOL,
             "SHR2_EXPANSION": DSM_6_STORAGE_STORAGE_DS1515_PLUS_SHR2_10DISKS_1VOL_WITH_EXPANSION,  # noqa: B950
         },
+    },
+    7: {
+        "API_INFO": DSM_7_API_INFO,
+        "AUTH_LOGIN": DSM_7_AUTH_LOGIN,
+        "AUTH_LOGIN_2SA": DSM_7_AUTH_LOGIN_2SA,
+        "AUTH_LOGIN_2SA_OTP": DSM_7_AUTH_LOGIN_2SA_OTP,
+        "DSM_INFORMATION": DSM_7_DSM_INFORMATION,
     },
 }
 

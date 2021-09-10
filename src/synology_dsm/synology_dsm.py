@@ -181,6 +181,9 @@ class SynologyDSM:
             # Not available on API version < 6 && device token is given once
             # per device_name
             self._device_token = result["data"]["did"]
+        if result["data"].get("device_id"):
+            # Not available on API version < 7
+            self._device_token = result["data"]["device_id"]
         self._debuglog("Authentication successful, token: " + str(self._session_id))
 
         if not self._information:

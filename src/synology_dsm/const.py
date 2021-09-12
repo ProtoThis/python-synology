@@ -3,6 +3,9 @@
 API_INFO = "SYNO.API.Info"
 API_AUTH = "SYNO.API.Auth"
 
+# Parameters to be masked on debug output
+SENSITIV_PARAMS = ["account", "passwd", "_sid", "SynoToken", "device_id"]
+
 # SYNO.*
 ERROR_COMMON = {
     100: "Unknown error",

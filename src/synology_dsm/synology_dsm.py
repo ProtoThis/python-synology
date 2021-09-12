@@ -20,6 +20,7 @@ from .api.storage.storage import SynoStorage
 from .api.surveillance_station import SynoSurveillanceStation
 from .const import API_AUTH
 from .const import API_INFO
+from .const import SENSITIV_PARAMS
 from .exceptions import SynologyDSMAPIErrorException
 from .exceptions import SynologyDSMAPINotExistsException
 from .exceptions import SynologyDSMLogin2SAFailedException
@@ -306,15 +307,13 @@ class SynologyDSM:
                     url, params=params, timeout=self._timeout, **kwargs
                 )
 
-            if params["api"] == API_AUTH:  # pragma: no cover
-                self._debuglog(
-                    "Request url: "
-                    + response.url.replace(params["account"], "********").replace(
-                        params["passwd"], "********"
+            response_url = response.url
+            for sensitiv_param in SENSITIV_PARAMS:
+                if params.get(sensitiv_param):
+                    response_url = response_url.replace(
+                        quote(params[sensitiv_param]), "********"
                     )
-                )
-            else:  # pragma: no cover
-                self._debuglog("Request url: " + response.url)
+            self._debuglog("Request url: " + response_url)
             self._debuglog("Request status_code: " + str(response.status_code))
             self._debuglog("Request headers: " + str(response.headers))
 

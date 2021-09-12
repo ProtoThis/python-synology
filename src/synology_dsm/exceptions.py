@@ -118,3 +118,14 @@ class SynologyDSMLogin2SAFailedException(SynologyDSMLoginFailedException):
         """Constructor method."""
         message = "Two-step authentication failed, retry with a new pass code"
         super().__init__(404, message)
+
+
+class SynologyDSMLogin2SAForcedException(SynologyDSMLoginFailedException):
+    """2SA force to setup exception."""
+
+    def __init__(self, username):
+        """Constructor method."""
+        message = (
+            f"Two-step authentication forced to be setuped for account: {username}"
+        )
+        super().__init__(406, message)

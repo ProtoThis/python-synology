@@ -23,6 +23,7 @@ from .const import API_INFO
 from .exceptions import SynologyDSMAPIErrorException
 from .exceptions import SynologyDSMAPINotExistsException
 from .exceptions import SynologyDSMLogin2SAFailedException
+from .exceptions import SynologyDSMLogin2SAForcedException
 from .exceptions import SynologyDSMLogin2SARequiredException
 from .exceptions import SynologyDSMLoginDisabledAccountException
 from .exceptions import SynologyDSMLoginFailedException
@@ -166,6 +167,7 @@ class SynologyDSM:
                 402: SynologyDSMLoginPermissionDeniedException(self.username),
                 403: SynologyDSMLogin2SARequiredException(self.username),
                 404: SynologyDSMLogin2SAFailedException(),
+                406: SynologyDSMLogin2SAForcedException(self.username),
             }
             raise switcher.get(
                 result["error"]["code"],

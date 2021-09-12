@@ -1,0 +1,34 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "NOX - run specific session",
+      "type": "shell",
+      "command": "nox --session=${input:noxsession}",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "NOX - run all sessions",
+      "type": "shell",
+      "command": "nox",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "noxsession",
+      "type": "pickString",
+      "description": "NOX session?",
+      "options": ["pre-commit", "safety", "tests"],
+      "default": "tests"
+    }
+  ]
+}

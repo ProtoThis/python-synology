@@ -62,6 +62,10 @@ class SynoCamera:
         """Return true if camera is recording."""
         return self._data["recStatus"] in RECORDING_STATUS
 
+    @property
+    def status(self):
+        """Return camera status."""
+        return self._data["status"]
 
 class SynoCameraLiveView:
     """An representation of a Synology SurveillanceStation camera live view."""
